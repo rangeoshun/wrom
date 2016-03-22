@@ -14,7 +14,7 @@ let path = require("path");
 let fs = require("fs");
 let port = process.argv[2] || 8888;
 
-http.createServer(function(request, response) {
+http.createServer(function ( request, response ) {
 
   let uri = '/build/client' + url.parse(request.url).pathname;
   let filename = path.join(process.cwd(), uri);
@@ -22,7 +22,7 @@ http.createServer(function(request, response) {
   try {
     if (fs.statSync(filename).isDirectory()) filename += 'index.html';
 
-    fs.readFile(filename, "binary", function(err, file) {
+    fs.readFile(filename, "binary", function( err, file ) {
       if (err) {
 
         response.writeHead(500, {"Content-Type": "text/plain"});
@@ -50,13 +50,13 @@ wss.on('request', function ( request ) {
   console.log('Connection from '+ request.remoteAddress);
   connection.player = _game.addPlayer();
   console.log('PlayerID: '+ connection.player.id);
-  
+
   function syncPlayer ( state ) {
     connection.send(JSON.stringify(state));
     return !!connection.player;
   }
-
-  _tickSyncCallbacks.push(syncPlayer);  
+  
+  _tickSyncCallbacks.push(syncPlayer);
   console.log('Remaining players: ',_game.players.length);
 
   connection.on('message', function ( message ) {

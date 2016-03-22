@@ -38,7 +38,7 @@ class Game {
     game.points.forEach(function ( point ) {
       if (id !== point.id) return;
       foundPoint = point;
-    }); 
+    });
 
     return foundPoint;
   }
@@ -50,7 +50,7 @@ class Game {
     game.players.forEach(function ( player ) {
       if (id !== player.id) return;
       foundPlayer = player;
-    }); 
+    });
 
     return foundPlayer;
   }
@@ -64,17 +64,28 @@ class Game {
 
     game.points.forEach(function ( point ) {
       state.po[point.id] = {
-        c: point.coords 
+        c: point.coords
       }
     });
 
     game.players.forEach(function ( player ) {
-      state.pl[player.id] = {
-        b: player.body
+      let playerState = {};
+      if (!player.alive) {
+        playerState.d = true;
+      } else {
+        playerState.b = player.body;
       }
+      state.pl[player.id] = playerState;
     });
 
     return state;
+  }
+
+  ditchTheDead () {
+    const game = this;
+    game.players = game.players.filter(function ( player ) {
+      return player.alive;
+    });
   }
 
   init ( server ) {

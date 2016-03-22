@@ -19,16 +19,16 @@ class Worm extends Entity {
     const worm = this;
     worm.body = [];
     worm.relocate();
-    
+
     for (let i = 0; i < worm.size; i++) {
       worm.body.push([worm.coords[0] - i, worm.coords[1]]);
     }
-    
+
     if (worm.isColliding()()) {
-    
+
       worm.die();
       worm.spawn();
-    
+
     } else {
       worm.alive = true;
     }
@@ -37,9 +37,7 @@ class Worm extends Entity {
   die () {
     const worm = this;
     worm.alive = false;
-    _game.players.forEach(function ( player, index ) {
-      if (player.id  === worm.id) _game.players.splice(index, 1);
-    });
+    console.log(worm.id + ' is dead.');
   }
 
   isColliding () {
@@ -105,6 +103,8 @@ class Worm extends Entity {
   render () {
     const worm = this;
     return function ( pixel ) {
+      if (!worm.alive) return;
+
       worm.body.forEach(function ( part ) {
         if (pixel.x() === part[0] && pixel.y() === part[1]) {
           pixel[1] = pixel[2] = pixel[3] = worm.alive ? 1 : 0;

@@ -8,7 +8,6 @@ let _tickHandler = function () {
     }
     _tickCallbacks.forEach(function ( callback, index ) {
         if (callback() === false) {
-          console.log('delete');
           _tickCallbacks.splice(index, 1);
         }
     });
@@ -20,6 +19,8 @@ let _tickHandler = function () {
         _tickSyncCallbacks.splice(index, 1);
       }
   });
+
+  _game.ditchTheDead();
 
   setTimeout(_tickHandler, 1000 / _tickSpeed);
 };

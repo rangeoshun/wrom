@@ -40,7 +40,7 @@ connection.onmessage = function (message) {
   for (let pointID in update.po) {
     let pointUpdate = update.po[pointID];
     let foundPoint = _game.getPointById(pointID);
-    
+
     if (!foundPoint) {
       foundPoint = _game.addPoint(pointID);
     }
@@ -51,12 +51,16 @@ connection.onmessage = function (message) {
   for (let playerID in update.pl) {
     let playerUpdate = update.pl[playerID];
     let foundPlayer = _game.getPlayerById(playerID);
-    
+
     if (!foundPlayer) {
       foundPlayer = _game.addPlayer(playerID);
+    } else if (playerUpdate.d) {
+      foundPlayer.die();
+    } else {
+      foundPlayer.body = playerUpdate.b;
+      foundPlayer.coords = foundPlayer.body[0];
     }
-
-    foundPlayer.body = playerUpdate.b;
-    foundPlayer.coords = foundPlayer.body[0];
   }
+
+  _game.ditchTheDead()
 }
