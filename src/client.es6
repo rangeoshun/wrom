@@ -1,10 +1,16 @@
 "use strict";
+
 initMatrix();
+
 const _game = new Game();
 _game.init();
 
+let _self;
+let _selfID;
+
 window.WebSocket = window.WebSocket || window.MozWebSocket;
 let connection = new WebSocket('ws://'+ location.hostname +':666');
+
 connection.onopen = function () {
 
   window.addEventListener('keydown', function ( ev ) {
@@ -34,7 +40,15 @@ connection.onerror = function (error) {
   connection.close();
 };
 
-connection.onmessage = function (message) {
+connection.onmessage = handleIdentityUpdate;
+
+function handleIdentityUpdate ( message ) {
+  let update = JSON.parse(message.data);
+  _selfID = update.id;
+  connection.onmessage = handleStateUpdate;
+}
+
+function handleStateUpdate (message) {
   let update = JSON.parse(message.data);
 
   for (let pointID in update.po) {
@@ -54,6 +68,10 @@ connection.onmessage = function (message) {
 
     if (!foundPlayer) {
       foundPlayer = _game.addPlayer(playerID);
+      if (foundPlayer.id === _selfID) {
+        _self = foundPlayer;
+        foundPlayer.client = true;
+      }
     }
 
     if (playerUpdate.d) {

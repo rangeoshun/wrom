@@ -1,6 +1,6 @@
 let _matrix = [];
 let _resolution = [64, 64];
-let _fps = 24;
+let _fps = 60;
 let _callbacks = [];
 let _scale = 10;
 

@@ -127,8 +127,15 @@ class Worm extends Entity {
       if (!worm.alive) return;
 
       worm.body.forEach(function ( part ) {
-        if (pixel.x() === part[0] && pixel.y() === part[1]) {
-          pixel[1] = pixel[2] = pixel[3] = worm.alive ? 1 : 0;
+        if (pixel[4][0] === part[0] && pixel[4][1] === part[1]) {
+          if (worm.client) {
+
+            pixel[1] = 0.5;
+            pixel[2] = 1;
+            pixel[1] = 0.5;
+          } else {
+            pixel[1] = pixel[2] = pixel[3] = 1;
+          }
         }
       });
 

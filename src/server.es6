@@ -54,6 +54,7 @@ wss.on('request', function ( request ) {
   console.log('Connection from '+ request.remoteAddress);
   connection.player = _game.addPlayer();
   console.log('PlayerID: '+ connection.player.id);
+  connection.send(JSON.stringify({id: connection.player.id}));
 
   function syncPlayer ( state ) {
     connection.send(JSON.stringify(state));
