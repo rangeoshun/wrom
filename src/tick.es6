@@ -4,7 +4,7 @@ let _tickSpeed = 5;
 let _tickHandler = function () {
   let tickTime = parseInt(1000 / _tickSpeed);
   setTimeout(_tickHandler, tickTime);
-  console.log(`Tick should take max: ${tickTime}`);
+  console.log(`Tick should take max: ${tickTime}ms`);
   console.time(`Tick takes`);
   let players = _game.players;
   if (!_game.paused) {
