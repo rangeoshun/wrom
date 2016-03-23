@@ -8,7 +8,6 @@ class Worm extends Entity {
 
     worm.body = [];
     worm.size = 3;
-    worm.alive = false;
 
     worm.spawn();
   }
@@ -42,12 +41,6 @@ class Worm extends Entity {
         }, 2000);
       }
     })(_game.players);
-  }
-
-  die () {
-    const worm = this;
-    worm.alive = false;
-    console.log(`${worm.id} is dead.`);
   }
 
   isColliding ( callback ) {

@@ -3,6 +3,7 @@ class Point extends Entity {
     super(x, y);
     const point = this;
     point.relocate();
+    point.alive = true;
     _tickCallbacks.push(point.isColliding());
   }
 
@@ -12,12 +13,11 @@ class Point extends Entity {
       players.forEach(function ( player ) {
         if (_isColliding(player.coords, point.coords)) {
           player.grow();
-          point.relocate();
-          _tickSpeed++;
-          console.log(`Tick speedup: ${_tickSpeed}`);
-          // felelotlenseg itthagyni a gepet!!
+          point.die();
         }
       });
+
+      return point.alive;
     }
   }
 }

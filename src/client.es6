@@ -58,8 +58,11 @@ function handleStateUpdate (message) {
     if (!foundPoint) {
       foundPoint = _game.addPoint(pointID);
     }
-
-    foundPoint.coords = pointUpdate.c;
+    if (pointUpdate.d) {
+      foundPoint.die();
+    } else {
+      foundPoint.coords = pointUpdate.c;
+    }
   }
 
   for (let playerID in update.pl) {

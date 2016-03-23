@@ -63,9 +63,13 @@ class Game {
     };
 
     game.points.forEach(function ( point ) {
-      state.po[point.id] = {
-        c: point.coords
+      let pointState = {};
+      if (!point.alive) {
+        pointState.d = true;
+      } else {
+        pointState.c = point.coords;
       }
+      state.po[point.id] = pointState;
     });
 
     game.players.forEach(function ( player ) {
@@ -83,6 +87,10 @@ class Game {
 
   ditchTheDead () {
     const game = this;
+
+    game.points = game.points.filter(function ( point ) {
+      return point.alive;
+    });
     game.players = game.players.filter(function ( player ) {
       return player.alive;
     });
@@ -91,7 +99,6 @@ class Game {
   init ( server ) {
     const game = this;
     if (server) {
-      game.addPoint();
       _tickHandler();
     }
   }
