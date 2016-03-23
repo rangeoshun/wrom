@@ -11,9 +11,10 @@ class Game {
     game.paused = !game.paused;
   }
 
-  addPoint ( id ) {
+  addPoint ( id, type ) {
     const game = this;
-    let point = new Point();
+    const Type = type || Point;
+    let point = new Type();
     if (id) point.id = id;
 
     game.points.push(point);
@@ -99,6 +100,7 @@ class Game {
   init ( server ) {
     const game = this;
     if (server) {
+      game.server = true;
       _tickHandler();
     }
   }

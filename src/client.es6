@@ -62,7 +62,7 @@ function handleStateUpdate (message) {
 
   for (let pointID in update.po) {
     let pointUpdate = update.po[pointID];
-    let foundPoint = _game.getPointById(pointID);
+    let foundPoint = _game.getPointById(pointID, Point);
 
     if (!foundPoint) {
       foundPoint = _game.addPoint(pointID);

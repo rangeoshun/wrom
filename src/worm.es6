@@ -7,9 +7,30 @@ class Worm extends Entity {
     worm.nextDirection = false;
 
     worm.body = [];
-    worm.size = 10;
+    worm.size = 4;
 
     worm.spawn();
+  }
+
+  drop () {
+    if (!_game.server) return;
+    const worm = this;
+    console.log(`${worm.constructor.name} ${worm.id} is dropping:`)
+
+    worm.body.forEach(function ( partCoords ) {
+      if (!Math.round(Math.random())) return;
+
+      let point = _game.addPoint();
+      point.coords = worm.displace(partCoords, 2);
+      console.log(partCoords.coords);
+    })
+  }
+
+  die () {
+    const worm = this;
+
+    worm.drop();
+    worm.alive = false;
   }
 
   spawn () {
@@ -30,7 +51,7 @@ class Worm extends Entity {
     worm.isColliding(function ( collision ) {
       if (collision) {
 
-        console.log(`${worm.id} is dying to respawn.`);
+        console.log(`${worm.constructor.name} ${worm.id} is dying to respawn`);
         worm.spawn();
 
       } else {
@@ -45,6 +66,7 @@ class Worm extends Entity {
 
   isColliding ( callback ) {
     const worm = this;
+
     return function ( players ) {
       let collision = false;
 
@@ -55,10 +77,7 @@ class Worm extends Entity {
           if (player === worm && !index) return;
 
           if (_isColliding(worm.coords, part)) {
-            console.log(`${worm.id} is colliding with ${player.id}`);
-            for (let i = worm.body.length; i > -1; i--) {
-              player.grow();
-            }
+            console.log(`${worm.constructor.name} ${worm.id} is colliding with ${worm.constructor.name} ${player.id}`);
             worm.die();
             collision = true;
           }
@@ -85,38 +104,42 @@ class Worm extends Entity {
 
   grow () {
     const worm = this;
-    let wormTail = worm.body[worm.body.length - 1];
+    let tail = worm.body[worm.body.length - 1];
     worm.size++;
-    worm.body.push([wormTail[0], wormTail[1]]);
+    worm.body.push([tail[0], tail[1]]);
   }
 
   move () {
     const worm = this;
     return function () {
-      let wormHead = worm.body[0];
-      let wormTail = worm.body[worm.body.length - 1];
+      const coords = worm.coords;
+      let body = worm.body;
+      const head = worm.body[0];
+      let tail = worm.body[worm.body.length - 1];
+      let direction = worm.direction;
+      const nextDirection = worm.nextDirection;
 
-      if (worm.nextDirection && worm.nextDirection[0] !== worm.direction [0] * -1
-        && worm.nextDirection[1] !== worm.direction [1] * -1) {
-        worm.direction = worm.nextDirection;
+      if (nextDirection && nextDirection[0] !== direction[0] * -1
+        && nextDirection[1] !== direction[1] * -1) {
+        worm.direction = nextDirection;
       }
 
-      wormTail[0] = worm.coords[0] = wormHead[0] + worm.direction[0];
-      wormTail[1] = worm.coords[1] = wormHead[1] + worm.direction[1];
+      tail[0] = coords[0] = head[0] + direction[0];
+      tail[1] = coords[1] = head[1] + direction[1];
 
-      if (wormTail[0] >= _resolution[0]) {
-        wormTail[0] -= _resolution[0];
-      } else if (wormTail[0] < 0) {
-        wormTail[0] = _resolution[0];
+      if (tail[0] >= _resolution[0]) {
+        tail[0] -= _resolution[0];
+      } else if (tail[0] < 0) {
+        tail[0] = _resolution[0];
       }
 
-      if (wormTail[1] >= _resolution[1]) {
-        wormTail[1] -= _resolution[1];
-      } else if (wormTail[1] < 0) {
-        wormTail[1] = _resolution[1];
+      if (tail[1] >= _resolution[1]) {
+        tail[1] -= _resolution[1];
+      } else if (tail[1] < 0) {
+        tail[1] = _resolution[1];
       }
 
-      worm.body.unshift(worm.body.pop());
+      body.unshift(body.pop());
 
       return worm.alive;
     };
