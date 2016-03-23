@@ -14,6 +14,8 @@ class Point extends Entity {
           player.grow();
           point.relocate();
           _tickSpeed++;
+          console.log(`Tick speedup: ${_tickSpeed}`);
+          // felelotlenseg itthagyni a gepet!!
         }
       });
     }

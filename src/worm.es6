@@ -37,7 +37,9 @@ class Worm extends Entity {
       } else {
 
         _tickCallbacks.push(worm.move());
-        _tickCallbacks.push(worm.isColliding());
+        setTimeout(function () {
+          _tickCallbacks.push(worm.isColliding());
+        }, 2000);
       }
     })(_game.players);
   }
@@ -61,6 +63,9 @@ class Worm extends Entity {
 
           if (_isColliding(worm.coords, part)) {
             console.log(`${worm.id} is colliding with ${player.id}`);
+            for (let i = worm.body.length; i > -1; i--) {
+              player.grow();
+            }
             worm.die();
             collision = true;
           }

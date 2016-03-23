@@ -1,8 +1,8 @@
 let _matrix = [];
-let _resolution = [64, 64];
+let _resolution = [96, 96];
 let _fps = 60;
 let _callbacks = [];
-let _scale = 10;
+let _scale = 1;
 
 // init matrix
 function initMatrix () {
