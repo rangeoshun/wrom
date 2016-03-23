@@ -168,7 +168,10 @@ class Worm extends Entity {
             b = 0.5;
 
           } else {
-            r = g = b = 1;
+
+            r = 1;
+            g = 0.5;
+            b = 0.5;
           }
 
           if (worm.ghost) {
