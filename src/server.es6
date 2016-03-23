@@ -47,6 +47,7 @@ http.createServer(function ( request, response ) {
 
 // Websocket server
 socketServer.listen(666, function () {});
+
 wss.on('request', function ( request ) {
   var connection = request.accept(null, request.origin);
 
