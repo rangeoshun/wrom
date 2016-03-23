@@ -8,9 +8,6 @@ class Worm extends Entity {
     worm.directionCue = [];
     worm.alive = false;
 
-    _tickCallbacks.push(worm.move());
-    _tickCallbacks.push(worm.isColliding());
-
     worm.spawn();
   }
 
@@ -30,7 +27,10 @@ class Worm extends Entity {
       worm.spawn();
 
     } else {
+
       worm.alive = true;
+      _tickCallbacks.push(worm.move());
+      _tickCallbacks.push(worm.isColliding());
     }
   }
 

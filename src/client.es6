@@ -54,7 +54,9 @@ connection.onmessage = function (message) {
 
     if (!foundPlayer) {
       foundPlayer = _game.addPlayer(playerID);
-    } else if (playerUpdate.d) {
+    }
+
+    if (playerUpdate.d) {
       foundPlayer.die();
     } else {
       foundPlayer.body = playerUpdate.b;

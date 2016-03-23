@@ -13,7 +13,7 @@ class Entity {
 
   relocate () {
     const entity = this;
-    entity.coords = [entity.random(0), entity.random(1)]
+    entity.coords = [entity.random(0), entity.random(1)];
   }
 
   render () {
