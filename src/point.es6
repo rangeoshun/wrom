@@ -8,8 +8,8 @@ class Point extends Entity {
 
   isColliding () {
     const point = this;
-    return function () {
-      _game.players.forEach(function ( player ) {
+    return function ( players ) {
+      players.forEach(function ( player ) {
         if (_isColliding(player.coords, point.coords)) {
           player.grow();
           point.relocate();

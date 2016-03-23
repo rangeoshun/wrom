@@ -2,12 +2,13 @@ let _tickCallbacks = [];
 let _tickSyncCallbacks = [];
 let _tickSpeed = 5;
 let _tickHandler = function () {
+  let players = _game.players;
   if (!_game.paused) {
-    if (!_game.players.length && _tickSpeed != 5) {
+    if (!players.length) {
       _tickSpeed = 5;
     }
     _tickCallbacks.forEach(function ( callback, index ) {
-        if (callback() === false) {
+        if (callback(players) === false) {
           _tickCallbacks.splice(index, 1);
         }
     });

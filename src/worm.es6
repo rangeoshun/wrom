@@ -2,10 +2,12 @@ class Worm extends Entity {
   constructor ( x, y ) {
     super(x, y);
     const worm = this;
+
+    worm.direction = [];
+    worm.directionCue = [];
+
     worm.body = [];
     worm.size = 3;
-    worm.direction = [1, 0];
-    worm.directionCue = [];
     worm.alive = false;
 
     worm.spawn();
@@ -14,43 +16,60 @@ class Worm extends Entity {
   spawn () {
 
     const worm = this;
+    let dirX = Math.round(Math.random() * 2) - 1;
+    let dirY = (dirX) ? 0 : (Math.round(Math.random())) ? -1 : 1;
+
+    worm.alive = true;
+    worm.direction = [dirX, dirY];
     worm.body = [];
     worm.relocate();
 
     for (let i = 0; i < worm.size; i++) {
-      worm.body.push([worm.coords[0] - i, worm.coords[1]]);
+      worm.body.push([worm.coords[0] - i * worm.direction[0], worm.coords[1] - i * worm.direction[1]]);
     }
 
-    if (worm.isColliding()()) {
+    worm.isColliding(function ( collision ) {
+      if (collision) {
 
-      worm.die();
-      worm.spawn();
+        console.log(`${worm.id} is dying to respawn.`);
+        worm.spawn();
 
-    } else {
+      } else {
 
-      worm.alive = true;
-      _tickCallbacks.push(worm.move());
-      _tickCallbacks.push(worm.isColliding());
-    }
+        _tickCallbacks.push(worm.move());
+        _tickCallbacks.push(worm.isColliding());
+      }
+    })(_game.players);
   }
 
   die () {
     const worm = this;
     worm.alive = false;
-    console.log(worm.id + ' is dead.');
+    console.log(`${worm.id} is dead.`);
   }
 
-  isColliding () {
+  isColliding ( callback ) {
     const worm = this;
-    return function () {
-      _game.players.forEach(function ( player, index ) {
+    return function ( players ) {
+      let collision = false;
+
+      players.forEach(function ( player, index ) {
+        if (!player.alive) return;
+
         player.body.forEach(function ( part, index ) {
-          if (player === worm && !index) { return; }
+          if (player === worm && !index) return;
+
           if (_isColliding(worm.coords, part)) {
+            console.log(`${worm.id} is colliding with ${player.id}`);
             worm.die();
+            collision = true;
           }
         });
       });
+
+      if (callback) {
+        callback(collision);
+      }
 
       return worm.alive;
     }
