@@ -5,17 +5,17 @@ class Pixel extends Array {
 
     pixel.r = function () {
       let component = this[1];
-      if (!component) return component;
-      else return Math.round(component*255).toString(16);
+      if (!component) return component.toString();
+      else return Math.round(component*255).toString(16) || '0';
     };
     pixel.g = function() {
       let component = this[2];
-      if (!component) return component;
-      else return Math.round(component*255).toString(16);
+      if (!component) return component.toString();
+      else return Math.round(component*255).toString(16) || '0';
     }
     pixel.b = function() {
       let component = this[3];
-      if (!component) return component;
+      if (!component) return component.toString();
       else return Math.round(component*255).toString(16);
     }
 
@@ -29,11 +29,11 @@ class Pixel extends Array {
 
     pixel.getHex = function () {
       let r = this.r();
-      if (r.length === 1) r = 0 + r;
-      let g = this.r();
-      if (g.length === 1) g = 0 + g;
-      let b = this.r();
-      if (b.length === 1) b = 0 + b;
+      if (r.length === 1) r = '0' + r;
+      let g = this.g();
+      if (g.length === 1) g = '0' + g;
+      let b = this.b();
+      if (b.length === 1) b = '0' + b;
 
       return '#'+ r + b + g;
     }
