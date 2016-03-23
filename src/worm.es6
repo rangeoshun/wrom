@@ -7,7 +7,7 @@ class Worm extends Entity {
     worm.nextDirection = false;
 
     worm.body = [];
-    worm.size = 3;
+    worm.size = 10;
 
     worm.spawn();
   }

@@ -17,6 +17,8 @@ connection.onopen = function () {
     ev.preventDefault();
     let code = ev.keyCode;
     let direction;
+    let respawn = 0;
+
     switch (code) {
       case 38:
         direction = [0, -1];
@@ -30,9 +32,16 @@ connection.onopen = function () {
       case 37:
         direction = [-1, 0];
       break;
+      case 32:
+        respawn = 1;
+      break;
     }
 
-    if (direction) connection.send(JSON.stringify({direction: direction}));
+    let message = {};
+    if (direction)  message.d = direction;
+    else if (!_self.alive) message.r = respawn;
+
+    if (direction || respawn) connection.send(JSON.stringify(message));
   });
 };
 

@@ -53,7 +53,8 @@ wss.on('request', function ( request ) {
 
   console.log('Connection from '+ request.remoteAddress);
   connection.player = _game.addPlayer();
-  console.log('PlayerID: '+ connection.player.id);
+  const playerID = connection.player.id;
+  console.log('PlayerID: '+ playerID);
   connection.send(JSON.stringify({id: connection.player.id}));
 
   function syncPlayer ( state ) {
@@ -65,8 +66,18 @@ wss.on('request', function ( request ) {
   console.log('Remaining players: ',_game.players.length);
 
   connection.on('message', function ( message ) {
-    var direction = JSON.parse(message.utf8Data).direction;
-    connection.player.setDirection(direction);
+    let player = connection.player;
+    const update = JSON.parse(message.utf8Data);
+    const direction = update.d;
+    const respawn = update.r;
+
+    if (direction) {
+      player.setDirection(direction);
+    } else if (respawn && !player.alive) {
+      console.log();
+      connection.player = _game.addPlayer();
+      connection.player.id = playerID;
+    }
   });
 
   connection.on('close', function () {
