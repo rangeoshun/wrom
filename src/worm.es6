@@ -4,7 +4,7 @@ class Worm extends Entity {
     const worm = this;
 
     worm.direction = [];
-    worm.directionCue = [];
+    worm.nextDirection = false;
 
     worm.body = [];
     worm.size = 3;
@@ -80,7 +80,7 @@ class Worm extends Entity {
       return;
     }
 
-    worm.directionCue.push(direction);
+    worm.nextDirection = direction;
   }
 
   grow () {
@@ -95,9 +95,12 @@ class Worm extends Entity {
     return function () {
       let wormHead = worm.body[0];
       let wormTail = worm.body[worm.body.length - 1];
-      if (worm.directionCue.length) {
-        worm.direction = worm.directionCue.shift();
+
+      if (worm.nextDirection && worm.nextDirection[0] !== worm.direction [0] * -1
+        && worm.nextDirection[1] !== worm.direction [1] * -1) {
+        worm.direction = worm.nextDirection;
       }
+
       wormTail[0] = worm.coords[0] = wormHead[0] + worm.direction[0];
       wormTail[1] = worm.coords[1] = wormHead[1] + worm.direction[1];
 
