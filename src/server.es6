@@ -6,7 +6,8 @@ _game.init(true);
 
 const WebSocketServer = require('websocket').server;
 const http = require('http');
-let socketServer = http.createServer(function () {}).listen(666, function () {});
+let socketServer = http.createServer(function () {})
+socketServer.listen(666, function () {});
 let wss = new WebSocketServer({httpServer: socketServer});
 
 let url = require("url");
@@ -20,7 +21,9 @@ http.createServer(function ( request, response ) {
   let filename = path.join(process.cwd(), uri);
 
   try {
-    if (fs.statSync(filename).isDirectory()) filename += 'index.html';
+    if (fs.statSync(filename).isDirectory()) {
+      filename += 'index.html';
+    }
 
     fs.readFile(filename, "binary", function( err, file ) {
       if (err) {
@@ -55,7 +58,7 @@ wss.on('request', function ( request ) {
     connection.send(JSON.stringify(state));
     return !!connection.player;
   }
-  
+
   _tickSyncCallbacks.push(syncPlayer);
   console.log('Remaining players: ',_game.players.length);
 
