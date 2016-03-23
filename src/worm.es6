@@ -51,6 +51,8 @@ class Worm extends Entity {
           }
         });
       });
+
+      return worm.alive;
     }
   }
 
