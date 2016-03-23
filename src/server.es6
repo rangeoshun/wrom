@@ -7,7 +7,6 @@ _game.init(true);
 const WebSocketServer = require('websocket').server;
 const http = require('http');
 let socketServer = http.createServer(function () {})
-socketServer.listen(666, function () {});
 let wss = new WebSocketServer({httpServer: socketServer});
 
 let url = require("url");
@@ -47,6 +46,7 @@ http.createServer(function ( request, response ) {
 }).listen(parseInt(port, 10));
 
 // Websocket server
+socketServer.listen(666, function () {});
 wss.on('request', function ( request ) {
   var connection = request.accept(null, request.origin);
 
