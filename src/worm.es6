@@ -40,6 +40,7 @@ class Worm extends Entity {
     let dirY = (dirX) ? 0 : (Math.round(Math.random())) ? -1 : 1;
 
     worm.alive = true;
+    worm.ghost = true;
     worm.direction = [dirX, dirY];
     worm.body = [];
     worm.relocate();
@@ -58,6 +59,8 @@ class Worm extends Entity {
 
         _tickCallbacks.push(worm.move());
         setTimeout(function () {
+
+          worm.ghost = false;
           _tickCallbacks.push(worm.isColliding());
         }, 2000);
       }
@@ -71,7 +74,7 @@ class Worm extends Entity {
       let collision = false;
 
       players.forEach(function ( player, index ) {
-        if (!player.alive) return;
+        if (!player.alive || player.ghost) return;
 
         player.body.forEach(function ( part, index ) {
           if (player === worm && !index) return;
@@ -151,15 +154,33 @@ class Worm extends Entity {
       if (!worm.alive) return;
 
       worm.body.forEach(function ( part ) {
+
+        let r;
+        let g;
+        let b;
+
         if (pixel[4][0] === part[0] && pixel[4][1] === part[1]) {
+
           if (worm.client) {
 
-            pixel[1] = 0.5;
-            pixel[2] = 1;
-            pixel[1] = 0.5;
+            r = 0.5;
+            g = 1;
+            b = 0.5;
+
           } else {
-            pixel[1] = pixel[2] = pixel[3] = 1;
+            r = g = b = 1;
           }
+
+          if (worm.ghost) {
+            const factor = Math.sin(parseFloat('0.'+ (new Date().getTime() / 1000).toString().split('.')[1]) * Math.PI);
+            r *= factor;
+            g *= factor;
+            b *= factor;
+          }
+
+          pixel[1] = r;
+          pixel[2] = g;
+          pixel[3] = b;
         }
       });
 
