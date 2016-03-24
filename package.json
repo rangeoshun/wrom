@@ -11,9 +11,8 @@
     "gulp-babel": "^6.1.2",
     "gulp-concat": "^2.6.0",
     "gulp-develop-server": "^0.5.1",
-    "gulp-karma": "0.0.5",
+    "gulp-strip-debug": "^1.1.0",
     "gulp-watch": "^4.3.5",
-    "merge-stream": "^1.0.0",
-    "phantomjs": "^1.9.19"
+    "merge-stream": "^1.0.0"
   }
 }
