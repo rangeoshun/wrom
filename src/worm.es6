@@ -28,6 +28,7 @@ class Worm extends Entity {
 
   die () {
     const worm = this;
+    if (!worm.alive) return;
 
     worm.drop();
     worm.alive = false;
@@ -74,7 +75,7 @@ class Worm extends Entity {
       let collision = false;
 
       players.forEach(function ( player, index ) {
-        if (!player.alive || player.ghost) return;
+        if (player.ghost) return;
 
         player.body.forEach(function ( part, index ) {
           if (player === worm && !index) return;

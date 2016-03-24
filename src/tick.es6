@@ -20,9 +20,14 @@ let _tickHandler = function () {
 //  console.time(`Sync takes`);
   let state = _game.getState();
   _tickSyncCallbacks.forEach(function ( callback, index ) {
-      if (callback(state) === false) {
-        _tickSyncCallbacks.splice(index, 1);
-      }
+    if (callback.del) {
+      _tickSyncCallbacks.splice(index, 1);
+      return;
+    }
+
+    if (callback(state) === false) {
+      callback.del = true;
+    }
   });
 
   if (points.length < Math.round(players.length / 2)) {
