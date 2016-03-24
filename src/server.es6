@@ -69,10 +69,26 @@ wss.on('request', function ( request ) {
   connection.on('message', function ( message ) {
     let player = connection.player;
     const update = JSON.parse(message.utf8Data);
-    const direction = update.d;
+    let direction = update.d;
     const respawn = update.r;
 
     if (direction) {
+
+      switch (direction) {
+        case 1:
+          direction = [0, -1];
+        break;
+        case 2:
+          direction = [1, 0];
+        break;
+        case 3:
+          direction = [0, 1];
+        break;
+        case 4:
+          direction = [-1, 0];
+        break;
+      }
+
       player.setDirection(direction);
     } else if (respawn && !player.alive) {
       console.log();
