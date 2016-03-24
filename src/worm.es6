@@ -22,8 +22,7 @@ class Worm extends Entity {
 
       let point = _game.addPoint();
       point.coords = worm.displace(partCoords, 2);
-      console.log(partCoords.coords);
-    })
+    });
   }
 
   die () {
