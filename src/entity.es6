@@ -37,8 +37,7 @@ class Entity {
     let y = Math.round(Math.random() * by + 1) - 1;
     let newCoord = [coord[0] + x, coord[1] + y];
     if (entity.isCoordOutOfBOunds(newCoord)) {
-      newCoord[0] *= -1;
-      newCoord[1] *= -1;
+      newCoord = [coord[0] + x * -1, coord[1] + y * -1];
     }
     return newCoord;
   }
