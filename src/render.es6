@@ -12,8 +12,8 @@ function _render () {
   let lastNullIndex = -1;
   cycleMatrix([function ( pixel ) {
 
-    let x = pixel.x();
-    let y = pixel.y();
+    let x = pixel[4][0];
+    let y = pixel[4][1];
     let color = pixel.getHex();
 
     _screen.fillStyle = color;

@@ -19,8 +19,8 @@ function initMatrix () {
   });
 }
 
-function cycleMatrix ( pixelCallbacks, rowCallback ) {
-  _matrix.forEach(rowCallback || function ( row, y ) {
+function cycleMatrix ( pixelCallbacks ) {
+  _matrix.forEach(function ( row, y ) {
     row.forEach(function ( pixel, x ) {
       pixelCallbacks.forEach(function ( callback, index ) {
         if (callback(pixel) === false) {
