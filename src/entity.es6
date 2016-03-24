@@ -4,9 +4,11 @@ class Entity {
 
     entity.coords = [x, y];
     entity.id = (new Date().getTime()+Math.floor(Math.random()*1000)).toString(16);
-    entity.alive = false;
+    entity.alive = true;
 
-    _callbacks.push(this.render());
+    if (!_game.server) {
+      _renderCallbacks.push(entity.render());
+    }
     console.log(`${entity.constructor.name} ${entity.id} is alive`);
   }
 
@@ -36,9 +38,11 @@ class Entity {
     let x = Math.round(Math.random() * by + 1) - 1;
     let y = Math.round(Math.random() * by + 1) - 1;
     let newCoord = [coord[0] + x, coord[1] + y];
+
     if (entity.isCoordOutOfBOunds(newCoord)) {
       newCoord = [coord[0] + x * -1, coord[1] + y * -1];
     }
+
     return newCoord;
   }
 
@@ -49,14 +53,16 @@ class Entity {
 
   render () {
     const entity = this;
-    return function ( pixel ) {
+    return function () {
+      let pixels = [];
+      let r = Math.sin(parseFloat('0.'+ (new Date().getTime() / 1000).toString().split('.')[1]) * Math.PI);
+      let g = r;
+      let b = r;
 
-      if (pixel[4][0] == entity.coords[0] && pixel[4][1] == entity.coords[1]) {
-        pixel[1] = pixel[2] = pixel[3] =
-          Math.sin(parseFloat('0.'+ (new Date().getTime() / 1000).toString().split('.')[1]) * Math.PI);
-      }
+      pixels.die = !entity.alive;
+      pixels.push(new Pixel(1, r, g, b, entity.coords));
 
-      return entity.alive;
+      return pixels;
     };
   }
 }

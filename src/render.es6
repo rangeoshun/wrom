@@ -5,20 +5,28 @@ document.body.appendChild(_canvas);
 const _screen = _canvas.getContext("2d");
 
 const _renderCallbacks = [];
+
 function _render () {
+  _screen.fillStyle = '#000';
+  _screen.fillRect(0, 0, _resolution[0], _resolution[1]);
 
-  cycleMatrix(_callbacks);
+  for (let i = 0; i < _renderCallbacks.length; i++) {
 
-  let lastNullIndex = -1;
-  cycleMatrix([function ( pixel ) {
+    const pixels = _renderCallbacks[i]();
+    if (pixels.die) {
+        _renderCallbacks.splice(i, 1);
+    }
 
-    let x = pixel[4][0];
-    let y = pixel[4][1];
-    let color = pixel.getHex();
+    for (let k = 0; k < pixels.length; k++) {
+      const pixel = pixels[k];
+      const x = pixel[4][0];
+      const y = pixel[4][1];
+      const color = pixel.getHex();
 
-    _screen.fillStyle = color;
-    _screen.fillRect(x * _scale, y * _scale, _scale, _scale);
-  }]);
+      _screen.fillStyle = color;
+      _screen.fillRect(x * _scale, y * _scale, _scale, _scale);
+    }
+  }
 
   requestAnimationFrame(_render);
 }
