@@ -57,12 +57,12 @@ class Game {
     return foundPlayer;
   }
 
-  getState () {
+  getState ( fullState ) {
     const game = this;
     let state = {};
 
     game.points.forEach(function ( point ) {
-      if (point.updated === false) return;
+      if (!fullState && point.updated === false) return;
       if (!state.hasOwnProperty('po')) state.po = {};
       let pointState = {};
 
@@ -77,7 +77,7 @@ class Game {
     });
 
     game.players.forEach(function ( player ) {
-      if (player.updated === false) return;
+      if (!fullState && player.updated === false) return;
       if (!state.hasOwnProperty('pl')) state.pl = {};
       let playerState = {};
 

@@ -56,6 +56,7 @@ wss.on('request', function ( request ) {
   const playerID = connection.player.id;
   console.log('PlayerID: '+ playerID);
   connection.send(JSON.stringify({id: connection.player.id}));
+  connection.send(JSON.stringify(_game.getState(true)));
 
   function syncPlayer ( state ) {
     connection.send(JSON.stringify(state));
