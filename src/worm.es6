@@ -39,7 +39,6 @@ class Worm extends Entity {
     let dirX = Math.round(Math.random() * 2) - 1;
     let dirY = (dirX) ? 0 : (Math.round(Math.random())) ? -1 : 1;
 
-    worm.alive = true;
     worm.ghost = true;
     worm.direction = [dirX, dirY];
     worm.body = [];
@@ -57,6 +56,10 @@ class Worm extends Entity {
 
       } else {
 
+        worm.alive = true;
+        if (!_game.server) {
+          _renderCallbacks.push(worm.render());
+        }
         _tickCallbacks.push(worm.move());
         setTimeout(function () {
 
@@ -150,44 +153,41 @@ class Worm extends Entity {
 
   render () {
     const worm = this;
-    return function ( pixel ) {
-      if (!worm.alive) return;
+    return function () {
+      let pixels = [];
+      pixels.die = !worm.alive;
 
       worm.body.forEach(function ( part ) {
 
         let r;
         let g;
         let b;
+        let pixel;
 
-        if (pixel[4][0] === part[0] && pixel[4][1] === part[1]) {
+        if (worm.client) {
 
-          if (worm.client) {
+          r = 0.5;
+          g = 1;
+          b = 0.5;
 
-            r = 0.5;
-            g = 1;
-            b = 0.5;
+        } else {
 
-          } else {
-
-            r = 1;
-            g = 0.5;
-            b = 0.5;
-          }
-
-          if (worm.ghost) {
-            const factor = Math.sin(parseFloat('0.'+ (new Date().getTime() / 1000).toString().split('.')[1]) * Math.PI);
-            r *= factor;
-            g *= factor;
-            b *= factor;
-          }
-
-          pixel[1] = r;
-          pixel[2] = g;
-          pixel[3] = b;
+          r = 1;
+          g = 0.5;
+          b = 0.5;
         }
+
+        if (worm.ghost) {
+          const factor = Math.sin(parseFloat('0.'+ (new Date().getTime() / 1000).toString().split('.')[1]) * Math.PI);
+          r *= factor;
+          g *= factor;
+          b *= factor;
+        }
+
+        pixels.push(new Pixel(1, r, g, b, part));
       });
 
-      return worm.alive;
+      return pixels;
     };
   }
 }
