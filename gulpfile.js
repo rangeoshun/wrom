@@ -39,6 +39,7 @@ gulp.task('build-server', function () {
   return gulp
     .src([
       'src/global.es6',
+      'src/diff.es6',
       'src/tick.es6',
       'src/pixel.es6',
       'src/entity.es6',
@@ -68,9 +69,9 @@ gulp.task('build-client', function () {
   return gulp
     .src([
       'src/global.es6',
-      'src/tick.es6',  
+      'src/tick.es6',
       'src/render.es6',
-      'src/pixel.es6',    
+      'src/pixel.es6',
       'src/entity.es6',
       'src/point.es6',
       'src/worm.es6',

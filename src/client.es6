@@ -9,7 +9,7 @@ let _self;
 let _selfID;
 
 WebSocket = WebSocket || MozWebSocket;
-let connection = new WebSocket('ws://'+ location.hostname +':667');
+let connection = new WebSocket('ws://'+ location.hostname +':666');
 
 connection.onopen = function () {
 

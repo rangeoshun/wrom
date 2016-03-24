@@ -46,7 +46,7 @@ http.createServer(function ( request, response ) {
 }).listen(parseInt(port, 10));
 
 // Websocket server
-socketServer.listen(667, function () {});
+socketServer.listen(666, function () {});
 
 wss.on('request', function ( request ) {
   let connection = request.accept(null, request.origin);

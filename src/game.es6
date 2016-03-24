@@ -4,6 +4,7 @@ class Game {
     game.points = [];
     game.players = [];
     game.paused = false;
+    game.previousState = {};
   }
 
   togglePause () {
@@ -58,30 +59,37 @@ class Game {
 
   getState () {
     const game = this;
-    let state = {
-      pl: {},
-      po: {}
-    };
+    let state = {};
 
     game.points.forEach(function ( point ) {
+      if (point.updated === false) return;
+      if (!state.hasOwnProperty('po')) state.po = {};
       let pointState = {};
+
       if (point.alive) {
         pointState.c = point.coords;
       } else {
         pointState.d = true;
       }
+
       state.po[point.id] = pointState;
+      point.updated = false;
     });
 
     game.players.forEach(function ( player ) {
+      if (player.updated === false) return;
+      if (!state.hasOwnProperty('pl')) state.pl = {};
       let playerState = {};
+
       if (player.alive) {
         playerState.b = player.body;
         if (player.ghost) playerState.g = player.ghost;
       } else {
         playerState.d = true;
       }
+
       state.pl[player.id] = playerState;
+      player.updated = false;
     });
 
     return state;

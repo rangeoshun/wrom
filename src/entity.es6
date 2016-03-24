@@ -5,6 +5,7 @@ class Entity {
     entity.coords = [x, y];
     entity.id = (new Date().getTime()+Math.floor(Math.random()*1000)).toString(16);
     entity.alive = true;
+    entity.updated = true;
 
     if (!_game.server) {
       _renderCallbacks.push(entity.render());
@@ -15,6 +16,7 @@ class Entity {
   die () {
     const entity = this;
     entity.alive = false;
+    entity.updated = true;
     console.log(`${entity.constructor.name} ${entity.id} is dead`);
   }
 
@@ -50,6 +52,7 @@ class Entity {
   relocate () {
     const entity = this;
     entity.coords = [entity.random(0), entity.random(1)];
+    entity.updated = true;
   }
 
   render () {
