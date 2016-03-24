@@ -89,6 +89,7 @@ function handleStateUpdate (message) {
     if (playerUpdate.d) {
       foundPlayer.die();
     } else {
+      foundPlayer.ghost = playerUpdate.g;
       foundPlayer.body = playerUpdate.b;
       foundPlayer.coords = foundPlayer.body[0];
     }

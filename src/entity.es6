@@ -35,7 +35,7 @@ class Entity {
     const entity = this;
     return function ( pixel ) {
 
-      if (pixel.x() == entity.coords[0] && pixel.y() == entity.coords[1]) {
+      if (pixel[4][0] == entity.coords[0] && pixel[4][1] == entity.coords[1]) {
         pixel[1] = pixel[2] = pixel[3] =
           Math.sin(parseFloat('0.'+ (new Date().getTime() / 1000).toString().split('.')[1]) * Math.PI);
       }

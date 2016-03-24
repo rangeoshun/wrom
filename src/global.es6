@@ -20,15 +20,24 @@ function initMatrix () {
 }
 
 function cycleMatrix ( pixelCallbacks ) {
-  _matrix.forEach(function ( row, y ) {
-    row.forEach(function ( pixel, x ) {
-      pixelCallbacks.forEach(function ( callback, index ) {
+  const xResolution = _resolution[0];
+  const yResolution = _resolution[1];
+  const callbackLength = pixelCallbacks.length;
+
+  for (let y = 0; y < yResolution; y++) {
+    const row = _matrix[y];
+    for (let x = 0; x < xResolution; x++) {
+      const pixel = row[x];
+      for (let i = 0; i < callbackLength; i++) {
+        const callback = pixelCallbacks[i];
+        if (!callback) return;
+        
         if (callback(pixel) === false) {
-          pixelCallbacks.splice(index, 1);
+          pixelCallbacks.splice(i, 1);
         }
-      });
-    });
-  });
+      }
+    }
+  }
 }
 
 function _isColliding ( v1, v2 ) {

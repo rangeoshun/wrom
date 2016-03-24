@@ -77,6 +77,7 @@ class Game {
       let playerState = {};
       if (player.alive) {
         playerState.b = player.body;
+        if (player.ghost) playerState.g = player.ghost;
       } else {
         playerState.d = true;
       }

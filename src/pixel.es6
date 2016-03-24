@@ -9,26 +9,20 @@ class Pixel extends Array {
       if (!component) return '0';
       else return Math.round(component*255).toString(16);
     };
+
     pixel.g = function() {
       let component = this[2];
 
       if (!component) return '0';
       else return Math.round(component*255).toString(16);
-    }
+    };
+
     pixel.b = function() {
       let component = this[3];
 
       if (!component) return '0';
       else return Math.round(component*255).toString(16);
-    }
-
-    pixel.x = function () {
-       return this[4][0];
-    }
-
-    pixel.y = function () {
-       return this[4][1];
-    }
+    };
 
     pixel.getHex = function () {
       let r = this.r();
