@@ -65,20 +65,20 @@ class Game {
 
     game.points.forEach(function ( point ) {
       let pointState = {};
-      if (!point.alive) {
-        pointState.d = true;
-      } else {
+      if (point.alive) {
         pointState.c = point.coords;
+      } else {
+        pointState.d = true;
       }
       state.po[point.id] = pointState;
     });
 
     game.players.forEach(function ( player ) {
       let playerState = {};
-      if (!player.alive) {
-        playerState.d = true;
-      } else {
+      if (player.alive) {
         playerState.b = player.body;
+      } else {
+        playerState.d = true;
       }
       state.pl[player.id] = playerState;
     });

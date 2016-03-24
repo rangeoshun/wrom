@@ -8,12 +8,12 @@ _game.init();
 let _self;
 let _selfID;
 
-window.WebSocket = window.WebSocket || window.MozWebSocket;
+WebSocket = WebSocket || MozWebSocket;
 let connection = new WebSocket('ws://'+ location.hostname +':666');
 
 connection.onopen = function () {
 
-  window.addEventListener('keydown', function ( ev ) {
+  addEventListener('keydown', function ( ev ) {
     ev.preventDefault();
     let code = ev.keyCode;
     let direction;

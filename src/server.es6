@@ -49,7 +49,7 @@ http.createServer(function ( request, response ) {
 socketServer.listen(666, function () {});
 
 wss.on('request', function ( request ) {
-  var connection = request.accept(null, request.origin);
+  let connection = request.accept(null, request.origin);
 
   console.log('Connection from '+ request.remoteAddress);
   connection.player = _game.addPlayer();
