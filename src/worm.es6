@@ -18,10 +18,10 @@ class Worm extends Entity {
     console.log(`${worm.constructor.name} ${worm.id} is dropping:`)
 
     worm.body.forEach(function ( partCoords ) {
-      if (!Math.round(Math.random())) return;
+      if (!Math.round(Math.random() * 2)) return;
 
       let point = _game.addPoint();
-      point.coords = worm.displace(partCoords, 2);
+      point.coords = worm.displace(partCoords, 4);
     });
   }
 
