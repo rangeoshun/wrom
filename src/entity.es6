@@ -20,10 +20,27 @@ class Entity {
     return Math.floor(Math.random() * _resolution[dimension]);
   }
 
-  displace ( coords, by = 2 ) {
+  isCoordOutOfBOunds ( coord ) {
+    if (coord[0] >= _resolution[0]
+      || coord[0] < 0
+      || coord[1] >= _resolution[1]
+      || coord[1] < 0) {
+
+      return true;
+    }
+    return false;
+  }
+
+  displace ( coord, by = 2 ) {
+    const entity = this;
     let x = Math.round(Math.random() * by + 1) - 1;
     let y = Math.round(Math.random() * by + 1) - 1;
-    return [coords[0] + x, coords[1] + y];
+    let newCoord = [coord[0] + x, coord[1] + y];
+    if (entity.isCoordOutOfBOunds(newCoord)) {
+      newCoord[0] *= -1;
+      newCoord[1] *= -1;
+    }
+    return newCoord;
   }
 
   relocate () {
