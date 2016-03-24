@@ -1,6 +1,13 @@
 {
-  "name": "ui-academy-unit-testing",
-  "version": "0.0.1",
+  "name": "Worm Err",
+  "version": "0.0.24",
+  "description" : "A multiplayer snake clone for you pleasure.",
+  "repository" : {
+    "type" : "git",
+    "url" : "https://github.com/rangeoshun/wormer.git"
+  },
+  "url" : "https://github.com/rangeoshun/wormer/issues",
+  "email" : "rangeoshun@gmail.com",
   "dependencies": {
     "websocket": "^1.0.22"
   },
