@@ -5,7 +5,7 @@ document.body.appendChild(_canvas);
 const _screen = _canvas.getContext("2d");
 
 const _renderCallbacks = [];
-const _render = setInterval(function () {
+function _render () {
 
   cycleMatrix(_callbacks);
 
@@ -19,4 +19,8 @@ const _render = setInterval(function () {
     _screen.fillStyle = color;
     _screen.fillRect(x * _scale, y * _scale, _scale, _scale);
   }]);
-}, 1000/_fps);
+
+  requestAnimationFrame(_render);
+}
+
+requestAnimationFrame(_render);
