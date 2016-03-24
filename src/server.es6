@@ -1,5 +1,5 @@
 // Game
-initMatrix();
+//initMatrix();
 
 const _game = new Game();
 _game.init(true);

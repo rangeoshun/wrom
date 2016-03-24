@@ -1,6 +1,6 @@
 "use strict";
 
-initMatrix();
+//initMatrix();
 
 const _game = new Game();
 _game.init();
