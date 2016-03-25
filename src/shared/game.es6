@@ -93,6 +93,7 @@ class Game {
 
       if (player.alive) {
         playerState.b = player.body;
+        playerState.s = player.connection.score;
         if (player.ghost) playerState.g = player.ghost;
       } else {
         playerState.d = true;

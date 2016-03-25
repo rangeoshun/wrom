@@ -100,11 +100,13 @@ function handleStateUpdate (message) {
     if (playerUpdate.d) {
       foundPlayer.die();
     } else {
+      foundPlayer.score = playerUpdate.s || 0;
       foundPlayer.ghost = playerUpdate.g;
       foundPlayer.body = playerUpdate.b;
       foundPlayer.coords = foundPlayer.body[0];
     }
   }
 
-  _game.ditchTheDead()
+  _game.ditchTheDead();
+  _renderScores(_game.players);
 }

@@ -8,7 +8,6 @@ class Worm extends Entity {
 
     worm.body = [];
     worm.size = 4;
-    worm.score = 0;
 
     worm.spawn();
   }
@@ -178,9 +177,9 @@ class Worm extends Entity {
 
         if (worm.client) {
 
-          r = 0.5;
-          g = 0.5;
-          b = 1;
+          worm.color[0] = r = 0.5;
+          worm.color[1] = g = 0.5;
+          worm.color[2] = b = 1;
 
         } else {
 

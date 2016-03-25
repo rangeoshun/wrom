@@ -17,7 +17,7 @@ class Point extends Entity {
         if (_isColliding(player.coords, point.coords)) {
           console.log(`${player.constructor.name} ${player.id} is collecting ${point.constructor.name} ${point.id}`);
           player.grow(point.value / 10);
-          player.addScore(point.value);
+          player.connection.score += point.value;
           point.die();
         }
       });

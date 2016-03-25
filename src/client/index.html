@@ -4,21 +4,34 @@
   <style>
     body {
       background-color: #646464;
+      font-smoothing : none;
+      -webkit-font-smoothing : none;
+      color: white;
+      font-size: 5px;
+      font=family: "Arial Black", Gadget, sans-serif;
     }
-    canvas {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      transform: translateX(-50%) translateY(-50%);
-      width: auto;
-      height: 100%;
 
+    canvas {
       image-rendering: optimizeSpeed;             /* Older versions of FF          */
       image-rendering: -moz-crisp-edges;          /* FF 6.0+                       */
       image-rendering: -webkit-optimize-contrast; /* Safari                        */
       image-rendering: -o-crisp-edges;            /* OS X & Windows Opera (12.02+) */
       image-rendering: pixelated;                 /* Awesome future-browsers       */
       -ms-interpolation-mode: nearest-neighbor;   /* IE                            */
+    }
+
+    canvas.screen {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translateX(-50%) translateY(-50%);
+      width: auto;
+      height: 100%;
+    }
+
+    canvas.score {
+      position: absolute;
+      transform: scaleX(2) scaleY(2);
     }
   </style>
 </head>

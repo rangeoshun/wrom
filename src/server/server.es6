@@ -56,6 +56,8 @@ wss.on('request', function ( request ) {
 
   console.log(`Connection from ${request.remoteAddress}`);
   connection.player = _game.addPlayer();
+  connection.player.connection = connection;
+  connection.score = 0;
   const playerID = connection.player.id;
   console.log(`PlayerID: ${playerID}`);
   connection.send(JSON.stringify({id: connection.player.id}));
@@ -97,6 +99,7 @@ wss.on('request', function ( request ) {
     } else if (respawn && !player.alive) {
       console.log();
       connection.player = _game.addPlayer();
+      connection.player.connection = connection;
       connection.player.id = playerID;
     }
   });

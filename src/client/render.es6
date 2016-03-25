@@ -1,12 +1,37 @@
-const _canvas = document.createElement('canvas');
-_canvas.width = _resolution[0] * _scale;
-_canvas.height = _resolution[1] * _scale;
-document.body.appendChild(_canvas);
-const _screen = _canvas.getContext("2d");
+const _screen_canvas = document.createElement('canvas');
+_screen_canvas.className = 'screen';
+_screen_canvas.width = _resolution[0] * _scale;
+_screen_canvas.height = _resolution[1] * _scale;
+document.body.appendChild(_screen_canvas);
+const _screen = _screen_canvas.getContext("2d");
+
+const _scores = document.createElement('code');
+document.body.appendChild(_scores);
 
 const _renderCallbacks = [];
+let colorPicker = new Pixel(0,0,0,0,[0,0]);
 
-function _render () {
+function _renderScores ( players ) {
+  if (!players) return;
+  _scores.innerText = 0;
+
+  const playersLength = players.length;
+
+  players.sort((score0, score1) => score0 > score1 ? 1 : score0 < score1 ? -1 : 0);
+
+  for (let i = 0; i < playersLength; i++) {
+    const player = players[i];
+
+    colorPicker[1] = player.color[0];
+    colorPicker[2] = player.color[1];
+    colorPicker[3] = player.color[2];
+
+    _scores.fillStyle = colorPicker.getHex();
+    _scores.innerText += `${player.id} - ${player.score || '-'}\n`;
+  }
+}
+
+function _renderGame () {
   _screen.fillStyle = '#000';
   _screen.fillRect(0, 0, _resolution[0], _resolution[1]);
 
@@ -28,7 +53,6 @@ function _render () {
     }
   }
 
-  requestAnimationFrame(_render);
+  requestAnimationFrame(_renderGame);
 }
-
-requestAnimationFrame(_render);
+requestAnimationFrame(_renderGame);
