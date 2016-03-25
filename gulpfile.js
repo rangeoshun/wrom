@@ -6,6 +6,8 @@ var del = require('del');
 var spawn = require('child_process').spawn;
 var replace = require('gulp-replace');
 var closure = require('gulp-closure-compiler-service');
+var license = require('gulp-license');
+var info = require('./package.json');
 
 var config = require('./src/config.json');
 var live, dev;
@@ -51,21 +53,29 @@ gulp.task('dist', function () {
   if (live) live.kill();
   var devPort = new RegExp(':'+ config.dev.socket, 'g');
   var devWWW = new RegExp(config.dev.www, 'g');
-  console.log(devPort);
   del(['./dist/*']);
   return gulp
-    .src(['build/**/*.js', 'build/**/*.html', 'build/**/*.ico'])
+    .src(['build/**/*.js'])
     .pipe(replace(devPort, ':'+ config.live.socket))
     .pipe(replace(devWWW, config.live.www))
+    .pipe(closure({
+      language: 'ECMASCRIPT5',
+      compilation_level: 'SIMPLE_OPTIMIZATIONS'
+    }))
+    .pipe(license(info.license, {
+      tiny: true,
+      year: 2016,
+      organization: info.repository.url
+    }))
     .pipe(gulp.dest('dist/'))
       .on('end', function () {
-        gulp
-          .src('dist/client/client.js')
-          .pipe(gulp.dest('dist/client/'))
-            .on('end', function () {
-              gulp.run('live-server');
-            });
-      });;
+        return gulp
+          .src(['build/**/*.html', 'build/**/*.ico'])
+          .pipe(gulp.dest('dist/'))
+          .on('end', function () {
+            gulp.run('live-server');
+          });
+      });
 });
 
 gulp.task('build-server', function () {
@@ -91,6 +101,10 @@ gulp.task('build-server', function () {
         .src('build/server/server.es6')
         .pipe(babel({
           presets: ['es2015']
+        }))
+        .pipe(license(info.license, {
+          year: 2016,
+          organization: info.repository.url
         }))
         .pipe(gulp.dest('build/server/'))
         .on('end', function () {
@@ -122,6 +136,10 @@ gulp.task('build-client', function () {
         .src('build/client/client.es6')
         .pipe(babel({
           presets: ['es2015']
+        }))
+        .pipe(license(info.license, {
+          year: 2016,
+          organization: info.repository.url
         }))
         .pipe(gulp.dest('build/client/'))
           .on('end', function () {
