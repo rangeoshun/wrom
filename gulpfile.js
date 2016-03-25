@@ -54,7 +54,13 @@ gulp.task('dist', function () {
   if (live) live.kill();
   var devPort = new RegExp(':'+ config.dev.socket, 'g');
   var devWWW = new RegExp(config.dev.www, 'g');
+
   del(['./dist/*']);
+
+  gulp
+    .src(['build/**/*.html', 'build/**/*.ico'])
+    .pipe(gulp.dest('dist/'));
+
   return gulp
     .src(['build/**/*.js'])
     .pipe(replace(devPort, ':'+ config.live.socket))
@@ -71,12 +77,7 @@ gulp.task('dist', function () {
     }))
     .pipe(gulp.dest('dist/'))
       .on('end', function () {
-        return gulp
-          .src(['build/**/*.html', 'build/**/*.ico'])
-          .pipe(gulp.dest('dist/'))
-          .on('end', function () {
-            gulp.run('live-server');
-          });
+        gulp.run('live-server');
       });
 });
 
@@ -91,6 +92,7 @@ gulp.task('build-server', function () {
       'src/shared/pixel.es6',
       'src/shared/entity.es6',
       'src/shared/point.es6',
+      'src/shared/golden-point.es6',
       'src/shared/worm.es6',
       'src/shared/game.es6',
       'src/server/server.es6'
@@ -98,21 +100,17 @@ gulp.task('build-server', function () {
     .pipe(concat('server.es6'))
     .pipe(replace(/{{www}}/g, config.dev.www))
     .pipe(gulp.dest('build/server/'))
-    .on('end', function () {
-      return gulp
-        .src('build/server/server.es6')
-        .pipe(babel({
-          presets: ['es2015']
-        }))
-        .pipe(license(info.license, {
-          year: 2016,
-          organization: info.repository.url
-        }))
-        .pipe(gulp.dest('build/server/'))
-        .on('end', function () {
-          gulp.run('dev-server');
-        });
-    });
+    .pipe(babel({
+      presets: ['es2015']
+    }))
+    .pipe(license(info.license, {
+      year: 2016,
+      organization: info.repository.url
+    }))
+    .pipe(gulp.dest('build/server/'))
+      .on('end', function () {
+        gulp.run('dev-server');
+      });
 });
 
 gulp.task('build-client', function () {
@@ -125,6 +123,7 @@ gulp.task('build-client', function () {
       'src/shared/pixel.es6',
       'src/shared/entity.es6',
       'src/shared/point.es6',
+      'src/shared/golden-point.es6',
       'src/shared/worm.es6',
       'src/shared/game.es6',
       'src/client/render.es6',
@@ -132,27 +131,19 @@ gulp.task('build-client', function () {
     ])
     .pipe(concat('client.es6'))
     .pipe(replace(/{{socket}}/g, config.dev.socket))
+    .pipe(babel({
+      presets: ['es2015']
+    }))
+    .pipe(license(info.license, {
+      year: 2016,
+      organization: info.repository.url
+    }))
     .pipe(gulp.dest('build/client/'))
-    .on('end', function () {
-      return gulp
-        .src('build/client/client.es6')
-        .pipe(babel({
-          presets: ['es2015']
-        }))
-        .pipe(license(info.license, {
-          year: 2016,
-          organization: info.repository.url
-        }))
-        .pipe(gulp.dest('build/client/'))
-          .on('end', function () {
-            gulp
-              .src('src/client/*.ico')
-              .pipe(gulp.dest('build/client/'));
-            gulp
-              .src('src/client/*.html')
-              .pipe(gulp.dest('build/client/'));
-          });
-    });
+      .on('end', function () {
+        return gulp
+          .src(['src/client/*.ico', 'src/client/*.html'])
+          .pipe(gulp.dest('build/client/'));
+      });
 });
 
 gulp.task('build', ['clean', 'build-client', 'build-server'], function () {

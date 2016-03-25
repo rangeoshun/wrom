@@ -12,9 +12,18 @@ class Game {
     game.paused = !game.paused;
   }
 
+  getRandomPoint () {
+    const factor = Math.round(Math.random() * 10);
+    if (factor > 9) {
+      return GoldenPoint;
+    } else {
+      return Point;
+    }
+  }
+
   addPoint ( id, type ) {
     const game = this;
-    const Type = type || Point;
+    const Type = type || game.getRandomPoint();
     let point = new Type();
     if (id) point.id = id;
 
@@ -67,6 +76,7 @@ class Game {
       let pointState = {};
 
       if (point.alive) {
+        pointState.t = point.type;
         pointState.c = point.coords;
       } else {
         pointState.d = true;

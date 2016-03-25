@@ -6,6 +6,8 @@ class Entity {
     entity.id = (new Date().getTime()+Math.floor(Math.random()*1000)).toString(16);
     entity.alive = true;
     entity.updated = true;
+    entity.color = [1,1,1];
+    entity.type = '';
 
     if (!_game.server) {
       _renderCallbacks.push(entity.render());
@@ -57,10 +59,12 @@ class Entity {
   render () {
     const entity = this;
     return function () {
+      const sinTime = 1;//Math.sin(parseFloat('0.'+ (new Date().getTime() / 1000).toString().split('.')[1]) * Math.PI);
+
       let pixels = [];
-      let r = Math.sin(parseFloat('0.'+ (new Date().getTime() / 1000).toString().split('.')[1]) * Math.PI);
-      let g = r;
-      let b = r;
+      let r = entity.color[0] * sinTime;
+      let g = entity.color[1] * sinTime;
+      let b = entity.color[2] * sinTime;
 
       pixels.die = !entity.alive;
       pixels.push(new Pixel(1, r, g, b, entity.coords));

@@ -63,9 +63,20 @@ function handleStateUpdate (message) {
   for (let pointID in update.po) {
     let pointUpdate = update.po[pointID];
     let foundPoint = _game.getPointById(pointID, Point);
+    let type = 'p';
 
     if (!foundPoint) {
-      foundPoint = _game.addPoint(pointID);
+
+      switch (pointUpdate.t) {
+        case 'p':
+          type = Point;
+        break;
+        case 'gp':
+          type = GoldenPoint;
+        break;
+      }
+
+      foundPoint = _game.addPoint(pointID, type);
     }
     if (pointUpdate.d) {
       foundPoint.die();

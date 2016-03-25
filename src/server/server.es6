@@ -48,18 +48,20 @@ http.createServer(function ( request, response ) {
 }).listen(parseInt(httpPort, 10));
 console.log(`HTTP server listening on port: ${httpPort}`);
 // Websocket server
-socketServer.listen(socketPort || 666, function () {});
+socketServer.listen(socketPort, function () {});
 console.log(`Socket server listening on port: ${socketPort}`);
 
 wss.on('request', function ( request ) {
   let connection = request.accept(null, request.origin);
 
-  console.log('Connection from '+ request.remoteAddress);
+  console.log(`Connection from ${request.remoteAddress}`);
   connection.player = _game.addPlayer();
   const playerID = connection.player.id;
-  console.log('PlayerID: '+ playerID);
+  console.log(`PlayerID: ${playerID}`);
   connection.send(JSON.stringify({id: connection.player.id}));
-  connection.send(JSON.stringify(_game.getState(true)));
+  const startState = JSON.stringify(_game.getState(true));
+  console.log(`Starting with state: ${startState}`);
+  connection.send(startState);
 
   function syncPlayer ( state ) {
     connection.send(JSON.stringify(state));

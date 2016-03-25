@@ -4,6 +4,9 @@ class Point extends Entity {
     const point = this;
     point.relocate();
     point.alive = true;
+    point.value = 10;
+    point.type = 'p';
+
     _tickCallbacks.push(point.isColliding());
   }
 
@@ -14,6 +17,7 @@ class Point extends Entity {
         if (_isColliding(player.coords, point.coords)) {
           console.log(`${player.constructor.name} ${player.id} is collecting ${point.constructor.name} ${point.id}`);
           player.grow();
+          player.addScore(point.value);
           point.die();
         }
       });

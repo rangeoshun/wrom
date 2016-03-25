@@ -8,8 +8,14 @@ class Worm extends Entity {
 
     worm.body = [];
     worm.size = 4;
+    worm.score = 0;
 
     worm.spawn();
+  }
+
+  addScore ( score ) {
+    const worm = this;
+    worm.score += score || 0;
   }
 
   drop () {
@@ -171,8 +177,8 @@ class Worm extends Entity {
         if (worm.client) {
 
           r = 0.5;
-          g = 1;
-          b = 0.5;
+          g = 0.5;
+          b = 1;
 
         } else {
 
