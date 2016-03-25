@@ -1,6 +1,6 @@
 "use strict";
 
-initMatrix();
+//initMatrix();
 
 const _game = new Game();
 _game.init();
@@ -9,7 +9,7 @@ let _self;
 let _selfID;
 
 WebSocket = WebSocket || MozWebSocket;
-let connection = new WebSocket('ws://'+ location.hostname +':667');
+let connection = new WebSocket('ws://'+ location.hostname +':666');
 
 connection.onopen = function () {
 
@@ -21,16 +21,16 @@ connection.onopen = function () {
 
     switch (code) {
       case 38:
-        direction = [0, -1];
+        direction = 1;
       break;
       case 39:
-        direction = [1, 0];
+        direction = 2;
       break;
       case 40:
-        direction = [0, 1];
+        direction = 3;
       break;
       case 37:
-        direction = [-1, 0];
+        direction = 4;
       break;
       case 32:
         respawn = 1;

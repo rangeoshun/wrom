@@ -1,5 +1,5 @@
 // Game
-initMatrix();
+//initMatrix();
 
 const _game = new Game();
 _game.init(true);
@@ -46,7 +46,7 @@ http.createServer(function ( request, response ) {
 }).listen(parseInt(port, 10));
 
 // Websocket server
-socketServer.listen(667, function () {});
+socketServer.listen(666, function () {});
 
 wss.on('request', function ( request ) {
   let connection = request.accept(null, request.origin);
@@ -56,6 +56,7 @@ wss.on('request', function ( request ) {
   const playerID = connection.player.id;
   console.log('PlayerID: '+ playerID);
   connection.send(JSON.stringify({id: connection.player.id}));
+  connection.send(JSON.stringify(_game.getState(true)));
 
   function syncPlayer ( state ) {
     connection.send(JSON.stringify(state));
@@ -68,10 +69,26 @@ wss.on('request', function ( request ) {
   connection.on('message', function ( message ) {
     let player = connection.player;
     const update = JSON.parse(message.utf8Data);
-    const direction = update.d;
+    let direction = update.d;
     const respawn = update.r;
 
     if (direction) {
+
+      switch (direction) {
+        case 1:
+          direction = [0, -1];
+        break;
+        case 2:
+          direction = [1, 0];
+        break;
+        case 3:
+          direction = [0, 1];
+        break;
+        case 4:
+          direction = [-1, 0];
+        break;
+      }
+
       player.setDirection(direction);
     } else if (respawn && !player.alive) {
       console.log();

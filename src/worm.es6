@@ -31,6 +31,7 @@ class Worm extends Entity {
 
     worm.drop();
     worm.alive = false;
+    worm.updated = true;
   }
 
   spawn () {
@@ -57,6 +58,8 @@ class Worm extends Entity {
       } else {
 
         worm.alive = true;
+        worm.updated = true;
+
         if (!_game.server) {
           _renderCallbacks.push(worm.render());
         }
@@ -93,7 +96,7 @@ class Worm extends Entity {
       if (callback) {
         callback(collision);
       }
-
+      worm.updated = true;
       return worm.alive;
     }
   }
@@ -113,6 +116,7 @@ class Worm extends Entity {
     let tail = worm.body[worm.body.length - 1];
     worm.size++;
     worm.body.push([tail[0], tail[1]]);
+    worm.updated = true;
   }
 
   move () {
@@ -146,7 +150,7 @@ class Worm extends Entity {
       }
 
       body.unshift(body.pop());
-
+      worm.updated = true;
       return worm.alive;
     };
   }

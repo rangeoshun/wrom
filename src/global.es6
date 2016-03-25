@@ -1,9 +1,9 @@
-let _matrix = [];
+//let _matrix = [];
 let _resolution = [96, 96];
 let _fps = 60;
 let _callbacks = [];
 let _scale = 1;
-
+/*
 // init matrix
 function initMatrix () {
   for (let i = 0; i < _resolution[1]; i++) {
@@ -31,7 +31,7 @@ function cycleMatrix ( pixelCallbacks ) {
       for (let i = 0; i < callbackLength; i++) {
         const callback = pixelCallbacks[i];
         if (!callback) return;
-        
+
         if (callback(pixel) === false) {
           pixelCallbacks.splice(i, 1);
         }
@@ -39,7 +39,7 @@ function cycleMatrix ( pixelCallbacks ) {
     }
   }
 }
-
+*/
 function _isColliding ( v1, v2 ) {
   return v1[0] === v2[0] && v1[1] === v2[1];
 }
