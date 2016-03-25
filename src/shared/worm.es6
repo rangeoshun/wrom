@@ -117,12 +117,14 @@ class Worm extends Entity {
     worm.nextDirection = direction;
   }
 
-  grow () {
+  grow ( by ) {
     const worm = this;
     let tail = worm.body[worm.body.length - 1];
-    worm.size++;
-    worm.body.push([tail[0], tail[1]]);
-    worm.updated = true;
+    for (by; by > 0; by--) {
+      worm.size++;
+      worm.body.push([tail[0], tail[1]]);
+      worm.updated = true;
+    }
   }
 
   move () {

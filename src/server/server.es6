@@ -60,7 +60,6 @@ wss.on('request', function ( request ) {
   console.log(`PlayerID: ${playerID}`);
   connection.send(JSON.stringify({id: connection.player.id}));
   const startState = JSON.stringify(_game.getState(true));
-  console.log(`Starting with state: ${startState}`);
   connection.send(startState);
 
   function syncPlayer ( state ) {
