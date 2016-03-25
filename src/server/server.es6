@@ -4,19 +4,21 @@
 const _game = new Game();
 _game.init(true);
 
-const WebSocketServer = require('websocket').server;
-const http = require('http');
-let socketServer = http.createServer(function () {})
-let wss = new WebSocketServer({httpServer: socketServer});
-
 let url = require("url");
 let path = require("path");
 let fs = require("fs");
-let port = process.argv[2] || 8888;
+
+const httpPort = process.argv[2] || 8888;
+const socketPort = process.argv[3] || 666;
+const WebSocketServer = require('websocket').server;
+const http = require('http');
+
+let socketServer = http.createServer(function () {})
+let wss = new WebSocketServer({httpServer: socketServer});
 
 http.createServer(function ( request, response ) {
 
-  let uri = '/build/client' + url.parse(request.url).pathname;
+  let uri = '{{www}}' + url.parse(request.url).pathname;
   let filename = path.join(process.cwd(), uri);
 
   try {
@@ -43,10 +45,11 @@ http.createServer(function ( request, response ) {
     response.write('404');
     response.end();
   }
-}).listen(parseInt(port, 10));
-
+}).listen(parseInt(httpPort, 10));
+console.log(`HTTP server listening on port: ${httpPort}`);
 // Websocket server
-socketServer.listen(666, function () {});
+socketServer.listen(socketPort || 666, function () {});
+console.log(`Socket server listening on port: ${socketPort}`);
 
 wss.on('request', function ( request ) {
   let connection = request.accept(null, request.origin);

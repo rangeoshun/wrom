@@ -4,12 +4,26 @@ var watch = require('gulp-watch');
 var concat = require('gulp-concat');
 var del = require('del');
 var spawn = require('child_process').spawn;
-var node;
+var replace = require('gulp-replace');
+var closure = require('gulp-closure-compiler-service');
 
-gulp.task('server', function() {
-  if (node) node.kill()
-  node = spawn('node', ['./build/server/server.js'], {stdio: 'inherit'})
-  node.on('close', function (code) {
+var config = require('./src/config.json');
+var live, dev;
+
+gulp.task('dev-server', function() {
+  if (dev) dev.kill()
+  dev = spawn('node', ['./build/server/server.js', config.dev.http, config.dev.socket], {stdio: 'inherit'});
+  dev.on('close', function (code) {
+    if (code === 8) {
+      gulp.log('Error detected, waiting for changes...');
+    }
+  });
+});
+
+gulp.task('live-server', function() {
+  if (live) live.kill()
+  live = spawn('node', ['./dist/server/server.js', config.live.http, config.live.socket], {stdio: 'inherit'});
+  live.on('close', function (code) {
     if (code === 8) {
       gulp.log('Error detected, waiting for changes...');
     }
@@ -19,18 +33,39 @@ gulp.task('server', function() {
 gulp.task('default', function() {
   gulp.run('build');
 
-  watch('./src/*', function() {
+  watch(['./src/*', './src/**/*'], function() {
     gulp.run('build');
   });
 });
 
 process.on('exit', function() {
-    if (node) node.kill();
+    if (dev) dev.kill();
 })
 
 gulp.task('clean', function () {
   console.log('Updated, rebuilding...');
-  return del(['./build/*', './dist/*']);
+  return del(['./build/*']);
+});
+
+gulp.task('dist', function () {
+  if (live) live.kill();
+  var devPort = new RegExp(':'+ config.dev.socket, 'g');
+  var devWWW = new RegExp(config.dev.www, 'g');
+  console.log(devPort);
+  del(['./dist/*']);
+  return gulp
+    .src(['build/**/*.js', 'build/**/*.html', 'build/**/*.ico'])
+    .pipe(replace(devPort, ':'+ config.live.socket))
+    .pipe(replace(devWWW, config.live.www))
+    .pipe(gulp.dest('dist/'))
+      .on('end', function () {
+        gulp
+          .src('dist/client/client.js')
+          .pipe(gulp.dest('dist/client/'))
+            .on('end', function () {
+              gulp.run('live-server');
+            });
+      });;
 });
 
 gulp.task('build-server', function () {
@@ -38,17 +73,18 @@ gulp.task('build-server', function () {
 
   return gulp
     .src([
-      'src/global.es6',
-      'src/diff.es6',
-      'src/tick.es6',
-      'src/pixel.es6',
-      'src/entity.es6',
-      'src/point.es6',
-      'src/worm.es6',
-      'src/game.es6',
-      'src/server.es6'
+      'src/shared/global.es6',
+      'src/shared/diff.es6',
+      'src/shared/tick.es6',
+      'src/shared/pixel.es6',
+      'src/shared/entity.es6',
+      'src/shared/point.es6',
+      'src/shared/worm.es6',
+      'src/shared/game.es6',
+      'src/server/server.es6'
     ])
     .pipe(concat('server.es6'))
+    .pipe(replace(/{{www}}/g, config.dev.www))
     .pipe(gulp.dest('build/server/'))
     .on('end', function () {
       return gulp
@@ -58,7 +94,7 @@ gulp.task('build-server', function () {
         }))
         .pipe(gulp.dest('build/server/'))
         .on('end', function () {
-          gulp.run('server');
+          gulp.run('dev-server');
         });
     });
 });
@@ -68,17 +104,18 @@ gulp.task('build-client', function () {
 
   return gulp
     .src([
-      'src/global.es6',
-      'src/tick.es6',
-      'src/render.es6',
-      'src/pixel.es6',
-      'src/entity.es6',
-      'src/point.es6',
-      'src/worm.es6',
-      'src/game.es6',
-      'src/client.es6'
+      'src/shared/global.es6',
+      'src/shared/tick.es6',
+      'src/shared/pixel.es6',
+      'src/shared/entity.es6',
+      'src/shared/point.es6',
+      'src/shared/worm.es6',
+      'src/shared/game.es6',
+      'src/client/render.es6',
+      'src/client/client.es6'
     ])
     .pipe(concat('client.es6'))
+    .pipe(replace(/{{socket}}/g, config.dev.socket))
     .pipe(gulp.dest('build/client/'))
     .on('end', function () {
       return gulp
@@ -89,10 +126,10 @@ gulp.task('build-client', function () {
         .pipe(gulp.dest('build/client/'))
           .on('end', function () {
             gulp
-              .src('src/*.ico')
+              .src('src/client/*.ico')
               .pipe(gulp.dest('build/client/'));
             gulp
-              .src('src/*.html')
+              .src('src/client/*.html')
               .pipe(gulp.dest('build/client/'));
           });
     });

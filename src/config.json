@@ -1,0 +1,12 @@
+{
+  "dev": {
+    "www": "build/client",
+    "http": 8889,
+    "socket": 667
+  },
+  "live": {
+    "www": "dist/client",
+    "http": 8888,
+    "socket": 666
+  }
+}
