@@ -8,6 +8,7 @@ var replace = require('gulp-replace');
 var closure = require('gulp-closure-compiler-service');
 var license = require('gulp-license');
 var info = require('./package.json');
+var stripDebug = require('gulp-strip-debug');
 
 var config = require('./src/config.json');
 var live, dev;
@@ -58,6 +59,7 @@ gulp.task('dist', function () {
     .src(['build/**/*.js'])
     .pipe(replace(devPort, ':'+ config.live.socket))
     .pipe(replace(devWWW, config.live.www))
+    .pipe(stripDebug())
     .pipe(closure({
       language: 'ECMASCRIPT5',
       compilation_level: 'SIMPLE_OPTIMIZATIONS'
