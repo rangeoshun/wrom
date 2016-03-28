@@ -1,12 +1,13 @@
 "use strict";
+const Globals = require('./globals.js');
+const Game = require('./game.js');
+const Point = require('./point.js');
+const GoldenPoint = require('./golden-point.js');
+const Worm = require('./worm.js');
+const render = require('./render.js');
 
-//initMatrix();
-
-const _game = new Game();
-_game.init();
-
-let _self;
-let _selfID;
+const game = new Game();
+game.init();
 
 WebSocket = WebSocket || MozWebSocket;
 let connection = new WebSocket('ws://'+ location.hostname +':{{socket}}');
@@ -53,7 +54,7 @@ connection.onmessage = handleIdentityUpdate;
 
 function handleIdentityUpdate ( message ) {
   let update = JSON.parse(message.data);
-  _selfID = update.id;
+  Globals.selfID = update.id;
   connection.onmessage = handleStateUpdate;
 }
 
@@ -62,7 +63,7 @@ function handleStateUpdate (message) {
 
   for (let pointID in update.po) {
     let pointUpdate = update.po[pointID];
-    let foundPoint = _game.getPointById(pointID, Point);
+    let foundPoint = game.getPointById(pointID, Point);
     let type = 'p';
 
     if (!foundPoint) {
@@ -76,7 +77,8 @@ function handleStateUpdate (message) {
         break;
       }
 
-      foundPoint = _game.addPoint(pointID, type);
+      foundPoint = game.addPoint(type);
+      foundPoint.id = pointID;
     }
     if (pointUpdate.d) {
       foundPoint.die();
@@ -87,18 +89,20 @@ function handleStateUpdate (message) {
 
   for (let playerID in update.pl) {
     let playerUpdate = update.pl[playerID];
-    let foundPlayer = _game.getPlayerById(playerID);
+    let foundPlayer = game.getPlayerById(playerID);
 
     if (!foundPlayer) {
-      foundPlayer = _game.addPlayer(playerID);
-      if (foundPlayer.id === _selfID) {
-        _self = foundPlayer;
+      foundPlayer = game.addPlayer();
+      foundPlayer.id = playerID;
+      if (foundPlayer.id === Globals.selfID) {
+        Globals.self = foundPlayer;
         foundPlayer.client = true;
       }
     }
 
     if (playerUpdate.d) {
       foundPlayer.die();
+//      connection.send('{"r":1}');
     } else {
       foundPlayer.score = playerUpdate.s || 0;
       foundPlayer.ghost = playerUpdate.g;
@@ -107,6 +111,5 @@ function handleStateUpdate (message) {
     }
   }
 
-  _game.ditchTheDead();
-  _renderScores(_game.players);
+  game.ditchTheDead();
 }

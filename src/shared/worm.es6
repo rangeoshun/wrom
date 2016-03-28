@@ -1,6 +1,11 @@
-class Worm extends Entity {
-  constructor ( x, y ) {
-    super(x, y);
+"use strict";
+const Globals = require('./globals.js');
+const Entity = require('./entity.js');
+const Pixel = require('./pixel.js');
+
+module.exports = class Worm extends Entity {
+  constructor ( game ) {
+    super(game);
     const worm = this;
 
     worm.direction = [];
@@ -14,18 +19,21 @@ class Worm extends Entity {
 
   addScore ( score ) {
     const worm = this;
+    const game = worm.game;
     worm.score += score || 0;
   }
 
   drop () {
-    if (!_game.server) return;
     const worm = this;
+    const game = worm.game;
+    if (!game.server) return;
+
     console.log(`${worm.constructor.name} ${worm.id} is dropping:`)
 
     worm.body.forEach(function ( partCoords ) {
       if (Math.round(Math.random() * 2)) return;
 
-      let point = _game.addPoint();
+      let point = worm.game.addPoint();
       point.coords = worm.displace(partCoords, 4);
     });
   }
@@ -42,6 +50,7 @@ class Worm extends Entity {
   spawn () {
 
     const worm = this;
+    const game = worm.game;
     let dirX = Math.round(Math.random() * 2) - 1;
     let dirY = (dirX) ? 0 : (Math.round(Math.random())) ? -1 : 1;
 
@@ -65,21 +74,22 @@ class Worm extends Entity {
         worm.alive = true;
         worm.updated = true;
 
-        if (!_game.server) {
-          _renderCallbacks.push(worm.render());
+        if (!game.server) {
+          Globals.renderCallbacks.push(worm.render());
         }
-        _tickCallbacks.push(worm.move());
+        game.tick.beforeCallbacks.push(worm.move());
         setTimeout(function () {
 
           worm.ghost = false;
-          _tickCallbacks.push(worm.isColliding());
+          game.tick.onCallbacks.push(worm.isColliding());
         }, 2000);
       }
-    })(_game.players);
+    })(game.players);
   }
 
   isColliding ( callback ) {
     const worm = this;
+    const game = worm.game;
 
     return function ( players ) {
       let collision = false;
@@ -90,7 +100,7 @@ class Worm extends Entity {
         player.body.forEach(function ( part, index ) {
           if (player === worm && !index) return;
 
-          if (_isColliding(worm.coords, part)) {
+          if (game.areColliding(worm.coords, part)) {
             console.log(`${worm.constructor.name} ${worm.id} is colliding with ${worm.constructor.name} ${player.id}`);
             worm.die();
             collision = true;
@@ -108,6 +118,7 @@ class Worm extends Entity {
 
   setDirection ( direction ) {
     const worm = this;
+    const game = worm.game;
     if (direction[0] === worm.direction [0] * -1
       && direction[1] === worm.direction [1] * -1) {
       return;
@@ -118,6 +129,7 @@ class Worm extends Entity {
 
   grow ( by ) {
     const worm = this;
+
     let tail = worm.body[worm.body.length - 1];
     for (by; by > 0; by--) {
       worm.size++;
@@ -128,6 +140,7 @@ class Worm extends Entity {
 
   move () {
     const worm = this;
+
     return function () {
       const coords = worm.coords;
       let body = worm.body;
@@ -144,16 +157,16 @@ class Worm extends Entity {
       tail[0] = coords[0] = head[0] + direction[0];
       tail[1] = coords[1] = head[1] + direction[1];
 
-      if (tail[0] >= _resolution[0]) {
-        tail[0] -= _resolution[0];
+      if (tail[0] >= Globals.resolution[0]) {
+        tail[0] -= Globals.resolution[0];
       } else if (tail[0] < 0) {
-        tail[0] = _resolution[0];
+        tail[0] = Globals.resolution[0];
       }
 
-      if (tail[1] >= _resolution[1]) {
-        tail[1] -= _resolution[1];
+      if (tail[1] >= Globals.resolution[1]) {
+        tail[1] -= Globals.resolution[1];
       } else if (tail[1] < 0) {
-        tail[1] = _resolution[1];
+        tail[1] = Globals.resolution[1];
       }
 
       body.unshift(body.pop());
@@ -164,6 +177,7 @@ class Worm extends Entity {
 
   render () {
     const worm = this;
+
     return function () {
       let pixels = [];
       pixels.die = !worm.alive;
@@ -201,4 +215,4 @@ class Worm extends Entity {
       return pixels;
     };
   }
-}
+};

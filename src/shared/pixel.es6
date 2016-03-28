@@ -1,4 +1,6 @@
-class Pixel extends Array {
+"use strict";
+
+module.exports = class Pixel extends Array {
   constructor ( drawn, r, g, b, coords ) {
     super(drawn || 0, r || 0, g || 0, b || 0, coords);
     const pixel = this;
@@ -40,4 +42,4 @@ class Pixel extends Array {
       return !this[0];
     }
   }
-}
+};

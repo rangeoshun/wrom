@@ -1,10 +1,48 @@
-class Game {
+"use strict";
+const Tick = require('./tick.js');
+const Point = require('./point.js');
+const GoldenPoint = require('./golden-point.js');
+const Worm = require('./worm.js');
+
+module.exports = class Game {
   constructor () {
     const game = this;
-    game.points = [];
-    game.players = [];
-    game.paused = false;
+    let points = game.points = [];
+    let players = game.players = [];
+    let syncCallbacks = game.syncCallbacks = [];
+    let tick = game.tick = new Tick(game);
     game.previousState = {};
+    game.paused = false;
+
+    function correctPoints () {
+      if (game.points.length < Math.round(game.players.length / 2)) {
+        game.addPoint();
+      }
+    }
+
+    function cleanup () {
+      //  console.timeEnd(`Sync takes`);
+        game.ditchTheDead();
+    }
+
+    function syncPlayers ( player ) {
+      //  console.time(`Sync takes`);
+      let state = game.getState();
+      game.syncCallbacks.forEach(function ( callback, index ) {
+        if (callback.del) {
+          game.syncCallbacks.splice(index, 1);
+          return;
+        }
+
+        if (callback(state) === false) {
+          callback.del = true;
+        }
+      });
+    }
+
+    tick.afterCallbacks.push(syncPlayers);
+    tick.afterCallbacks.push(cleanup);
+    tick.afterCallbacks.push(correctPoints);
   }
 
   togglePause () {
@@ -21,21 +59,19 @@ class Game {
     }
   }
 
-  addPoint ( id, type ) {
+  addPoint ( type ) {
     const game = this;
     const Type = type || game.getRandomPoint();
-    let point = new Type();
-    if (id) point.id = id;
+    let point = new Type(game);
 
     game.points.push(point);
 
     return point;
   }
 
-  addPlayer ( id ) {
+  addPlayer () {
     const game = this;
-    let player = new Worm();
-    if (id) player.id = id;
+    let player = new Worm(game);
 
     game.players.push(player);
 
@@ -110,18 +146,22 @@ class Game {
     const game = this;
 
     game.points = game.points.filter(function ( point ) {
-      return point.alive;
+      return point ? point.alive : false;
     });
     game.players = game.players.filter(function ( player ) {
-      return player.alive;
+      return player ? player.alive : false;
     });
+  }
+
+  areColliding ( v1, v2 ) {
+    return v1[0] === v2[0] && v1[1] === v2[1];
   }
 
   init ( server ) {
     const game = this;
     if (server) {
       game.server = true;
-      _tickHandler();
+      game.tick.init();
     }
   }
-}
+};

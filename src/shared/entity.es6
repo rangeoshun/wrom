@@ -1,16 +1,20 @@
-class Entity {
-  constructor ( x, y ) {
-    const entity = this;
+"use strict";
+const Pixel = require('./pixel.js');
+const Globals = require('./globals.js');
 
-    entity.coords = [x, y];
+module.exports = class Entity {
+  constructor ( game ) {
+    const entity = this;
+    entity.game = game;
+    entity.coords = [0,0];
     entity.id = (new Date().getTime()+Math.floor(Math.random()*1000)).toString(16);
     entity.alive = true;
     entity.updated = true;
     entity.color = [1,1,1];
     entity.type = '';
 
-    if (!_game.server) {
-      _renderCallbacks.push(entity.render());
+    if (!game.server) {
+      Globals.renderCallbacks.push(entity.render());
     }
     console.log(`${entity.constructor.name} ${entity.id} is alive`);
   }
@@ -23,13 +27,13 @@ class Entity {
   }
 
   random ( dimension ) {
-    return Math.floor(Math.random() * _resolution[dimension]);
+    return Math.floor(Math.random() * Globals.resolution[dimension]);
   }
 
   isCoordOutOfBOunds ( coord ) {
-    if (coord[0] >= _resolution[0]
+    if (coord[0] >= Globals.resolution[0]
       || coord[0] < 0
-      || coord[1] >= _resolution[1]
+      || coord[1] >= Globals.resolution[1]
       || coord[1] < 0) {
 
       return true;
@@ -72,4 +76,4 @@ class Entity {
       return pixels;
     };
   }
-}
+};

@@ -1,8 +1,8 @@
-// Game
-//initMatrix();
+"use strict";
 
-const _game = new Game();
-_game.init(true);
+const Game = require('./game.js');
+const game = new Game();
+game.init(true);
 
 let url = require("url");
 let path = require("path");
@@ -55,13 +55,13 @@ wss.on('request', function ( request ) {
   let connection = request.accept(null, request.origin);
 
   console.log(`Connection from ${request.remoteAddress}`);
-  connection.player = _game.addPlayer();
+  connection.player = game.addPlayer();
   connection.player.connection = connection;
   connection.score = 0;
-  const playerID = connection.player.id;
+  let playerID = connection.player.id;
   console.log(`PlayerID: ${playerID}`);
-  connection.send(JSON.stringify({id: connection.player.id}));
-  const startState = JSON.stringify(_game.getState(true));
+  connection.send(JSON.stringify(`{id: ${playerID}}`));
+  const startState = JSON.stringify(game.getState(true));
   connection.send(startState);
 
   function syncPlayer ( state ) {
@@ -69,8 +69,8 @@ wss.on('request', function ( request ) {
     return !!connection.player;
   }
 
-  _tickSyncCallbacks.push(syncPlayer);
-  console.log('Remaining players: ',_game.players.length);
+  game.syncCallbacks.push(syncPlayer);
+  console.log('Remaining players: ',game.players.length);
 
   connection.on('message', function ( message ) {
     let player = connection.player;
@@ -98,7 +98,7 @@ wss.on('request', function ( request ) {
       player.setDirection(direction);
     } else if (respawn && !player.alive) {
       console.log();
-      connection.player = _game.addPlayer();
+      connection.player = game.addPlayer();
       connection.player.connection = connection;
       connection.player.id = playerID;
     }
@@ -106,7 +106,7 @@ wss.on('request', function ( request ) {
 
   connection.on('close', function () {
     console.log('Connection closed from '+ request.origin);
-    console.log('Remaining players: ', _game.players.length);
+    console.log('Remaining players: ', game.players.length);
     connection.player.die();
     delete connection.player;
   });

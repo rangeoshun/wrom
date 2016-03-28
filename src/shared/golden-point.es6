@@ -1,6 +1,9 @@
-class GoldenPoint extends Point {
-  constructor (x, y) {
-    super(x, y);
+"use strict";
+const Point = require('./point.js');
+
+module.exports = class GoldenPoint extends Point {
+  constructor ( game ) {
+    super(game);
     const point = this;
     point.relocate();
     point.alive = true;
@@ -8,6 +11,6 @@ class GoldenPoint extends Point {
     point.color = [1,0.8,0];
     point.type = 'gp';
 
-    _tickCallbacks.push(point.isColliding());
+    game.tick.onCallbacks.push(point.isColliding());
   }
-}
+};

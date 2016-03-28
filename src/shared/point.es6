@@ -1,20 +1,25 @@
-class Point extends Entity {
-  constructor (x, y) {
-    super(x, y);
+"use strict";
+const Entity = require('./entity.js');
+
+module.exports = class Point extends Entity {
+  constructor ( game ) {
+    super(game);
     const point = this;
     point.relocate();
     point.alive = true;
     point.value = 10;
     point.type = 'p';
 
-    _tickCallbacks.push(point.isColliding());
+    game.tick.onCallbacks.push(point.isColliding());
   }
 
   isColliding () {
     const point = this;
+    const game = point.game;
+    
     return function ( players ) {
       players.forEach(function ( player ) {
-        if (_isColliding(player.coords, point.coords)) {
+        if (game.areColliding(player.coords, point.coords)) {
           console.log(`${player.constructor.name} ${player.id} is collecting ${point.constructor.name} ${point.id}`);
           player.grow(point.value / 10);
           player.connection.score += point.value;
@@ -25,4 +30,4 @@ class Point extends Entity {
       return point.alive;
     }
   }
-}
+};

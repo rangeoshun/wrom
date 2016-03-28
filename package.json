@@ -18,6 +18,7 @@
     "del": "^2.2.0",
     "gulp": "^3.9.1",
     "gulp-babel": "^6.1.2",
+    "gulp-browserify": "^0.5.1",
     "gulp-closure-compiler-service": "^0.6.0",
     "gulp-concat": "^2.6.0",
     "gulp-develop-server": "^0.5.1",

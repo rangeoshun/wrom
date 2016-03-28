@@ -9,6 +9,7 @@ var closure = require('gulp-closure-compiler-service');
 var license = require('gulp-license');
 var info = require('./package.json');
 var stripDebug = require('gulp-strip-debug');
+var browserify = require('gulp-browserify');
 
 var config = require('./src/config.json');
 var live, dev;
@@ -66,10 +67,12 @@ gulp.task('dist', function () {
     .pipe(replace(devPort, ':'+ config.live.socket))
     .pipe(replace(devWWW, config.live.www))
     .pipe(stripDebug())
+/*
     .pipe(closure({
       language: 'ECMASCRIPT5',
       compilation_level: 'SIMPLE_OPTIMIZATIONS'
     }))
+*/
     .pipe(license(info.license, {
       tiny: true,
       year: 2016,
@@ -86,20 +89,10 @@ gulp.task('build-server', function () {
 
   return gulp
     .src([
-      'src/shared/global.es6',
-      'src/shared/diff.es6',
-      'src/shared/tick.es6',
-      'src/shared/pixel.es6',
-      'src/shared/entity.es6',
-      'src/shared/point.es6',
-      'src/shared/golden-point.es6',
-      'src/shared/worm.es6',
-      'src/shared/game.es6',
-      'src/server/server.es6'
+      'src/shared/*',
+      'src/server/*'
     ])
-    .pipe(concat('server.es6'))
     .pipe(replace(/{{www}}/g, config.dev.www))
-    .pipe(gulp.dest('build/server/'))
     .pipe(babel({
       presets: ['es2015']
     }))
@@ -118,31 +111,32 @@ gulp.task('build-client', function () {
 
   return gulp
     .src([
-      'src/shared/global.es6',
-      'src/shared/tick.es6',
-      'src/shared/pixel.es6',
-      'src/shared/entity.es6',
-      'src/shared/point.es6',
-      'src/shared/golden-point.es6',
-      'src/shared/worm.es6',
-      'src/shared/game.es6',
-      'src/client/render.es6',
-      'src/client/client.es6'
+      'src/shared/*.es6',
+      'src/client/*.es6'
     ])
-    .pipe(concat('client.es6'))
+//    .pipe(concat('./build/client/client.es6'))
     .pipe(replace(/{{socket}}/g, config.dev.socket))
     .pipe(babel({
       presets: ['es2015']
     }))
-    .pipe(license(info.license, {
-      year: 2016,
-      organization: info.repository.url
-    }))
     .pipe(gulp.dest('build/client/'))
       .on('end', function () {
-        return gulp
-          .src(['src/client/*.ico', 'src/client/*.html'])
-          .pipe(gulp.dest('build/client/'));
+
+        gulp.src('build/client/*.js')
+          .pipe(browserify({
+      		  insertGlobals : true,
+      		  debug : true
+      		}))
+          .pipe(license(info.license, {
+            year: 2016,
+            organization: info.repository.url
+          }))
+          .pipe(gulp.dest('build/client/'))
+            .on('end', function () {
+              return gulp
+                .src(['src/client/*.ico', 'src/client/*.html'])
+                .pipe(gulp.dest('build/client/'));
+            });
       });
 });
 
