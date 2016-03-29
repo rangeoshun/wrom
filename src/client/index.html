@@ -30,12 +30,20 @@
     }
 
     canvas.score {
+      text-rendering: optimizeLegibility;
+      font-smoothing: none;
+      -webkit-font-smoothing: none;
       position: absolute;
       transform: scaleX(2) scaleY(2);
     }
   </style>
 </head>
 <body>
-  <script src="client.js"></script>
+  <div ng-controller="connect"></div>
+  <div ng-controller="screen">
+    {{canvas}}
+  </div>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.js"></script>
+  <script src="angular-client.js"></script>
 </body>
 </html>

@@ -1,4 +1,5 @@
 "use strict";
+const Globals = require('./globals.js');
 const Tick = require('./tick.js');
 const Point = require('./point.js');
 const GoldenPoint = require('./golden-point.js');
