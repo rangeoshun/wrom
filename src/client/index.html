@@ -36,13 +36,27 @@
       position: absolute;
       transform: scaleX(2) scaleY(2);
     }
+
+    .color-sample {
+      display: inline-block;
+      width: 10px;
+      height: 20px;
+    }
   </style>
 </head>
 <body>
-  <div ng-controller="connect"></div>
-  <div ng-controller="screen">
-    {{canvas}}
+  <div ng-controller="connect">
+    <div ng-controller="colors">
+      <div ng-repeat="color in colors">
+        <div
+          class="color-sample"
+          style="background-color: {{color.hex}}"
+          ng-click="changeColor(color.array)">
+        </div>
+      </div>
+    </div>
   </div>
+  <div ng-controller="screen"></div>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.js"></script>
   <script src="angular-client.js"></script>
 </body>

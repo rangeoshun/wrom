@@ -1,12 +1,13 @@
 "use strict";
 
+const Player = require('./player.js');
 const Game = require('./game.js');
 const game = new Game();
 game.init(true);
 
-let url = require("url");
-let path = require("path");
-let fs = require("fs");
+const url = require("url");
+const path = require("path");
+const fs = require("fs");
 
 const httpPort = process.argv[2] || 8888;
 const socketPort = process.argv[3] || 666;
@@ -55,28 +56,29 @@ wss.on('request', function ( request ) {
   let connection = request.accept(null, request.origin);
 
   console.log(`Connection from ${request.remoteAddress}`);
-  connection.player = game.addPlayer();
-  connection.player.connection = connection;
-  connection.score = 0;
-  let playerID = connection.player.id;
-  console.log(`PlayerID: ${playerID}`);
-  connection.send(playerID);
+  let player = new Player();
+  player.manifest(game.addPlayer());
+  player.setConnection(connection);
+  console.log(`PlayerID: ${player.id}`);
+
+  connection.send(JSON.stringify({id: player.id}));
   const startState = JSON.stringify(game.getState(true));
   connection.send(startState);
 
   function syncPlayer ( state ) {
     connection.send(JSON.stringify(state));
-    return !!connection.player;
+    return !!player;
   }
 
   game.syncCallbacks.push(syncPlayer);
   console.log('Remaining players: ',game.players.length);
 
   connection.on('message', function ( message ) {
-    let player = connection.player;
+
     const update = JSON.parse(message.utf8Data);
     let direction = update.d;
     const respawn = update.r;
+    const color = update.cl;
 
     if (direction) {
 
@@ -95,19 +97,19 @@ wss.on('request', function ( request ) {
         break;
       }
 
-      player.setDirection(direction);
+      player.entity.setDirection(direction);
     } else if (respawn && !player.alive) {
       console.log();
-      connection.player = game.addPlayer();
-      connection.player.connection = connection;
-      connection.player.id = playerID;
+      player.manifest(game.addPlayer());
+    } else if (color) {
+      player.setColor(color);
     }
   });
 
   connection.on('close', function () {
     console.log('Connection closed from '+ request.origin);
     console.log('Remaining players: ', game.players.length);
-    connection.player.die();
-    delete connection.player;
+    player.entity.die();
+    delete player.entity;
   });
 });

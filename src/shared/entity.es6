@@ -1,4 +1,5 @@
 "use strict";
+const Utils = require('./utils.js');
 const Pixel = require('./pixel.js');
 const Globals = require('./globals.js');
 
@@ -7,7 +8,7 @@ module.exports = class Entity {
     const entity = this;
     entity.game = game;
     entity.coords = [0,0];
-    entity.id = (new Date().getTime()+Math.floor(Math.random()*1000)).toString(16);
+    entity.id = Utils.getUniqueID();
     entity.alive = true;
     entity.updated = true;
     entity.color = [1,1,1];
@@ -17,6 +18,12 @@ module.exports = class Entity {
       Globals.renderCallbacks.push(entity.render());
     }
     console.log(`${entity.constructor.name} ${entity.id} is alive`);
+  }
+
+  setColor ( color ) {
+    const entity = this;
+    entity.color = color;
+    entity.updated = true;
   }
 
   die () {

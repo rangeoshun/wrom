@@ -1,12 +1,8 @@
 "use strict";
 
-const Game = require('./game.js');
 const connect = require('./angular-connect.js');
 const render = require('./angular-render.js');
-
-const game = new Game();
-module.exports = game;
-game.init();
+const colors = require('./angular-colorpicker.js');
 
 let checkIfLoaded = setInterval(function () {
   if (typeof connect === 'function' && typeof render === 'function') {
@@ -19,7 +15,7 @@ let checkIfLoaded = setInterval(function () {
       const client = angular.module('client', []);
       client.controller('connect', ['$scope', connect]);
       client.controller('screen', ['$scope', render]);
-
+      client.controller('colors', ['$scope', colors]);
       angular.bootstrap(document.body, ['client']);
     }
   }

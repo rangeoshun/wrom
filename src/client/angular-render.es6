@@ -6,7 +6,7 @@ const game = require('./angular-client.js');
 
 module.exports = function ( $scope ) {
 
-  const _screen_canvas = $scope.canvas = document.createElement('canvas');
+  const _screen_canvas = document.createElement('canvas');
   const _screen = _screen_canvas.getContext("2d");
   const _scores = document.createElement('code');
   const _renderCallbacks = Globals.renderCallbacks;

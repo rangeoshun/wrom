@@ -129,8 +129,9 @@ module.exports = class Game {
       let playerState = {};
 
       if (player.alive) {
+        playerState.cl = player.color;
         playerState.b = player.body;
-        playerState.s = player.connection.score;
+        playerState.s = player.player.score;
         if (player.ghost) playerState.g = player.ghost;
       } else {
         playerState.d = true;

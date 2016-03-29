@@ -9,8 +9,9 @@ var closure = require('gulp-closure-compiler-service');
 var license = require('gulp-license');
 var info = require('./package.json');
 var stripDebug = require('gulp-strip-debug');
-var browserify = require('gulp-browserify');
-var headerfooter = require('gulp-headerfooter');
+//var browserify = require('gulp-browserify');
+var webpack = require('gulp-webpack');
+var named = require('vinyl-named');
 
 var config = require('./src/config.json');
 var live, dev;
@@ -125,10 +126,14 @@ gulp.task('build-client', function () {
     .pipe(gulp.dest('build/client/'))
     .on('end', function () {
       gulp.src('build/client/*.js')
+        .pipe(named())
+        .pipe(webpack())
+/*
         .pipe(browserify({
     		  insertGlobals : true,
     		  debug : true
     		}))
+*/
         .pipe(license(info.license, {
           year: 2016,
           organization: info.repository.url

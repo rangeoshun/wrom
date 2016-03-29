@@ -7,7 +7,7 @@ module.exports = class Worm extends Entity {
   constructor ( game ) {
     super(game);
     const worm = this;
-
+    worm.color = [0,0,0];
     worm.direction = [];
     worm.nextDirection = false;
 
@@ -20,7 +20,7 @@ module.exports = class Worm extends Entity {
   addScore ( score ) {
     const worm = this;
     const game = worm.game;
-    worm.score += score || 0;
+    worm.player.score += score || 0;
   }
 
   drop () {
@@ -184,22 +184,22 @@ module.exports = class Worm extends Entity {
 
       worm.body.forEach(function ( part ) {
 
-        let r;
-        let g;
-        let b;
+        let r = worm.color[0];
+        let g = worm.color[1];
+        let b = worm.color[2];
         let pixel;
 
         if (worm.client) {
 
-          worm.color[0] = r = 0.5;
-          worm.color[1] = g = 0.5;
-          worm.color[2] = b = 1;
+          r = r || 0.5;
+          g = g || 0.5;
+          b = b || 1;
 
         } else {
 
-          r = 1;
-          g = 0.5;
-          b = 0.5;
+          r = r || 1;
+          g = g || 0.5;
+          b = b ||0.5;
         }
 
         if (worm.ghost) {
