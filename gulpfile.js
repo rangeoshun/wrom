@@ -48,7 +48,7 @@ process.on('exit', function() {
 
 gulp.task('clean', function () {
   console.log('Updated, rebuilding...');
-  return del(['./build/*']);
+  del.sync(['./build/*']);
 });
 
 gulp.task('dist', function () {

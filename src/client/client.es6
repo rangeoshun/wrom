@@ -10,7 +10,7 @@ const game = new Game();
 game.init();
 
 WebSocket = WebSocket || MozWebSocket;
-let connection = new WebSocket('ws://'+ location.hostname +':{{socket}}');
+let connection = new WebSocket(`ws://${location.hostname}:{{socket}}`);
 
 connection.onopen = function () {
 
