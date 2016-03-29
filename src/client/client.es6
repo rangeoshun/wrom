@@ -40,7 +40,7 @@ connection.onopen = function () {
 
     let message = {};
     if (direction)  message.d = direction;
-    else if (!_self.alive) message.r = respawn;
+    else if (!Globals.self.alive) message.r = respawn;
 
     if (direction || respawn) connection.send(JSON.stringify(message));
   });
@@ -53,8 +53,8 @@ connection.onerror = function (error) {
 connection.onmessage = handleIdentityUpdate;
 
 function handleIdentityUpdate ( message ) {
-  let update = JSON.parse(message.data);
-  Globals.selfID = update.id;
+  let update = message.data;
+  Globals.selfID = update;
   connection.onmessage = handleStateUpdate;
 }
 
@@ -64,7 +64,7 @@ function handleStateUpdate (message) {
   for (let pointID in update.po) {
     let pointUpdate = update.po[pointID];
     let foundPoint = game.getPointById(pointID, Point);
-    let type = 'p';
+    let type = '';
 
     if (!foundPoint) {
 
