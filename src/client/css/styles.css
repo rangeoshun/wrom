@@ -3,7 +3,7 @@
   font-smoothing : none;
   -webkit-font-smoothing : none;
   color: white;
-  font-size: 5px;
+  font-size: 15px;
   font-family: 'C64 Pro Mono', "Consolas", "Myriad", "Arial", Gadget, sans-serif;
 }
 
@@ -15,8 +15,9 @@ div[ng-controller=connect] {
   transform-style: preserve-3d;
   transition: all 0.3s ease-out;
   position: relative;
-  width: 160px;
-  height: 100px;
+  margin: 0 auto;
+  width: 700px;
+  height: 500px;
 }
 
 div[ng-controller=connect].setup {
@@ -76,7 +77,6 @@ input, .color-sample {
 }
 
 button {
-  width: 50px;
   margin: 0 auto;
   display: block;
 }
