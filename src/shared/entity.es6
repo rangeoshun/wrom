@@ -12,12 +12,20 @@ module.exports = class Entity {
     entity.alive = true;
     entity.updated = true;
     entity.color = [1,1,1];
+    entity.name = '';
     entity.type = '';
 
     if (!game.server) {
       Globals.renderCallbacks.push(entity.render());
     }
+    
     console.log(`${entity.constructor.name} ${entity.id} is alive`);
+  }
+
+  setName ( name ) {
+    const entity = this;
+    entity.name = name;
+    entity.updated = true;
   }
 
   setColor ( color ) {

@@ -59,7 +59,8 @@ wss.on('request', function ( request ) {
   let player = new Player();
   player.manifest(game.addPlayer());
   player.setConnection(connection);
-  console.log(`PlayerID: ${player.id}`);
+
+  console.log(`PlayerID: ${player.id} by name ${player.name}`);
 
   connection.send(JSON.stringify({id: player.id}));
   const startState = JSON.stringify(game.getState(true));
@@ -76,11 +77,33 @@ wss.on('request', function ( request ) {
   connection.on('message', function ( message ) {
 
     const update = JSON.parse(message.utf8Data);
-    let direction = update.d;
-    const respawn = update.r;
+    let direction = update.dr;
+    const respawn = update.rs;
+    const spawn = update.sa;
     const color = update.cl;
+    const name = update.nm;
+    const die = update.de;
 
-    if (direction) {
+    if (die) {
+      player.entity.die();
+    }
+
+    if (color) {
+      player.setColor(color);
+    }
+
+    if (name) {
+      player.setName(name);
+    }
+
+    if (respawn && !player.alive) {
+      delete player.entity;
+
+      player.manifest(game.addPlayer());
+      player.entity.color = player.color;
+      player.entity.name = player.name;
+
+    } else if (direction) {
 
       switch (direction) {
         case 1:
@@ -98,11 +121,6 @@ wss.on('request', function ( request ) {
       }
 
       player.entity.setDirection(direction);
-    } else if (respawn && !player.alive) {
-      console.log();
-      player.manifest(game.addPlayer());
-    } else if (color) {
-      player.setColor(color);
     }
   });
 
@@ -110,6 +128,5 @@ wss.on('request', function ( request ) {
     console.log('Connection closed from '+ request.origin);
     console.log('Remaining players: ', game.players.length);
     player.entity.die();
-    delete player.entity;
   });
 });

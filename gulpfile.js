@@ -9,7 +9,6 @@ var closure = require('gulp-closure-compiler-service');
 var license = require('gulp-license');
 var info = require('./package.json');
 var stripDebug = require('gulp-strip-debug');
-//var browserify = require('gulp-browserify');
 var webpack = require('gulp-webpack');
 var named = require('vinyl-named');
 
@@ -111,34 +110,37 @@ gulp.task('build-server', function () {
 gulp.task('build-client', function () {
   console.log('Rebuilding client...');
   gulp
-    .src(['src/client/*.ico', 'src/client/*.html'])
+    .src([
+      'src/client/*.ico',
+      'src/client/*.html'
+    ])
     .pipe(gulp.dest('build/client/'));
+
+  gulp
+    .src([
+      'src/client/css/**/*'
+    ])
+    .pipe(gulp.dest('build/client/css/'));
 
   return gulp
     .src([
       'src/shared/*.es6',
-      'src/client/*.es6'
+      'src/client/js/*.es6'
     ])
     .pipe(replace(/{{socket}}/g, config.dev.socket))
     .pipe(babel({
       presets: ['es2015']
     }))
-    .pipe(gulp.dest('build/client/'))
+    .pipe(gulp.dest('build/client/js/'))
     .on('end', function () {
-      gulp.src('build/client/*.js')
+      gulp.src('build/client/js/*.js')
         .pipe(named())
         .pipe(webpack())
-/*
-        .pipe(browserify({
-    		  insertGlobals : true,
-    		  debug : true
-    		}))
-*/
         .pipe(license(info.license, {
           year: 2016,
           organization: info.repository.url
         }))
-        .pipe(gulp.dest('build/client/'));
+        .pipe(gulp.dest('build/client/js/'));
       });
 });
 

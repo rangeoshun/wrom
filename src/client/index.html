@@ -1,63 +1,59 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <link rel="stylesheet" type="text/css" href="css/fonts/c64fonts.css" />
+  <link rel="stylesheet" type="text/css" href="css/styles.css" />
   <style>
-    body {
-      background-color: #646464;
-      font-smoothing : none;
-      -webkit-font-smoothing : none;
-      color: white;
-      font-size: 5px;
-      font=family: "Arial Black", Gadget, sans-serif;
-    }
-
-    canvas {
-      image-rendering: optimizeSpeed;             /* Older versions of FF          */
-      image-rendering: -moz-crisp-edges;          /* FF 6.0+                       */
-      image-rendering: -webkit-optimize-contrast; /* Safari                        */
-      image-rendering: -o-crisp-edges;            /* OS X & Windows Opera (12.02+) */
-      image-rendering: pixelated;                 /* Awesome future-browsers       */
-      -ms-interpolation-mode: nearest-neighbor;   /* IE                            */
-    }
-
-    canvas.screen {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      transform: translateX(-50%) translateY(-50%);
-      width: auto;
-      height: 100%;
-    }
-
-    canvas.score {
-      text-rendering: optimizeLegibility;
-      font-smoothing: none;
-      -webkit-font-smoothing: none;
-      position: absolute;
-      transform: scaleX(2) scaleY(2);
-    }
-
-    .color-sample {
-      display: inline-block;
-      width: 10px;
-      height: 20px;
-    }
   </style>
 </head>
 <body>
-  <div ng-controller="connect">
-    <div ng-controller="colors">
-      <div ng-repeat="color in colors">
-        <div
-          class="color-sample"
-          style="background-color: {{color.hex}}"
-          ng-click="changeColor(color.array)">
-        </div>
+  <div class="{{state}}" ng-controller="connect">
+    <div ng-controller="setup">
+      <div class="setup-content">
+        <label>
+          Name <br />
+          <input
+            type="text"
+            ng-minlength="3"
+            ng-maxlength="16"
+            ng-model="playerName"
+            ng-change="changeName()" />
+        </label>
+        <label><br /><br />
+          <div ng-controller="colors">
+            Color <br />
+            <div ng-repeat="color in colors">
+              <div
+                class="color-sample"
+                style="background-color: {{color.hex}}; border-color: {{isSelected(color)}}"
+                ng-click="changeColor(color.array)"
+                style="margin-right: 2px;float:left;">
+                  &nbsp;
+              </div>
+            </div>
+          </div>
+        </label><br /><br />
+        <button ng-click="goPlay()">PLAY</button>
       </div>
     </div>
+    <div ng-controller="screen"></div>
+    <div ng-controller="scores" ng-if="showScores">
+      HIGH SCORES
+      <table>
+        <tr>
+          <th>#</th>
+          <th>NAME</th>
+          <th>SCORE</th>
+        </tr>
+        <tr ng-repeat="score in highScores">
+          <td>{{score.place}}</td>
+          <td>{{score.name}}</td>
+          <td>{{score.score}}</td>
+        </tr>
+      </table>
+    </div>
   </div>
-  <div ng-controller="screen"></div>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.js"></script>
-  <script src="angular-client.js"></script>
+  <script src="js/angular-client.js"></script>
 </body>
 </html>

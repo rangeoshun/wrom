@@ -109,35 +109,38 @@ module.exports = class Game {
 
     game.points.forEach(function ( point ) {
       if (!fullState && point.updated === false) return;
-      if (!state.hasOwnProperty('po')) state.po = {};
+      if (!state.hasOwnProperty('pi')) state.pi = {};
       let pointState = {};
 
       if (point.alive) {
-        pointState.t = point.type;
-        pointState.c = point.coords;
+        pointState.tp = point.type;
+        pointState.co = point.coords;
       } else {
-        pointState.d = true;
+        pointState.de = true;
       }
 
-      state.po[point.id] = pointState;
+      state.pi[point.id] = pointState;
       point.updated = false;
     });
 
     game.players.forEach(function ( player ) {
       if (!fullState && player.updated === false) return;
-      if (!state.hasOwnProperty('pl')) state.pl = {};
+      if (!state.hasOwnProperty('pa')) state.pa = {};
       let playerState = {};
 
       if (player.alive) {
         playerState.cl = player.color;
-        playerState.b = player.body;
-        playerState.s = player.player.score;
-        if (player.ghost) playerState.g = player.ghost;
+        playerState.bd = player.body;
+        playerState.so = player.player.score;
+        playerState.nm = player.player.name;
+        if (player.ghost) playerState.go = player.ghost;
       } else {
-        playerState.d = true;
+        playerState.so = player.player.score;
+        playerState.nm = player.player.name;
+        playerState.de = true;
       }
 
-      state.pl[player.id] = playerState;
+      state.pa[player.id] = playerState;
       player.updated = false;
     });
 

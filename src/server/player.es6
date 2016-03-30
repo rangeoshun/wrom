@@ -18,6 +18,7 @@ module.exports = class Player {
   setName ( name ) {
     const player = this;
     player.name = name.toString();
+    player.entity.setName(player.name);
   }
 
   setColor ( color ) {
