@@ -47,39 +47,51 @@ process.on('exit', function() {
     if (dev) dev.kill();
 })
 
+gulp.task('clean-dist', function () {
+  console.log('Updated, rebuilding...');
+  del.sync(['./dist/*']);
+});
+
 gulp.task('clean', function () {
   console.log('Updated, rebuilding...');
   del.sync(['./build/*']);
 });
 
-gulp.task('dist', function () {
+gulp.task('dist', ['clean-dist'], function () {
   if (live) live.kill();
   var devPort = new RegExp(':'+ config.dev.socket, 'g');
   var devWWW = new RegExp(config.dev.www, 'g');
 
-  del(['./dist/*']);
+    gulp
+      .src([
+        'build/client/*.ico',
+        'build/client/*.html'
+      ])
+      .pipe(gulp.dest('dist/client/'));
 
-  gulp
-    .src(['build/**/*.html', 'build/**/*.ico'])
-    .pipe(gulp.dest('dist/'));
+    gulp
+      .src([
+        'build/client/css/**/*'
+      ])
+      .pipe(gulp.dest('dist/client/css/'));
 
-  return gulp
-    .src(['build/**/*.js'])
-    .pipe(replace(devPort, ':'+ config.live.socket))
-    .pipe(replace(devWWW, config.live.www))
-    .pipe(stripDebug())
-/*
-    .pipe(closure({
-      language: 'ECMASCRIPT5',
-      compilation_level: 'SIMPLE_OPTIMIZATIONS'
-    }))
-*/
-    .pipe(license(info.license, {
-      tiny: true,
-      year: 2016,
-      organization: info.repository.url
-    }))
-    .pipe(gulp.dest('dist/'))
+    return gulp
+      .src(['build/**/*.js'])
+      .pipe(replace(devPort, ':'+ config.live.socket))
+      .pipe(replace(devWWW, config.live.www))
+      .pipe(stripDebug())
+  /*
+      .pipe(closure({
+        language: 'ECMASCRIPT5',
+        compilation_level: 'SIMPLE_OPTIMIZATIONS'
+      }))
+  */
+      .pipe(license(info.license, {
+        tiny: true,
+        year: 2016,
+        organization: info.repository.url
+      }))
+      .pipe(gulp.dest('dist/'))
       .on('end', function () {
         gulp.run('live-server');
       });
@@ -102,9 +114,9 @@ gulp.task('build-server', function () {
       organization: info.repository.url
     }))
     .pipe(gulp.dest('build/server/'))
-      .on('end', function () {
-        gulp.run('dev-server');
-      });
+    .on('end', function () {
+      gulp.run('dev-server');
+    });
 });
 
 gulp.task('build-client', function () {
