@@ -48,12 +48,12 @@ process.on('exit', function() {
 })
 
 gulp.task('clean-dist', function () {
-  console.log('Updated, rebuilding...');
+  console.log('updated, rebuilding...');
   del.sync(['./dist/*']);
 });
 
 gulp.task('clean', function () {
-  console.log('Updated, rebuilding...');
+  console.log('updated, rebuilding...');
   del.sync(['./build/*']);
 });
 
@@ -79,13 +79,11 @@ gulp.task('dist', ['clean-dist'], function () {
       .src(['build/**/*.js'])
       .pipe(replace(devPort, ':'+ config.live.socket))
       .pipe(replace(devWWW, config.live.www))
-      .pipe(stripDebug())
-  /*
+      .pipe(stripDebug())/*
       .pipe(closure({
-        language: 'ECMASCRIPT5',
+        language: 'ECMASCRIPT6_STRICT',
         compilation_level: 'SIMPLE_OPTIMIZATIONS'
-      }))
-  */
+      }))*/
       .pipe(license(info.license, {
         tiny: true,
         year: 2016,
@@ -106,9 +104,6 @@ gulp.task('build-server', function () {
       'src/server/*'
     ])
     .pipe(replace(/{{www}}/g, config.dev.www))
-    .pipe(babel({
-      presets: ['es2015']
-    }))
     .pipe(license(info.license, {
       year: 2016,
       organization: info.repository.url
@@ -136,8 +131,8 @@ gulp.task('build-client', function () {
 
   return gulp
     .src([
-      'src/shared/*.es6',
-      'src/client/js/*.es6'
+      'src/shared/*',
+      'src/client/js/*'
     ])
     .pipe(replace(/{{socket}}/g, config.dev.socket))
     .pipe(babel({

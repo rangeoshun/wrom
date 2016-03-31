@@ -1,5 +1,6 @@
 "use strict";
 
+const Pixel = require('./pixel.js');
 const connect = require('./angular-connect.js');
 const render = require('./angular-render.js');
 const setup = require('./angular-setup.js');
@@ -14,10 +15,12 @@ if (!window.clientInit) {
       var prevInput;
       return function ( input ) {
         if (!input) return '';
-        return prevInput = (input.length > 16 ? input.substr(0, 16) : input).toUpperCase();
+        else if (input.length > 16) return input.substr(0, 16).toUpperCase();
+        else return input.toUpperCase();
       };
     })
     .filter('orderScores', function () {
+      let colorPicker = new Pixel(0,0,0,0,[0,0]);
       return function ( scores ) {
         if (!scores) return [];
         return scores.sort(function ( s0, s1 ) {
@@ -26,7 +29,8 @@ if (!window.clientInit) {
           return {
             place: index + 1,
             score: score.so,
-            name: score.nm
+            name: score.nm,
+            color: colorPicker.setColor(score.cl).getHex()
           };
         });
       };

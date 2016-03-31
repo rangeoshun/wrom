@@ -6,7 +6,7 @@ const Pixel = require('./pixel.js');
 module.exports = class Worm extends Entity {
   constructor ( game ) {
     super(game);
-    const worm = this;
+    let worm = this;
     worm.color = worm.client ? [0.5,0.5,1] : [1,0.5,0.5];
     worm.direction = [];
     worm.nextDirection = false;
@@ -18,13 +18,13 @@ module.exports = class Worm extends Entity {
   }
 
   addScore ( score ) {
-    const worm = this;
+    let worm = this;
     const game = worm.game;
     worm.player.score += score || 0;
   }
 
   drop () {
-    const worm = this;
+    let worm = this;
     const game = worm.game;
     if (!game.server) return;
 
@@ -39,7 +39,8 @@ module.exports = class Worm extends Entity {
   }
 
   die () {
-    const worm = this;
+    let worm = this;
+    if (worm.player) worm.player.score = 0;
     if (!worm.alive) return;
 
     worm.drop();
@@ -49,7 +50,7 @@ module.exports = class Worm extends Entity {
 
   spawn () {
 
-    const worm = this;
+    let worm = this;
     const game = worm.game;
     let dirX = Math.round(Math.random() * 2) - 1;
     let dirY = (dirX) ? 0 : (Math.round(Math.random())) ? -1 : 1;
@@ -88,7 +89,7 @@ module.exports = class Worm extends Entity {
   }
 
   isColliding ( callback ) {
-    const worm = this;
+    let worm = this;
     const game = worm.game;
 
     return function ( players ) {
@@ -117,7 +118,7 @@ module.exports = class Worm extends Entity {
   }
 
   setDirection ( direction ) {
-    const worm = this;
+    let worm = this;
     const game = worm.game;
     if (direction[0] === worm.direction [0] * -1
       && direction[1] === worm.direction [1] * -1) {
@@ -128,18 +129,18 @@ module.exports = class Worm extends Entity {
   }
 
   grow ( by ) {
-    const worm = this;
+    let worm = this;
 
     let tail = worm.body[worm.body.length - 1];
     for (by; by > 0; by--) {
       worm.size++;
       worm.body.push([tail[0], tail[1]]);
-      worm.updated = true;
+      worm.updated = worm.bodyUpdated = true;
     }
   }
 
   move () {
-    const worm = this;
+    let worm = this;
 
     return function () {
       const coords = worm.coords;
@@ -170,13 +171,13 @@ module.exports = class Worm extends Entity {
       }
 
       body.unshift(body.pop());
-      worm.updated = true;
+      worm.updated = worm.bodyUpdated = true;
       return worm.alive;
     };
   }
 
   render () {
-    const worm = this;
+    let worm = this;
 
     return function () {
       let pixels = [];

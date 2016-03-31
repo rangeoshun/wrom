@@ -3,7 +3,7 @@
 const Globals = require('./globals.js');
 const Point = require('./point.js');
 const GoldenPoint = require('./golden-point.js');
-const Worm = require('./worm.js');
+let worm = require('./worm.js');
 const Game = require('./game.js');
 const game = new Game();
 game.init();
@@ -120,15 +120,15 @@ module.exports = function ( $scope ) {
       connection.close();
     };
 
-    connection.onmessage = handleIdentityUpdate;
+    connection.onmessage = handleIdentityupdate;
 
-    function handleIdentityUpdate ( message ) {
+    function handleIdentityupdate ( message ) {
       let update = JSON.parse(message.data);
       Globals.selfID = update.id;
-      connection.onmessage = handleStateUpdate;
+      connection.onmessage = handleStateupdate;
     }
 
-    function handleStateUpdate (message) {
+    function handleStateupdate (message) {
       let update = JSON.parse(message.data);
 
       $scope.$apply(function () {
@@ -136,13 +136,13 @@ module.exports = function ( $scope ) {
       });
 
       for (let pointID in update.pi) {
-        let pointUpdate = update.pi[pointID];
+        let pointupdate = update.pi[pointID];
         let foundPoint = game.getPointById(pointID, Point);
         let type = '';
 
         if (!foundPoint) {
 
-          switch (pointUpdate.tp) {
+          switch (pointupdate.tp) {
             case 'p':
               type = Point;
             break;
@@ -154,15 +154,15 @@ module.exports = function ( $scope ) {
           foundPoint = game.addPoint(type);
           foundPoint.id = pointID;
         }
-        if (pointUpdate.de) {
+        if (pointupdate.de) {
           foundPoint.die();
         } else {
-          foundPoint.coords = pointUpdate.co;
+          foundPoint.coords = pointupdate.co;
         }
       }
 
       for (let playerID in update.pa) {
-        let playerUpdate = update.pa[playerID];
+        let playerupdate = update.pa[playerID];
         let foundPlayer = game.getPlayerById(playerID);
 
         if (!foundPlayer) {
@@ -181,7 +181,7 @@ module.exports = function ( $scope ) {
           }
         }
 
-        if (playerUpdate.de) {
+        if (playerupdate.de) {
           if (foundPlayer.id === Globals.selfID) {
             $scope.$apply(function () {
               $scope.showScores = true;
@@ -192,12 +192,10 @@ module.exports = function ( $scope ) {
 
         } else {
 
-          foundPlayer.name = playerUpdate.nm;
-          foundPlayer.setColor(playerUpdate.cl);
-          foundPlayer.score = playerUpdate.so || 0;
-          foundPlayer.ghost = playerUpdate.go;
-          foundPlayer.body = playerUpdate.bd;
-          foundPlayer.coords = foundPlayer.body[0];
+          if (playerupdate.cl) foundPlayer.setColor(playerupdate.cl);
+          if (playerupdate.go) foundPlayer.ghost = playerupdate.go;
+          if (playerupdate.bd) foundPlayer.body = playerupdate.bd;
+          if (playerupdate.co) foundPlayer.coords = foundPlayer.body[0];
         }
       }
 

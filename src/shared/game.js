@@ -111,7 +111,8 @@ module.exports = class Game {
     game.globals.players.forEach(function ( player ) {
       state.sc.push({
         nm: player.name,
-        so: player.score
+        so: player.score,
+        cl: player.color
       });
     });
 
@@ -137,13 +138,27 @@ module.exports = class Game {
       let playerState = {};
 
       if (player.alive) {
-        playerState.cl = player.color;
-        playerState.bd = player.body;
-        playerState.so = player.player.score;
-        playerState.nm = player.player.name;
-        if (player.ghost) playerState.go = player.ghost;
+
+        if (player.colorUpdated || fullState) {
+          playerState.cl = player.color;
+          player.colorUpdated = fullState;
+        }
+
+        if (player.bodyUpdated || fullState) {
+          playerState.bd = player.body;
+          player.bodyUpdated = fullState;
+        }
+
+        if (player.nameUpdated || fullState) {
+          playerState.nm = player.name;
+          player.nameUpdated = fullState;
+        }
+
+        if (player.ghostUpdated || fullState) {
+          playerState.go = player.ghost;
+          player.ghostUpdated = fullState;
+        }
       } else {
-        playerState.nm = player.player.name;
         playerState.de = true;
       }
 

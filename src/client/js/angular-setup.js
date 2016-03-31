@@ -1,5 +1,5 @@
 module.exports = function ( $scope, $filter ) {
-  $scope.validName = /\w+/g;
+  $scope.namePattern = /[a-zA-Z1-9-']+/g;
   $scope.playerName = $scope.globals.user.name || 'UNNAMED';
   $scope.$emit('changeName', $scope.playerName);
 

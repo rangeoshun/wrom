@@ -14,7 +14,7 @@
           Name <br />
           <input
             type="text"
-            ng-maxlength="16"
+            ng-pattern="namePattern"
             ng-model="playerName"
             ng-change="changeName()" />
         </label>
@@ -46,7 +46,7 @@
         </tr>
         <tr ng-repeat="score in scores">
           <td>{{score.place}}</td>
-          <td>{{score.name}}</td>
+          <td style="color: {{score.color}};">{{score.name}}</td>
           <td>{{score.score}}</td>
         </tr>
       </table>

@@ -20,9 +20,7 @@ module.exports = function ( $scope ) {
 
   for (let colorName in colors) {
     const colorArray = colors[colorName];
-    colorPicker[1] = colorArray[0];
-    colorPicker[2] = colorArray[1];
-    colorPicker[3] = colorArray[2];
+    colorPicker.setColor(colorArray);
 
     $scope.colors.push({
       name: colorName,

@@ -38,6 +38,15 @@ module.exports = class Pixel extends Array {
       return '#'+ r + g + b;
     }
 
+    pixel.setColor = function ( colorArray ) {
+      if (!colorArray) return;
+      pixel[1] = colorArray[0];
+      pixel[2] = colorArray[1];
+      pixel[3] = colorArray[2];
+
+      return pixel;
+    }
+
     pixel.isEmpty = function ( pixel ) {
       return !this[0];
     }

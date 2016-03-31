@@ -5,39 +5,44 @@ const Globals = require('./globals.js');
 
 module.exports = class Entity {
   constructor ( game ) {
-    const entity = this;
+    let entity = this;
     entity.game = game;
+    entity.updated = true;
     entity.coords = [0,0];
+    entity.coordsUpdated = true;
     entity.id = Utils.getUniqueID();
     entity.alive = true;
-    entity.updated = true;
+    entity.aliveUpdated = true;
+
     entity.color = [1,1,1];
+    entity.colorUpdated = true;
     entity.name = '';
+    entity.nameUpdated = true;
     entity.type = '';
 
     if (!game.server) {
       Globals.renderCallbacks.push(entity.render());
     }
-    
+
     console.log(`${entity.constructor.name} ${entity.id} is alive`);
   }
 
   setName ( name ) {
-    const entity = this;
+    let entity = this;
     entity.name = name;
-    entity.updated = true;
+    entity.updated = entity.nameUpdated = true;
   }
 
   setColor ( color ) {
-    const entity = this;
+    let entity = this;
     entity.color = color;
-    entity.updated = true;
+    entity.updated = entity.colorUpdated = true;
   }
 
   die () {
-    const entity = this;
+    let entity = this;
     entity.alive = false;
-    entity.updated = true;
+    entity.updated = entity.aliveUpdated = true;
     console.log(`${entity.constructor.name} ${entity.id} is dead`);
   }
 
@@ -56,8 +61,9 @@ module.exports = class Entity {
     return false;
   }
 
-  displace ( coord, by = 2 ) {
-    const entity = this;
+  displace ( coord, by ) {
+    by = by || 2;
+    let entity = this;
     let x = Math.round(Math.random() * by + 1) - 1;
     let y = Math.round(Math.random() * by + 1) - 1;
     let newCoord = [coord[0] + x, coord[1] + y];
@@ -70,13 +76,13 @@ module.exports = class Entity {
   }
 
   relocate () {
-    const entity = this;
+    let entity = this;
     entity.coords = [entity.random(0), entity.random(1)];
-    entity.updated = true;
+    entity.updated = entity.coordUpdated = true;
   }
 
   render () {
-    const entity = this;
+    let entity = this;
     return function () {
       const sinTime = 1;//Math.sin(parseFloat('0.'+ (new Date().getTime() / 1000).toString().split('.')[1]) * Math.PI);
 
