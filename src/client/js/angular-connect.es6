@@ -108,7 +108,10 @@ module.exports = function ( $scope ) {
 
         let message = {};
         if (direction) message.dr = direction;
-        else if (!Globals.self.alive) message.rs = respawn;
+        else if (!Globals.self.alive) {
+          message.rs = respawn;
+          game.players.splice(game.players.indexOf(Globals.self, 1));
+        }
 
         if (direction || respawn) connection.send(JSON.stringify(message));
       });
@@ -159,9 +162,8 @@ module.exports = function ( $scope ) {
         let playerUpdate = update.pa[playerID];
         let foundPlayer = game.getPlayerById(playerID);
 
-        if (!foundPlayer || !foundPlayer.alive && !playerUpdate.de) {
+        if (!foundPlayer) {
 
-          game.players.splice(game.players.indexOf(foundPlayer, 1));
           foundPlayer = game.addPlayer();
           foundPlayer.id = playerID;
 

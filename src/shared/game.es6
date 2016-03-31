@@ -96,6 +96,7 @@ module.exports = class Game {
     let foundPlayer = null;
 
     game.players.forEach(function ( player ) {
+      console.log(player.id, player)
       if (id !== player.id) return;
       foundPlayer = player;
     });

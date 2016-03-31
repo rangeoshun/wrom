@@ -12,8 +12,9 @@ if (!window.clientInit) {
   const client = angular.module('client', [])
     .filter('checklength', function () {
       var prevInput;
+      var defInput = 'UNNAMED';
       return function ( input ) {
-        if (!input) return prevInput;
+        if (!input) return prevInput || defInput;
         return prevInput = (input.length > 16 ? input.substr(0, 16) : input).toUpperCase();
       };
     })
