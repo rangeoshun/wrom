@@ -112,7 +112,8 @@ module.exports = class Game {
       state.sc.push({
         nm: player.name,
         so: player.score,
-        cl: player.color
+        cl: player.color,
+        da: player.entity.alive
       });
     });
 

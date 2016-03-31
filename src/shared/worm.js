@@ -40,7 +40,6 @@ module.exports = class Worm extends Entity {
 
   die () {
     let worm = this;
-    if (worm.player) worm.player.score = 0;
     if (!worm.alive) return;
 
     worm.drop();

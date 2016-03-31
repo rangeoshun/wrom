@@ -27,7 +27,7 @@ if (!window.clientInit) {
           return s0.so > s1.so ? -1 : s0.so == s1.so ? 0 : 1;
         }).map(function ( score, index ) {
           return {
-            place: index + 1,
+            place: (score.da) ? index + 1 : 'X',
             score: score.so,
             name: score.nm,
             color: colorPicker.setColor(score.cl).getHex()

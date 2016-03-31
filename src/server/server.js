@@ -99,6 +99,8 @@ wss.on('request', function ( request ) {
     }
 
     if (respawn && !player.entity.alive) {
+
+      player.score = 0;
       delete player.entity;
 
       player.manifest(game.addPlayer());
