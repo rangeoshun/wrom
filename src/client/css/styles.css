@@ -3,7 +3,7 @@
   font-smoothing : none;
   -webkit-font-smoothing : none;
   color: white;
-  font-size: 15px;
+  font-size: 5px;
   font-family: 'C64 Pro Mono', "Consolas", "Myriad", "Arial", Gadget, sans-serif;
 }
 
@@ -12,20 +12,21 @@ input {
 
 div[ng-controller=connect] {
   -webkit-transform-style: preserve-3d;
+  transform: rotateY(180deg) scale(2) translateY(25%);
   transform-style: preserve-3d;
   transition: all 0.3s ease-out;
   position: relative;
   margin: 0 auto;
-  width: 700px;
-  height: 500px;
+  width: 320px;
+  height: 200px;
 }
 
 div[ng-controller=connect].setup {
-  transform: rotateY(180deg);
+  transform: rotateY(180deg) scale(2) translateY(25%);
 }
 
 div[ng-controller=connect].screen {
-  transform: rotateY(0deg);
+  transform: rotateY(0deg) scale(2) translateY(25%);
 }
 
 div[ng-controller=setup], div[ng-controller=screen], div[ng-controller=scores] {
@@ -74,11 +75,13 @@ canvas.score {
 
 input, .color-sample {
   margin-top: 1px;
+  padding: 1px;
 }
 
 button {
   margin: 0 auto;
   display: block;
+  padding: 2px 6px;
 }
 
 .setup-content {

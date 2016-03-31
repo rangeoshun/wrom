@@ -1,5 +1,4 @@
 "use strict";
-const Globals = require('./globals.js');
 const Tick = require('./tick.js');
 const Point = require('./point.js');
 const GoldenPoint = require('./golden-point.js');
@@ -107,6 +106,15 @@ module.exports = class Game {
     const game = this;
     let state = {};
 
+    state.sc = [];
+
+    game.globals.players.forEach(function ( player ) {
+      state.sc.push({
+        nm: player.name,
+        so: player.score
+      });
+    });
+
     game.points.forEach(function ( point ) {
       if (!fullState && point.updated === false) return;
       if (!state.hasOwnProperty('pi')) state.pi = {};
@@ -135,7 +143,6 @@ module.exports = class Game {
         playerState.nm = player.player.name;
         if (player.ghost) playerState.go = player.ghost;
       } else {
-        playerState.so = player.player.score;
         playerState.nm = player.player.name;
         playerState.de = true;
       }

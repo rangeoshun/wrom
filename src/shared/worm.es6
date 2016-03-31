@@ -180,7 +180,10 @@ module.exports = class Worm extends Entity {
 
     return function () {
       let pixels = [];
-      pixels.die = !worm.alive;
+      if (!worm.alive) {
+        pixels.die = true;
+        return pixels;
+      }
 
       worm.body.forEach(function ( part ) {
 

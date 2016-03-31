@@ -1,8 +1,9 @@
 "use strict";
-
+const Globals = require('./globals.js');
 const Player = require('./player.js');
 const Game = require('./game.js');
 const game = new Game();
+game.globals = Globals;
 game.init(true);
 
 const url = require("url");
@@ -57,6 +58,7 @@ wss.on('request', function ( request ) {
 
   console.log(`Connection from ${request.remoteAddress}`);
   let player = new Player();
+  Globals.players.push(player);
   player.manifest(game.addPlayer());
   player.setConnection(connection);
 
@@ -96,7 +98,7 @@ wss.on('request', function ( request ) {
       player.setName(name);
     }
 
-    if (respawn && !player.alive) {
+    if (respawn && !player.entity.alive) {
       delete player.entity;
 
       player.manifest(game.addPlayer());
@@ -128,5 +130,6 @@ wss.on('request', function ( request ) {
     console.log('Connection closed from '+ request.origin);
     console.log('Remaining players: ', game.players.length);
     player.entity.die();
+    Globals.players.splice(Globals.players.indexOf(player), 1);
   });
 });

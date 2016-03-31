@@ -44,7 +44,7 @@ module.exports = function ( $scope ) {
     if (connection) return;
 
     addEventListener('keydown', function showScores ( ev ) {
-      if (ev.keyCode === 9) {
+      if (ev.keyCode === 9 && !$scope.showScores) {
 
         $scope.$apply(function () {
           $scope.showScores = true;
@@ -102,15 +102,14 @@ module.exports = function ( $scope ) {
             direction = 4;
           break;
           case 32:
-            respawn = 1;
+            respawn = !Globals.self.alive ? 1 : 0;
           break;
         }
 
         let message = {};
         if (direction) message.dr = direction;
-        else if (!Globals.self.alive) {
+        else if (respawn) {
           message.rs = respawn;
-          game.players.splice(game.players.indexOf(Globals.self, 1));
         }
 
         if (direction || respawn) connection.send(JSON.stringify(message));
@@ -131,6 +130,10 @@ module.exports = function ( $scope ) {
 
     function handleStateUpdate (message) {
       let update = JSON.parse(message.data);
+
+      $scope.$apply(function () {
+        $scope.$broadcast('update', update.sc);
+      });
 
       for (let pointID in update.pi) {
         let pointUpdate = update.pi[pointID];
@@ -185,8 +188,6 @@ module.exports = function ( $scope ) {
             });
           }
 
-          foundPlayer.name = playerUpdate.nm;
-          foundPlayer.score = playerUpdate.so || 0;
           foundPlayer.die();
 
         } else {
@@ -200,8 +201,7 @@ module.exports = function ( $scope ) {
         }
       }
 
-      //game.ditchTheDead();
-      $scope.$broadcast('update', game.players);
+      game.ditchTheDead();
     }
   });
 }

@@ -5,7 +5,7 @@ module.exports = function ( $scope, $filter ) {
 
   $scope.changeName = function () {
     $scope.playerName = $filter('checklength')($scope.playerName);
-    $scope.$emit('changeName', $scope.playerName);
+    $scope.$emit('changeName', $scope.playerName || 'UNNAMED');
     return $scope.playerName;
   };
 

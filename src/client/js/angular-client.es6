@@ -12,9 +12,8 @@ if (!window.clientInit) {
   const client = angular.module('client', [])
     .filter('checklength', function () {
       var prevInput;
-      var defInput = 'UNNAMED';
       return function ( input ) {
-        if (!input) return prevInput || defInput;
+        if (!input) return '';
         return prevInput = (input.length > 16 ? input.substr(0, 16) : input).toUpperCase();
       };
     })
@@ -22,10 +21,13 @@ if (!window.clientInit) {
       return function ( scores ) {
         if (!scores) return [];
         return scores.sort(function ( s0, s1 ) {
-          return s0.score > s1.score ? 1 : s0.score == s1.score ? 0 : -1;
+          return s0.so > s1.so ? -1 : s0.so == s1.so ? 0 : 1;
         }).map(function ( score, index ) {
-          score.place = index + 1;
-          return score;
+          return {
+            place: index + 1,
+            score: score.so,
+            name: score.nm
+          };
         });
       };
     });
