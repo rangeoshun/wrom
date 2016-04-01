@@ -23,19 +23,23 @@ module.exports = class Worm extends Entity {
     worm.player.score += score || 0;
   }
 
-  drop () {
-    let worm = this;
+  drop ( number ) {
+    const worm = this;
     const game = worm.game;
     if (!game.server) return;
 
-    console.log(`${worm.constructor.name} ${worm.id} is dropping:`)
+    const body = worm.body;
+    number = number || body.length;
 
-    worm.body.forEach(function ( partCoords ) {
+    console.log(`${worm.constructor.name} ${worm.id} is dropping:`)
+    for (let i = 0; i < number; i++) {
+      const partCoord = body[i];
+      if (!partCoord) return;
       if (Math.round(Math.random() * 2)) return;
 
       let point = worm.game.addPoint();
-      point.coords = worm.displace(partCoords, 4);
-    });
+      point.coords = worm.displace(partCoord, 4);
+    }
   }
 
   die () {

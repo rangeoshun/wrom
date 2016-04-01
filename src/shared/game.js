@@ -2,6 +2,7 @@
 const Tick = require('./tick.js');
 const Point = require('./point.js');
 const GoldenPoint = require('./golden-point.js');
+const MinePoint = require('./mine-point.js');
 const Worm = require('./worm.js');
 
 module.exports = class Game {
@@ -61,7 +62,7 @@ module.exports = class Game {
 
   addPoint ( type ) {
     const game = this;
-    const Type = type || game.getRandomPoint();
+    const Type = MinePoint;//type || game.getRandomPoint();
     let point = new Type(game);
 
     game.points.push(point);
@@ -183,6 +184,12 @@ module.exports = class Game {
 
   areColliding ( v1, v2 ) {
     return v1[0] === v2[0] && v1[1] === v2[1];
+  }
+
+  getDistance ( v1, v2 ) {
+    const a = Math.pow(Math.max(v1[0], v2[0]) - Math.min(v1[0], v2[0]), 2);
+    const b = Math.pow(Math.max(v1[1], v2[1]) - Math.min(v1[1], v2[1]), 2);
+    return Math.round(Math.sqrt(a + b));
   }
 
   init ( server ) {

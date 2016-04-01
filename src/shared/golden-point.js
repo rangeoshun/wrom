@@ -10,7 +10,5 @@ module.exports = class GoldenPoint extends Point {
     point.value = 50;
     point.color = [1,0.8,0];
     point.type = 'gp';
-
-    game.tick.onCallbacks.push(point.isColliding());
   }
 };
