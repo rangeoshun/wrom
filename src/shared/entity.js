@@ -2,6 +2,8 @@
 const Utils = require('./utils.js');
 const Pixel = require('./pixel.js');
 const Globals = require('./globals.js');
+const colors = require('./colors.js');
+const pickUpFX = require('./fx-pickup.js');
 
 module.exports = class Entity {
   constructor ( game ) {
@@ -14,11 +16,14 @@ module.exports = class Entity {
     entity.alive = true;
     entity.aliveUpdated = true;
 
-    entity.color = [1,1,1];
+    entity.color = colors.white;
     entity.colorUpdated = true;
     entity.name = '';
     entity.nameUpdated = true;
     entity.type = '';
+    entity.typeUpdated = true;
+
+    entity.dieFX = pickUpFX;
 
     if (!game.server) {
       Globals.renderCallbacks.push(entity.render());
@@ -39,10 +44,14 @@ module.exports = class Entity {
     entity.updated = entity.colorUpdated = true;
   }
 
-  die () {
+  die ( killerID ) {
     let entity = this;
+    let killer = entity.game.getPlayerById(killerID);
+
     entity.alive = false;
+    entity.killerID = killerID;
     entity.updated = entity.aliveUpdated = true;
+    if (killer) new entity.dieFX(killer);
     console.log(`${entity.constructor.name} ${entity.id} is dead`);
   }
 
@@ -78,7 +87,7 @@ module.exports = class Entity {
   relocate () {
     let entity = this;
     entity.coords = [entity.random(0), entity.random(1)];
-    entity.updated = entity.coordUpdated = true;
+    entity.updated = entity.coordsUpdated = true;
   }
 
   render () {

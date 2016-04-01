@@ -3,14 +3,15 @@
 const Globals = require('./globals.js');
 const Point = require('./point.js');
 const GoldenPoint = require('./golden-point.js');
+const MinePoint = require('./mine-point.js');
 let worm = require('./worm.js');
 const Game = require('./game.js');
-const game = new Game();
-game.init();
+const game = new Game(false, Globals);
 
 module.exports = function ( $scope ) {
   let connection;
 
+  game.globals = Globals;
   Globals.user = JSON.parse(atob(localStorage.wormer || 'e30='));
   $scope.globals = Globals;
 
@@ -123,12 +124,15 @@ module.exports = function ( $scope ) {
     connection.onmessage = handleIdentityupdate;
 
     function handleIdentityupdate ( message ) {
+//      game.tick.step();
       let update = JSON.parse(message.data);
       Globals.selfID = update.id;
       connection.onmessage = handleStateupdate;
+      game.tick.step();
     }
 
     function handleStateupdate (message) {
+//      game.tick.step();
       let update = JSON.parse(message.data);
 
       $scope.$apply(function () {
@@ -136,28 +140,32 @@ module.exports = function ( $scope ) {
       });
 
       for (let pointID in update.pi) {
-        let pointupdate = update.pi[pointID];
+        let pointUpdate = update.pi[pointID];
         let foundPoint = game.getPointById(pointID, Point);
         let type = '';
 
         if (!foundPoint) {
-
-          switch (pointupdate.tp) {
+          switch (pointUpdate.tp) {
             case 'p':
               type = Point;
             break;
             case 'gp':
               type = GoldenPoint;
             break;
+            case 'mp':
+              type = MinePoint;
+            break;
           }
 
           foundPoint = game.addPoint(type);
           foundPoint.id = pointID;
         }
-        if (pointupdate.de) {
-          foundPoint.die();
+
+        if (pointUpdate.de) {
+          foundPoint.die(pointUpdate.de);
         } else {
-          foundPoint.coords = pointupdate.co;
+          if (pointUpdate.co) foundPoint.coords = pointUpdate.co;
+          if (pointUpdate.am) foundPoint.armed = pointUpdate.am;
         }
       }
 
@@ -192,6 +200,7 @@ module.exports = function ( $scope ) {
 
         } else {
 
+          if (playerupdate.nm) foundPlayer.setName(playerupdate.nm);
           if (playerupdate.cl) foundPlayer.setColor(playerupdate.cl);
           if (playerupdate.go) foundPlayer.ghost = playerupdate.go;
           if (playerupdate.bd) foundPlayer.body = playerupdate.bd;
@@ -200,6 +209,7 @@ module.exports = function ( $scope ) {
       }
 
       game.ditchTheDead();
+      game.tick.step();
     }
   });
 }

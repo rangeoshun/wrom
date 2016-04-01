@@ -18,7 +18,7 @@
             ng-model="playerName"
             ng-change="changeName()" />
         </label>
-        <label><br /><br />
+        <label>
           <div ng-controller="colors">
             Color <br />
             <div ng-repeat="color in colors">
@@ -31,8 +31,10 @@
               </div>
             </div>
           </div>
-        </label><br /><br />
-        <button ng-click="goPlay()">PLAY</button>
+        </label>
+        <div>
+          <button ng-click="goPlay()">PLAY</button>
+        </div>
       </div>
     </div>
     <div ng-controller="screen"></div>

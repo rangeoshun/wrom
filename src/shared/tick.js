@@ -3,6 +3,7 @@
 module.exports = class Tick {
   constructor ( game ) {
     const tick = this;
+    const server = game.server;
     let callbacks = [[],[],[]];
     let syncCallbacks = [];
     let tickSpeed = 19;
@@ -11,7 +12,7 @@ module.exports = class Tick {
     tick.onCallbacks = callbacks[1];
     tick.afterCallbacks = callbacks[2];
 
-    tick.init = function tickHandler () {
+    tick.init = tick.step = function tickHandler ( server ) {
 
       let tickTime = parseInt(1000 / tickSpeed);
       let beforeCallbacks = callbacks[0];
@@ -43,7 +44,9 @@ module.exports = class Tick {
         });
       }
 
-      setTimeout(tickHandler, tickTime);
+      if (server) setTimeout(function () {
+        tickHandler(server);
+      }, tickTime);
     //  console.timeEnd(`Tick takes`);
     };
   }

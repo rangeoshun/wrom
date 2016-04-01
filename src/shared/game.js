@@ -6,44 +6,50 @@ const MinePoint = require('./mine-point.js');
 const Worm = require('./worm.js');
 
 module.exports = class Game {
-  constructor () {
+  constructor ( server, globals ) {
     const game = this;
     let points = game.points = [];
     let players = game.players = [];
     let syncCallbacks = game.syncCallbacks = [];
     let tick = game.tick = new Tick(game);
+    game.globals = globals;
+    game.server = server;
     game.previousState = {};
     game.paused = false;
 
-    function correctPoints () {
-      if (game.points.length < Math.round(game.players.length / 2)) {
-        game.addPoint();
+    if (server) {
+      function correctPoints () {
+        if (game.points.length < Math.round(game.players.length / 2)) {
+          game.addPoint();
+        }
       }
+
+      function cleanup () {
+        //  console.timeEnd(`Sync takes`);
+          game.ditchTheDead();
+      }
+
+      function syncPlayers ( player ) {
+        //  console.time(`Sync takes`);
+        let state = game.getState();
+        game.syncCallbacks.forEach(function ( callback, index ) {
+          if (callback.del) {
+            game.syncCallbacks.splice(index, 1);
+            return;
+          }
+
+          if (callback(state) === false) {
+            callback.del = true;
+          }
+        });
+      }
+
+      tick.afterCallbacks.push(syncPlayers);
+      tick.afterCallbacks.push(cleanup);
+      tick.afterCallbacks.push(correctPoints);
     }
 
-    function cleanup () {
-      //  console.timeEnd(`Sync takes`);
-        game.ditchTheDead();
-    }
-
-    function syncPlayers ( player ) {
-      //  console.time(`Sync takes`);
-      let state = game.getState();
-      game.syncCallbacks.forEach(function ( callback, index ) {
-        if (callback.del) {
-          game.syncCallbacks.splice(index, 1);
-          return;
-        }
-
-        if (callback(state) === false) {
-          callback.del = true;
-        }
-      });
-    }
-
-    tick.afterCallbacks.push(syncPlayers);
-    tick.afterCallbacks.push(cleanup);
-    tick.afterCallbacks.push(correctPoints);
+    tick.init(server);
   }
 
   togglePause () {
@@ -53,16 +59,19 @@ module.exports = class Game {
 
   getRandomPoint () {
     const factor = Math.round(Math.random() * 10);
+/*
     if (factor > 9) {
+      return MinePoint;
+    } else if (factor > 7) {
       return GoldenPoint;
-    } else {
+    } else {*/
       return Point;
-    }
+//    }
   }
 
   addPoint ( type ) {
     const game = this;
-    const Type = MinePoint;//type || game.getRandomPoint();
+    const Type = type || game.getRandomPoint();
     let point = new Type(game);
 
     game.points.push(point);
@@ -124,10 +133,32 @@ module.exports = class Game {
       let pointState = {};
 
       if (point.alive) {
-        pointState.tp = point.type;
-        pointState.co = point.coords;
+        if (point.nameUpdated || fullState) {
+          pointState.nm = point.name;
+          point.nameUpdated = fullState;
+        }
+
+        if (point.typeUpdated || fullState) {
+          pointState.tp = point.type;
+          point.typeUpdated = fullState;
+        }
+
+        if (point.coordsUpdated || fullState) {
+          pointState.co = point.coords;
+          point.coordsUpdated = fullState;
+        }
+
+        if (point.armedUpdated || fullState) {
+          pointState.am = point.armed;
+          point.armedUpdated = fullState;
+        }
+
+        if (point.ghost || fullState) {
+          pointState.go = point.ghost;
+          point.ghostUpdated = fullState;
+        }
       } else {
-        pointState.de = true;
+        pointState.de = point.killerID;
       }
 
       state.pi[point.id] = pointState;
@@ -190,13 +221,5 @@ module.exports = class Game {
     const a = Math.pow(Math.max(v1[0], v2[0]) - Math.min(v1[0], v2[0]), 2);
     const b = Math.pow(Math.max(v1[1], v2[1]) - Math.min(v1[1], v2[1]), 2);
     return Math.round(Math.sqrt(a + b));
-  }
-
-  init ( server ) {
-    const game = this;
-    if (server) {
-      game.server = true;
-      game.tick.init();
-    }
   }
 };

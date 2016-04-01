@@ -1,7 +1,7 @@
 "use strict";
 const Pixel = require('./pixel.js');
 const Point = require('./point.js');
-const Globals = require('./globals.js');
+const colors = require('./colors.js');
 
 module.exports = class MinePoint extends Point {
   constructor ( game ) {
@@ -9,26 +9,31 @@ module.exports = class MinePoint extends Point {
     const point = this;
     point.value = 0;
     point.type = 'mp';
+    point.typeUpdated = true;
     point.armed = false;
+    point.armedUpdated = true;
+    point.blowRadius = 5;
     point.armedColor = [1,0.2,0.2];
+
+    const factor = Math.round(Math.random() * 10);
+    if (factor > 7) {
+      point.color = colors.gold;
+    }
   }
 
   render () {
     const point = this;
-    return function () {
+
+    return function ( screen ) {
       const armed = point.armed;
-      const sinTime = !armed ? 1 : Math.sin(parseFloat('0.'+ (new Date().getTime() / 1000).toString().split('.')[1]) * Math.PI);
+      const sinTime = 1;//!armed ? 1 : Math.sin(parseFloat('0.'+ (new Date().getTime() / 1000).toString().split('.')[1]) * Math.PI);
       let color = !armed ? point.color : point.armedColor;
-
-      console.log(armed)
-
-      let pixels = [];
       let r = color[0] * sinTime;
       let g = color[1] * sinTime;
       let b = color[2] * sinTime;
 
+      let pixels = [new Pixel(1, r, g, b, point.coords)];
       pixels.die = !point.alive;
-      pixels.push(new Pixel(1, r, g, b, point.coords));
 
       return pixels;
     };
@@ -37,11 +42,11 @@ module.exports = class MinePoint extends Point {
   isColliding () {
     const point = this;
     const game = point.game;
-    const coords = point.coords;
-    let countLength = 4;
+    const countLength = 5;
     let countDown = countLength;
 
     return function ( players ) {
+      const coords = point.coords;
 
       if (point.armed) {
         countDown--;
@@ -54,10 +59,12 @@ module.exports = class MinePoint extends Point {
         player.body.forEach(function ( part, index ) {
           const distance = game.getDistance(part, coords);
 
-          if (distance < 6) {
+          if (distance < point.blowRadius + 2) {
             point.armed = true;
+            point.armedUpdated = true;
+            point.updated = true;
 
-            if (distance < 4 && !countDown) {
+            if (distance < point.blowRadius && !countDown) {
 
               console.log(`${player.constructor.name} ${player.id} is blown to peaces by ${point.constructor.name} ${point.id}`);
               const rest = length - index - 1;
@@ -66,20 +73,15 @@ module.exports = class MinePoint extends Point {
               if (!index) {
                 player.die();
               } else {
-                player.body.splice(index, rest);
-                player.drop(rest);
+                player.drop(rest, index, player.body.splice(index, rest));
               }
 
               player.addScore(value);
-              point.die();
             }
-          } else {
-//            point.armed = false;
-//            countDown = countLength;
           }
         });
       });
-
+      if (!countDown) point.die();
       return point.alive;
     }
   }

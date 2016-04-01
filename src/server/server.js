@@ -2,9 +2,7 @@
 const Globals = require('./globals.js');
 const Player = require('./player.js');
 const Game = require('./game.js');
-const game = new Game();
-game.globals = Globals;
-game.init(true);
+const game = new Game(true, Globals);
 
 const url = require("url");
 const path = require("path");

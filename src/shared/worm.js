@@ -23,30 +23,28 @@ module.exports = class Worm extends Entity {
     worm.player.score += score || 0;
   }
 
-  drop ( number ) {
+  drop ( number, index, body ) {
     const worm = this;
     const game = worm.game;
     if (!game.server) return;
 
-    const body = worm.body;
-    number = number || body.length;
-
     console.log(`${worm.constructor.name} ${worm.id} is dropping:`)
-    for (let i = 0; i < number; i++) {
-      const partCoord = body[i];
-      if (!partCoord) return;
-      if (Math.round(Math.random() * 2)) return;
-
-      let point = worm.game.addPoint();
-      point.coords = worm.displace(partCoord, 4);
+    for (let i = index; i < number; i++) {
+      if (!Math.round(Math.random() * 2)) {
+        const partCoord = body[i];
+        let point = game.addPoint();
+        point.coords = worm.displace(partCoord, 5);
+        point.updated = point.coordsUpdated = true;
+      }
     }
   }
 
   die () {
-    let worm = this;
-    if (!worm.alive) return;
+    const worm = this;
+    const body = worm.body;
 
-    worm.drop();
+    worm.drop(body.length, 0, body);
+    if (!worm.alive) return;
     worm.alive = false;
     worm.updated = true;
   }
@@ -80,12 +78,15 @@ module.exports = class Worm extends Entity {
 
         if (!game.server) {
           Globals.renderCallbacks.push(worm.render());
-        }
-        game.tick.beforeCallbacks.push(worm.move());
-        setTimeout(function () {
+        } else {
 
-          worm.ghost = false;
+          game.tick.beforeCallbacks.push(worm.move());
           game.tick.onCallbacks.push(worm.isColliding());
+        }
+
+        setTimeout(function () {
+          worm.ghost = false;
+          worm.ghostUpdated = true;
         }, 2000);
       }
     })(game.players);
@@ -181,9 +182,9 @@ module.exports = class Worm extends Entity {
 
   render () {
     let worm = this;
-
     return function () {
       let pixels = [];
+
       if (!worm.alive) {
         pixels.die = true;
         return pixels;

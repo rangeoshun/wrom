@@ -7,7 +7,7 @@ module.exports = function ( $scope ) {
   $scope.playerColor = $scope.globals.user.color || false;
 
   $scope.isSelected = function ( item ) {
-    return item.selected ? '#fff' : 'transparent';
+    return item.selected ? '#000' : 'transparent';
   };
 
   $scope.changeColor = function ( colorArray ) {

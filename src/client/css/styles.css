@@ -1,13 +1,15 @@
-*, input, button {
+body, body div, body label, body input, body button {
   background-color: #646464;
   font-smoothing : none;
   -webkit-font-smoothing : none;
   color: white;
   font-size: 5px;
   font-family: 'C64 Pro Mono', "Consolas", "Myriad", "Arial", Gadget, sans-serif;
+  display: block;
 }
 
-input {
+label {
+  margin-top: 5px;
 }
 
 div[ng-controller=connect] {
@@ -79,7 +81,7 @@ input, .color-sample {
 }
 
 button {
-  margin: 0 auto;
+  margin: 25px auto 0;
   display: block;
   padding: 2px 6px;
 }

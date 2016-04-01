@@ -10,21 +10,35 @@ module.exports = class Point extends Entity {
     point.value = 10;
     point.type = 'p';
 
-    game.tick.onCallbacks.push(point.isColliding());
+    if (game.server) {
+      game.tick.onCallbacks.push(point.isColliding());
+      game.tick.onCallbacks.push(point.isOutOfBounds());
+    }
+  }
+
+  isOutOfBounds () {
+    const point = this;
+    return function () {
+      if (point.isCoordOutOfBOunds(point.coords)) {
+        point.die();
+        return point.alive;
+      }
+    }
   }
 
   isColliding () {
     const point = this;
     const game = point.game;
-    const coords = point.coords;
 
     return function ( players ) {
+      const coords = point.coords;
+
       players.forEach(function ( player ) {
         if (game.areColliding(player.coords, coords)) {
           console.log(`${player.constructor.name} ${player.id} is collecting ${point.constructor.name} ${point.id}`);
           player.grow(point.value / 10);
           player.player.score += point.value;
-          point.die();
+          point.die(player.id);
         }
       });
 
