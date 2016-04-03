@@ -59,14 +59,14 @@ module.exports = class Game {
 
   getRandomPoint () {
     const factor = Math.round(Math.random() * 10);
-/*
+
     if (factor > 9) {
       return MinePoint;
     } else if (factor > 7) {
       return GoldenPoint;
-    } else {*/
+    } else {
       return Point;
-//    }
+    }
   }
 
   addPoint ( type ) {

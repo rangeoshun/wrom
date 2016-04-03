@@ -1,6 +1,7 @@
 "use strict";
 const Pixel = require('./pixel.js');
 const Point = require('./point.js');
+const blowUpFX = require('./fx-blowup.js');
 const colors = require('./colors.js');
 
 module.exports = class MinePoint extends Point {
@@ -12,8 +13,10 @@ module.exports = class MinePoint extends Point {
     point.typeUpdated = true;
     point.armed = false;
     point.armedUpdated = true;
-    point.blowRadius = 5;
     point.armedColor = [1,0.2,0.2];
+    point.countLength = 5;
+    point.countDown = point.countLength;
+    point.blowRadius = 5;
 
     const factor = Math.round(Math.random() * 10);
     if (factor > 7) {
@@ -39,18 +42,27 @@ module.exports = class MinePoint extends Point {
     };
   }
 
+  arm () {
+    const point = this;
+
+    if (!point.armed) {
+      if (!point.game.server) new blowUpFX(point);
+      point.armed = true;
+      point.armedUpdated = true;
+      point.updated = true;
+    }
+  }
+
   isColliding () {
     const point = this;
     const game = point.game;
-    const countLength = 5;
-    let countDown = countLength;
 
     return function ( players ) {
       const coords = point.coords;
-
       if (point.armed) {
-        countDown--;
+        point.countDown--;
       }
+      const countDown = point.countDown;
 
       players.forEach(function ( player ) {
         const body = player.body;
@@ -59,29 +71,27 @@ module.exports = class MinePoint extends Point {
         player.body.forEach(function ( part, index ) {
           const distance = game.getDistance(part, coords);
 
-          if (distance < point.blowRadius + 2) {
-            point.armed = true;
-            point.armedUpdated = true;
-            point.updated = true;
+          if (distance < point.blowRadius
+            && (part[0] === coords[0]
+              || part[1] === coords[1])) {
 
-            if (distance < point.blowRadius && !countDown) {
+            point.arm();
+
+            if (!point.countDown) {
 
               console.log(`${player.constructor.name} ${player.id} is blown to peaces by ${point.constructor.name} ${point.id}`);
               const rest = length - index - 1;
-              const value = rest * -10;
-
               if (!index) {
                 player.die();
               } else {
                 player.drop(rest, index, player.body.splice(index, rest));
               }
-
-              player.addScore(value);
             }
           }
         });
       });
-      if (!countDown) point.die();
+
+      if (!countDown) point.die(1);
       return point.alive;
     }
   }

@@ -2,29 +2,28 @@
 const Pixel = require('./pixel.js');
 const colors = require('./colors.js');
 
-module.exports = function pickUpFX ( entity ) {
+module.exports = function pickUpFX ( entity, color ) {
   const game = entity.game;
   const createTime = new Date().getTime();
-  const direction = [entity.direction[0], entity.direction[1]];
-  const coords = [entity.coords[0], entity.coords[1]];
-  const baseColor = colors.lightCyan;
-  let duration = 500;
-  let lineLength = 0;
+  let duration = 1000;
+
   game.tick.onCallbacks.push(function () {
-    lineLength++;
-    console.log(lineLength);
     duration -= new Date().getTime() - createTime;
-    return duration > 1;
+    return duration > 0;
   });
 
-  game.globals.renderCallbacks.push(function () {
+  game.globals.renderCallbacks.push(function ( screen ) {
     const pixels = [];
-    pixels.die = duration < 1;
+    pixels.die = duration < 0;
 
-    for (let i = 0; i < lineLength + 1; i++) {
-      let dimension = direction[0] ? 1 : 0;
-      pixels.push(new Pixel(0,1,1,1,[direction[dimension] + i]).setColor(baseColor));
-      pixels.push(new Pixel(0,1,1,1,[direction[dimension] - i]).setColor(baseColor));
+    for (let i = 0; i < entity.body.length; i++) {
+      const factor = duration / 1000;
+      const r = entity.color[0] + (color[0] - entity.color[0]) * factor;
+      const g = entity.color[1] + (color[1] - entity.color[1]) * factor;
+      const b = entity.color[2] + (color[2] - entity.color[2]) * factor;
+      const coords = entity.body[i];
+
+      pixels.push(new Pixel(0,1,1,1,coords).setColor([r,g,b]));
     }
 
     return pixels;

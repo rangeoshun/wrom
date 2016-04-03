@@ -23,7 +23,7 @@ module.exports = class Entity {
     entity.type = '';
     entity.typeUpdated = true;
 
-    entity.dieFX = pickUpFX;
+    entity.dieFX = !game.server ? pickUpFX : null;
 
     if (!game.server) {
       Globals.renderCallbacks.push(entity.render());
@@ -51,7 +51,7 @@ module.exports = class Entity {
     entity.alive = false;
     entity.killerID = killerID;
     entity.updated = entity.aliveUpdated = true;
-    if (killer) new entity.dieFX(killer);
+    if (entity.dieFX && killer) new entity.dieFX(killer, entity.color);
     console.log(`${entity.constructor.name} ${entity.id} is dead`);
   }
 

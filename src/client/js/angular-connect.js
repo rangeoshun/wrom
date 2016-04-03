@@ -165,7 +165,9 @@ module.exports = function ( $scope ) {
           foundPoint.die(pointUpdate.de);
         } else {
           if (pointUpdate.co) foundPoint.coords = pointUpdate.co;
-          if (pointUpdate.am) foundPoint.armed = pointUpdate.am;
+          if (pointUpdate.am) {
+            foundPoint.arm();
+          }
         }
       }
 
