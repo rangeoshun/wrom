@@ -84,10 +84,6 @@ wss.on('request', function ( request ) {
     const name = update.nm;
     const die = update.de;
 
-    if (die) {
-      player.entity.die();
-    }
-
     if (color) {
       player.setColor(color);
     }
@@ -96,7 +92,31 @@ wss.on('request', function ( request ) {
       player.setName(name);
     }
 
-    if (respawn && !player.entity.alive) {
+    if (player.entity.alive) {
+      if (die) {
+        player.entity.die();
+      }
+
+      if (direction) {
+
+        switch (direction) {
+          case 1:
+            direction = [0, -1];
+          break;
+          case 2:
+            direction = [1, 0];
+          break;
+          case 3:
+            direction = [0, 1];
+          break;
+          case 4:
+            direction = [-1, 0];
+          break;
+        }
+
+        player.entity.setDirection(direction);
+      }
+    } else if (respawn) {
 
       player.score = 0;
       delete player.entity;
@@ -105,24 +125,6 @@ wss.on('request', function ( request ) {
       player.entity.color = player.color;
       player.entity.name = player.name;
 
-    } else if (direction) {
-
-      switch (direction) {
-        case 1:
-          direction = [0, -1];
-        break;
-        case 2:
-          direction = [1, 0];
-        break;
-        case 3:
-          direction = [0, 1];
-        break;
-        case 4:
-          direction = [-1, 0];
-        break;
-      }
-
-      player.entity.setDirection(direction);
     }
   });
 
