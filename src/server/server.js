@@ -82,6 +82,7 @@ wss.on('request', function ( request ) {
     const spawn = update.sa;
     const color = update.cl;
     const name = update.nm;
+    const ability = update.ai;
     const die = update.de;
 
     if (color) {
@@ -93,6 +94,11 @@ wss.on('request', function ( request ) {
     }
 
     if (player.entity.alive) {
+
+      if (ability && player.entity.ability) {
+        player.entity.ability();
+      }
+
       if (die) {
         player.entity.die();
       }

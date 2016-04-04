@@ -13,6 +13,7 @@ label {
 }
 
 div[ng-controller=connect] {
+  margin-top: 5px;
   -webkit-transform-style: preserve-3d;
   transform: rotateY(180deg) scale(2) translateY(25%);
   transform-style: preserve-3d;
@@ -31,6 +32,22 @@ div[ng-controller=connect].screen {
   transform: rotateY(0deg) scale(2) translateY(25%);
 }
 
+div.status {
+  height: 9px;
+  width: 100%;
+}
+
+div.status > input {
+  border: none;
+  width: 300px;
+  margin: 0;
+  padding: 0;
+}
+
+div.status > .score {
+  float: right;
+}
+
 div[ng-controller=setup], div[ng-controller=screen], div[ng-controller=scores] {
   backface-visibility: hidden;
   background-color: black;
@@ -40,6 +57,9 @@ div[ng-controller=setup], div[ng-controller=screen], div[ng-controller=scores] {
   transform: rotateY(0);
 }
 
+div[ng-controller=scores] {
+  margin: 5px;
+}
 
 div[ng-controller=scores], div[ng-controller=scores] * {
   background-color: transparent;

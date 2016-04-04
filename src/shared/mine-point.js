@@ -11,17 +11,22 @@ module.exports = class MinePoint extends Point {
     point.value = 0;
     point.type = 'mp';
     point.typeUpdated = true;
+    point.armedColor = [1,0.2,0.2];
+    point.color = point.armedColor;
     point.armed = false;
     point.armedUpdated = true;
-    point.armedColor = [1,0.2,0.2];
-    point.countLength = 5;
+    point.countLength = 6;
     point.countDown = point.countLength;
     point.blowRadius = 5;
 
-    const factor = Math.round(Math.random() * 10);
-    if (factor > 7) {
-      point.color = colors.gold;
-    }
+    setTimeout(function () {
+      const factor = Math.round(Math.random() * 10);
+      if (factor > 7) {
+        point.color = colors.gold;
+      } else {
+        point.color = colors.white;
+      }
+    }, 1000);
   }
 
   render () {
@@ -53,20 +58,33 @@ module.exports = class MinePoint extends Point {
     }
   }
 
+  onCollision ( player, bodyIndex ) {
+    const point = this;
+    const length = player.body.length;
+    const rest = length - bodyIndex - 1;
+
+    if (!bodyIndex) {
+      player.die();
+    } else {
+      player.drop(rest, bodyIndex, player.body.splice(bodyIndex, rest));
+    }
+  }
+
   isColliding () {
     const point = this;
     const game = point.game;
 
     return function ( players ) {
       const coords = point.coords;
+
       if (point.armed) {
         point.countDown--;
       }
       const countDown = point.countDown;
 
       players.forEach(function ( player ) {
+//        if (player.id === point.creator) return point.alive;
         const body = player.body;
-        const length = body.length;
 
         player.body.forEach(function ( part, index ) {
           const distance = game.getDistance(part, coords);
@@ -80,12 +98,7 @@ module.exports = class MinePoint extends Point {
             if (!point.countDown) {
 
               console.log(`${player.constructor.name} ${player.id} is blown to peaces by ${point.constructor.name} ${point.id}`);
-              const rest = length - index - 1;
-              if (!index) {
-                player.die();
-              } else {
-                player.drop(rest, index, player.body.splice(index, rest));
-              }
+              point.onCollision(player, index);
             }
           }
         });

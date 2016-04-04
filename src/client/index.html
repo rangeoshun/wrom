@@ -8,6 +8,10 @@
 </head>
 <body>
   <div class="{{state}}" ng-controller="connect">
+    <div class="status">
+      <span class="msg" ng-if="state == 'screen'">{{status.message}}</span>
+      <span class="score" ng-if="state == 'screen'">{{status.score}}</span>
+    </div>
     <div ng-controller="setup">
       <div class="setup-content">
         <label>

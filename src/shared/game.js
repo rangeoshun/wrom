@@ -3,6 +3,7 @@ const Tick = require('./tick.js');
 const Point = require('./point.js');
 const GoldenPoint = require('./golden-point.js');
 const MinePoint = require('./mine-point.js');
+const PickupMinePoint = require('./pickup-mine-point.js');
 const Worm = require('./worm.js');
 
 module.exports = class Game {
@@ -19,7 +20,11 @@ module.exports = class Game {
 
     if (server) {
       function correctPoints () {
-        if (game.points.length < Math.round(game.players.length / 2)) {
+        let pointCount = 0;
+        game.points.forEach(function ( point ) {
+          if (!point.creator) pointCount++;
+        });
+        if (pointCount < Math.round(game.players.length / 2)) {
           game.addPoint();
         }
       }
@@ -61,7 +66,7 @@ module.exports = class Game {
     const factor = Math.round(Math.random() * 10);
 
     if (factor > 9) {
-      return MinePoint;
+      return PickupMinePoint;
     } else if (factor > 7) {
       return GoldenPoint;
     } else {
@@ -120,6 +125,7 @@ module.exports = class Game {
 
     game.globals.players.forEach(function ( player ) {
       state.sc.push({
+        id: player.id,
         nm: player.name,
         so: player.score,
         cl: player.color,
@@ -128,11 +134,12 @@ module.exports = class Game {
     });
 
     game.points.forEach(function ( point ) {
-      if (!fullState && point.updated === false) return;
+      if (!fullState && !point.updated) return;
       if (!state.hasOwnProperty('pi')) state.pi = {};
       let pointState = {};
 
       if (point.alive) {
+
         if (point.nameUpdated || fullState) {
           pointState.nm = point.name;
           point.nameUpdated = fullState;
@@ -172,6 +179,11 @@ module.exports = class Game {
 
       if (player.alive) {
 
+        if (player.abilityUpdated || fullState) {
+          playerState.ai = 1;
+          player.abilityUpdated = fullState;
+        }
+
         if (player.colorUpdated || fullState) {
           playerState.cl = player.color;
           player.colorUpdated = fullState;
@@ -192,7 +204,12 @@ module.exports = class Game {
           player.ghostUpdated = fullState;
         }
       } else {
-        playerState.de = true;
+        playerState.de = 1;
+      }
+
+      if (player.messageUpdated || fullState) {
+        playerState.ms = player.message;
+        player.messageUpdated = fullState;
       }
 
       state.pa[player.id] = playerState;

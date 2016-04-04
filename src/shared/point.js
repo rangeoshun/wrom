@@ -1,5 +1,6 @@
 "use strict";
 const Entity = require('./entity.js');
+const createFX = require('./fx-create.js');
 
 module.exports = class Point extends Entity {
   constructor ( game ) {
@@ -14,6 +15,14 @@ module.exports = class Point extends Entity {
       game.tick.onCallbacks.push(point.isColliding());
       game.tick.onCallbacks.push(point.isOutOfBounds());
     }
+
+    new createFX(point);
+  }
+
+  setCreator ( creatorID ) {
+    const point = this;
+    point.creator = creatorID;
+    point.updated = point.creatorUpdated = true;
   }
 
   isOutOfBounds () {
@@ -26,6 +35,15 @@ module.exports = class Point extends Entity {
     }
   }
 
+  onCollision ( player ) {
+    const point = this;
+    const game = point.game;
+
+    player.grow(point.value / 10);
+    player.player.score += point.value;
+    point.die(player.id);
+  }
+
   isColliding () {
     const point = this;
     const game = point.game;
@@ -36,9 +54,7 @@ module.exports = class Point extends Entity {
       players.forEach(function ( player ) {
         if (game.areColliding(player.coords, coords)) {
           console.log(`${player.constructor.name} ${player.id} is collecting ${point.constructor.name} ${point.id}`);
-          player.grow(point.value / 10);
-          player.player.score += point.value;
-          point.die(player.id);
+          point.onCollision(player);
         }
       });
 

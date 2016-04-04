@@ -4,7 +4,9 @@ const Globals = require('./globals.js');
 const Point = require('./point.js');
 const GoldenPoint = require('./golden-point.js');
 const MinePoint = require('./mine-point.js');
-let worm = require('./worm.js');
+const PickupMinePoint = require('./pickup-mine-point.js');
+
+const Worm = require('./worm.js');
 const Game = require('./game.js');
 const game = new Game(false, Globals);
 
@@ -15,8 +17,14 @@ module.exports = function ( $scope ) {
   Globals.user = JSON.parse(atob(localStorage.wormer || 'e30='));
   $scope.globals = Globals;
 
+  $scope.status = {
+    message: '',
+    score: 0
+  };
+
   $scope.game = game;
   $scope.state = 'setup';
+
   $scope.getState = function () {
     return $scope.state;
   };
@@ -39,6 +47,12 @@ module.exports = function ( $scope ) {
     $scope.state === 'screen' ? 'setup' : 'screen';
     return $scope.state;
   };
+
+  $scope.$on('update', function ( ev, scores ) {
+    scores.forEach(function ( score ) {
+      if (score.id === Globals.selfID) $scope.status.score = score.so;
+    });
+  });
 
   $scope.$on('goPlay', function () {
     $scope.state = 'screen';
@@ -88,6 +102,7 @@ module.exports = function ( $scope ) {
         let code = ev.keyCode;
         let direction;
         let respawn = 0;
+        let ability = 0;
 
         switch (code) {
           case 38:
@@ -104,16 +119,20 @@ module.exports = function ( $scope ) {
           break;
           case 32:
             respawn = !Globals.self.alive ? 1 : 0;
+            ability = !respawn ? 1 : 0;
           break;
         }
 
         let message = {};
-        if (direction) message.dr = direction;
-        else if (respawn) {
+        if (direction) {
+          message.dr = direction;
+        } else if (respawn) {
           message.rs = respawn;
+        } else if (ability) {
+          message.ai = ability;
         }
 
-        if (direction || respawn) connection.send(JSON.stringify(message));
+        if (direction || respawn || ability) connection.send(JSON.stringify(message));
       });
     };
 
@@ -155,6 +174,9 @@ module.exports = function ( $scope ) {
             case 'mp':
               type = MinePoint;
             break;
+            case 'pmp':
+              type = PickupMinePoint;
+            break;
           }
 
           foundPoint = game.addPoint(type);
@@ -164,7 +186,15 @@ module.exports = function ( $scope ) {
         if (pointUpdate.de) {
           foundPoint.die(pointUpdate.de);
         } else {
-          if (pointUpdate.co) foundPoint.coords = pointUpdate.co;
+
+          if (pointUpdate.ce) {
+            foundPoint.setCreator(pointUpdate.ce);
+          }
+
+          if (pointUpdate.co) {
+            foundPoint.setCoords(pointUpdate.co);
+          }
+
           if (pointUpdate.am) {
             foundPoint.arm();
           }
@@ -172,7 +202,7 @@ module.exports = function ( $scope ) {
       }
 
       for (let playerID in update.pa) {
-        let playerupdate = update.pa[playerID];
+        let playerUpdate = update.pa[playerID];
         let foundPlayer = game.getPlayerById(playerID);
 
         if (!foundPlayer) {
@@ -181,6 +211,7 @@ module.exports = function ( $scope ) {
           foundPlayer.id = playerID;
 
           if (foundPlayer.id === Globals.selfID) {
+
             $scope.$apply(function () {
               $scope.showScores = false;
             });
@@ -191,7 +222,17 @@ module.exports = function ( $scope ) {
           }
         }
 
-        if (playerupdate.de) {
+        if (foundPlayer.id === Globals.selfID) {
+          if (typeof playerUpdate.ms === 'string') $scope.status.message = playerUpdate.ms;
+        }
+
+        if (playerUpdate.nm) foundPlayer.setName(playerUpdate.nm);
+        if (playerUpdate.cl) foundPlayer.setColor(playerUpdate.cl);
+        if (playerUpdate.go) foundPlayer.ghost = playerUpdate.go;
+        if (playerUpdate.bd) foundPlayer.body = playerUpdate.bd;
+        if (playerUpdate.co) foundPlayer.coords = foundPlayer.body[0];
+
+        if (playerUpdate.de) {
           if (foundPlayer.id === Globals.selfID) {
             $scope.$apply(function () {
               $scope.showScores = true;
@@ -199,14 +240,6 @@ module.exports = function ( $scope ) {
           }
 
           foundPlayer.die();
-
-        } else {
-
-          if (playerupdate.nm) foundPlayer.setName(playerupdate.nm);
-          if (playerupdate.cl) foundPlayer.setColor(playerupdate.cl);
-          if (playerupdate.go) foundPlayer.ghost = playerupdate.go;
-          if (playerupdate.bd) foundPlayer.body = playerupdate.bd;
-          if (playerupdate.co) foundPlayer.coords = foundPlayer.body[0];
         }
       }
 

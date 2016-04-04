@@ -32,6 +32,13 @@ module.exports = class Entity {
     console.log(`${entity.constructor.name} ${entity.id} is alive`);
   }
 
+  setCoords ( coords ) {
+    let entity = this;
+    entity.coords = coords;
+    entity.updated = entity.nameCoords = true;
+  }
+
+
   setName ( name ) {
     let entity = this;
     entity.name = name;
@@ -59,11 +66,16 @@ module.exports = class Entity {
     return Math.floor(Math.random() * Globals.resolution[dimension]);
   }
 
-  isCoordOutOfBOunds ( coord ) {
-    if (coord[0] >= Globals.resolution[0]
-      || coord[0] < 0
-      || coord[1] >= Globals.resolution[1]
-      || coord[1] < 0) {
+  isOutOfBounds ( coords ) {
+    let entity = this;
+    return !entity.isCoordOutOfBOunds(entity.coords);
+  }
+
+  isCoordOutOfBOunds ( coords ) {
+    if (coords[0] >= Globals.resolution[0]
+      || coords[0] < 0
+      || coords[1] >= Globals.resolution[1]
+      || coords[1] < 0) {
 
       return true;
     }
@@ -77,17 +89,12 @@ module.exports = class Entity {
     let y = Math.round(Math.random() * by + 1) - 1;
     let newCoord = [coord[0] + x, coord[1] + y];
 
-    if (entity.isCoordOutOfBOunds(newCoord)) {
-      newCoord = [coord[0] + x * -1, coord[1] + y * -1];
-    }
-
     return newCoord;
   }
 
   relocate () {
     let entity = this;
-    entity.coords = [entity.random(0), entity.random(1)];
-    entity.updated = entity.coordsUpdated = true;
+    entity.setCoords([entity.random(0), entity.random(1)]);
   }
 
   render () {

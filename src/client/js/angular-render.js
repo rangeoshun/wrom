@@ -6,7 +6,6 @@ module.exports = function ( $scope ) {
 
   const _screen_canvas = document.createElement('canvas');
   const _screen = _screen_canvas.getContext("2d");
-  _screen.imageSmoothingEnabled= false;
 /*
   const _setup_canvas = document.createElement('canvas');
   const _setup = _setup_canvas.getContext("2d");
