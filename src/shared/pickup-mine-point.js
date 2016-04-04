@@ -8,7 +8,7 @@ module.exports = class PickupMinePoint extends Point {
     super(game);
     const point = this;
     point.value = 0;
-    point.type = 'pmp';
+    point.type = 'pcp';
     point.color = colors.purple;
   }
 

@@ -15,7 +15,7 @@ module.exports = class MinePoint extends Point {
     point.color = point.armedColor;
     point.armed = false;
     point.armedUpdated = true;
-    point.countLength = 6;
+    point.countLength = 5;
     point.countDown = point.countLength;
     point.blowRadius = 5;
 

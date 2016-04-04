@@ -12,7 +12,7 @@ module.exports = class Worm extends Entity {
     worm.nextDirection = false;
 
     worm.body = [];
-    worm.size = 4;
+    worm.size = 5;
     worm.setMessage('Good luck!');
     worm.spawn();
   }
@@ -27,6 +27,12 @@ module.exports = class Worm extends Entity {
     const worm = this;
     worm.ability = ability || null;
     worm.updated = worm.abilityUpdated = true;
+  }
+
+  setGhost ( to ) {
+    const worm = this;
+    worm.ghost = to ? true : false;
+    worm.updated = worm.ghostUpdated = true;
   }
 
   addScore ( score ) {
@@ -54,7 +60,7 @@ module.exports = class Worm extends Entity {
   die () {
     const worm = this;
     const body = worm.body;
-    worm.setMessage('Bad luck...');
+    worm.setMessage('Bad luck... Press [SPACE] to respawn!');
     worm.drop(body.length, 0, body);
     if (!worm.alive) return;
     worm.alive = false;
@@ -69,8 +75,7 @@ module.exports = class Worm extends Entity {
     let dirY = (dirX) ? 0 : (Math.round(Math.random())) ? -1 : 1;
 
     if (game.server) {
-      worm.ghost = true;
-      worm.ghostUpdated = true;
+      worm.setGhost(true);
     }
 
     worm.direction = [dirX, dirY];
@@ -100,10 +105,11 @@ module.exports = class Worm extends Entity {
           game.tick.onCallbacks.push(worm.isColliding());
         }
 
-        setTimeout(function () {
-          worm.ghost = false;
-          worm.ghostUpdated = true;
-        }, 2000);
+        if (game.server) {
+          setTimeout(function () {
+            worm.setGhost(false);
+          }, 5000);
+        }
       }
     })(game.players);
   }

@@ -4,6 +4,7 @@ const Point = require('./point.js');
 const GoldenPoint = require('./golden-point.js');
 const MinePoint = require('./mine-point.js');
 const PickupMinePoint = require('./pickup-mine-point.js');
+const GhostPoint = require('./ghost-point.js');
 const Worm = require('./worm.js');
 
 module.exports = class Game {
@@ -63,9 +64,11 @@ module.exports = class Game {
   }
 
   getRandomPoint () {
-    const factor = Math.round(Math.random() * 10);
+    const factor = Math.round(Math.random() * 12);
 
-    if (factor > 9) {
+    if (factor > 10) {
+      return GhostPoint;
+    } else if (factor > 9) {
       return PickupMinePoint;
     } else if (factor > 7) {
       return GoldenPoint;

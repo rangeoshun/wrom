@@ -5,6 +5,7 @@ const Point = require('./point.js');
 const GoldenPoint = require('./golden-point.js');
 const MinePoint = require('./mine-point.js');
 const PickupMinePoint = require('./pickup-mine-point.js');
+const GhostPoint = require('./ghost-point.js');
 
 const Worm = require('./worm.js');
 const Game = require('./game.js');
@@ -168,14 +169,17 @@ module.exports = function ( $scope ) {
             case 'p':
               type = Point;
             break;
-            case 'gp':
+            case 'glp':
               type = GoldenPoint;
             break;
-            case 'mp':
+            case 'mnp':
               type = MinePoint;
             break;
-            case 'pmp':
+            case 'pcp':
               type = PickupMinePoint;
+            break;
+            case 'gop':
+              type = GhostPoint;
             break;
           }
 
@@ -228,7 +232,7 @@ module.exports = function ( $scope ) {
 
         if (playerUpdate.nm) foundPlayer.setName(playerUpdate.nm);
         if (playerUpdate.cl) foundPlayer.setColor(playerUpdate.cl);
-        if (playerUpdate.go) foundPlayer.ghost = playerUpdate.go;
+        if (playerUpdate.go !== undefined) foundPlayer.setGhost(!!playerUpdate.go);
         if (playerUpdate.bd) foundPlayer.body = playerUpdate.bd;
         if (playerUpdate.co) foundPlayer.coords = foundPlayer.body[0];
 
