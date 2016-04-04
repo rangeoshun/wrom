@@ -64,7 +64,7 @@ module.exports = class Game {
   }
 
   getRandomPoint () {
-    const factor = Math.round(Math.random() * 12);
+    const factor = Math.round(Math.random() * 11);
 
     if (factor > 10) {
       return GhostPoint;
@@ -172,7 +172,7 @@ module.exports = class Game {
       }
 
       state.pi[point.id] = pointState;
-      point.updated = false;
+      point.updated = fullState;
     });
 
     game.players.forEach(function ( player ) {
@@ -216,7 +216,7 @@ module.exports = class Game {
       }
 
       state.pa[player.id] = playerState;
-      player.updated = false;
+      player.updated = fullState;
     });
 
     return state;

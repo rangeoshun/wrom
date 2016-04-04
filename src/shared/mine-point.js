@@ -9,7 +9,7 @@ module.exports = class MinePoint extends Point {
     super(game);
     const point = this;
     point.value = 0;
-    point.type = 'mp';
+    point.type = 'mnp';
     point.typeUpdated = true;
     point.armedColor = [1,0.2,0.2];
     point.color = point.armedColor;
@@ -83,7 +83,7 @@ module.exports = class MinePoint extends Point {
       const countDown = point.countDown;
 
       players.forEach(function ( player ) {
-//        if (player.id === point.creator) return point.alive;
+        if (player.id === point.creator) return point.alive;
         const body = player.body;
 
         player.body.forEach(function ( part, index ) {
