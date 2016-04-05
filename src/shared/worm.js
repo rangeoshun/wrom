@@ -62,7 +62,6 @@ module.exports = class Worm extends Entity {
     const body = worm.body;
     worm.setMessage('Bad luck... Press [SPACE] to respawn!');
     worm.drop(body.length, 0, body);
-    if (!worm.alive) return;
     worm.alive = false;
     worm.updated = true;
   }
@@ -203,7 +202,7 @@ module.exports = class Worm extends Entity {
   }
 
   render () {
-    const worm = this;
+    let worm = this;
     return function () {
       let pixels = [];
 

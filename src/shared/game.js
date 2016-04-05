@@ -26,7 +26,7 @@ module.exports = class Game {
         game.points.forEach(function ( point ) {
           if (!point.creator) pointCount++;
         });
-        if (pointCount < Math.round(game.players.length / 2)) {
+        if (pointCount < Math.round(game.players.length * 3)) {
           game.addPoint();
         }
       }
@@ -65,15 +65,15 @@ module.exports = class Game {
   }
 
   getRandomPoint () {
-    const factor = Math.round(Math.random() * 12);
+    const factor = Math.round(Math.random() * 32);
 
-    if (factor > 11) {
+    if (factor > 31) {
       return PortalPoint;
-    } else if (factor > 10) {
+    } else if (factor > 30) {
       return GhostPoint;
-    } else if (factor > 9) {
+    } else if (factor > 29) {
       return PickupMinePoint;
-    } else if (factor > 7) {
+    } else if (factor > 20) {
       return GoldenPoint;
     } else {
       return Point;
