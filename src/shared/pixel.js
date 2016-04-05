@@ -40,7 +40,7 @@ module.exports = class Pixel extends Array {
 
     pixel.setColor = function ( colorArray, factor ) {
       factor = factor ? factor : 1;
-      if (!colorArray) return;
+      if (!colorArray) return pixel;
       pixel[1] = Math.min(Math.round(colorArray[0]*1000)/1000, 1) * factor;
       pixel[2] = Math.min(Math.round(colorArray[1]*1000)/1000, 1) * factor;
       pixel[3] = Math.min(Math.round(colorArray[2]*1000)/1000, 1) * factor;
