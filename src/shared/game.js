@@ -67,7 +67,7 @@ module.exports = class Game {
   getRandomPoint () {
     const factor = Math.round(Math.random() * 12);
 
-    if (factor > 10) {
+    if (factor > 11) {
       return PortalPoint;
     } else if (factor > 10) {
       return GhostPoint;

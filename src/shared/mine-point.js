@@ -87,6 +87,8 @@ module.exports = class MinePoint extends Point {
         const body = player.body;
 
         player.body.forEach(function ( part, index ) {
+          if (player.ghost) return;
+
           const distance = game.getDistance(part, coords);
 
           if (distance < point.blowRadius
