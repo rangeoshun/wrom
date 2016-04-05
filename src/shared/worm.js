@@ -122,7 +122,7 @@ module.exports = class Worm extends Entity {
       let collision = false;
 
       players.forEach(function ( player, index ) {
-        if (player.ghost) return;
+        if (worm.ghost || player.ghost) return;
 
         player.body.forEach(function ( part, index ) {
           if (player === worm && !index) return;
