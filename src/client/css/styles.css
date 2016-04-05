@@ -8,6 +8,10 @@ body, body div, body label, body input, body button {
   display: block;
 }
 
+h1 {
+  text-align: center;
+}
+
 label {
   margin-top: 5px;
 }
