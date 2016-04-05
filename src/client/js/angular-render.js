@@ -30,6 +30,8 @@ module.exports = function ( $scope ) {
 
   function render () {
 
+    let ditch = [];
+
     if ($scope.state === 'screen') {
 
       _screen.fillStyle = '#000';
@@ -37,10 +39,8 @@ module.exports = function ( $scope ) {
 
       for (let i = 0; i < _renderCallbacks.length; i++) {
 
-        const pixels = _renderCallbacks[i](_screen);
-        if (pixels.die) {
-            _renderCallbacks.splice(i, 1);
-        }
+        const callback = _renderCallbacks[i];
+        const pixels = callback(_screen);
 
         for (let k = 0; k < pixels.length; k++) {
           const pixel = pixels[k];
@@ -50,8 +50,18 @@ module.exports = function ( $scope ) {
 
           _screen.fillStyle = color;
           _screen.fillRect(x * Globals.scale, y * Globals.scale, Globals.scale, Globals.scale);
+
+        }
+
+        if (pixels.die) {
+          ditch.push(i);
         }
       }
+
+    }
+    
+    for (let d = 0; d < ditch.length; d++) {
+      _renderCallbacks.splice(ditch[d], 1);
     }
     requestAnimationFrame(render);
   }
