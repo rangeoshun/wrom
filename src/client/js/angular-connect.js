@@ -6,6 +6,8 @@ const GoldenPoint = require('./golden-point.js');
 const MinePoint = require('./mine-point.js');
 const PickupMinePoint = require('./pickup-mine-point.js');
 const GhostPoint = require('./ghost-point.js');
+const PortalPoint = require('./portal-point.js');
+const PortalIOPoint = require('./portal-io-point.js');
 
 const Worm = require('./worm.js');
 const Game = require('./game.js');
@@ -180,6 +182,12 @@ module.exports = function ( $scope ) {
             break;
             case 'gop':
               type = GhostPoint;
+            break;
+            case 'prp':
+              type = PortalPoint;
+            break;
+            case 'piop':
+              type = PortalIOPoint;
             break;
           }
 
