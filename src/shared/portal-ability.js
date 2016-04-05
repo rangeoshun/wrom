@@ -11,53 +11,60 @@ module.exports = function PortalAbility ( player ) {
   player.setMessage(message);
 
   return function () {
-    if (init) return;
-    init++;
+    player.setAbility(null);
 
     player.setMessage(`You'have portal open for ${duration} seconds..`);
     const head = player.body[0];
     const direction = player.direction;
-    const portal0 = game.addPoint(PortalIOPoint);
-    const portal1 = game.addPoint(PortalIOPoint);
+    let portal0 = game.addPoint(PortalIOPoint);
+    let portal1 = game.addPoint(PortalIOPoint);
 
     portal0.pair = portal1;
-    portal0.direction = direction[0] ? [1, 0] : [0, 1];
     portal0.setColor(colors.orange);
-    portal0.setCoords([head[0] + direction[0] * 5, head[1] + direction[1] * 5]);
+    portal0.setCoords([head[0] + direction[0] * 7, head[1] + direction[1] * 7]);
+
     portal1.pair = portal0;
     portal1.setColor(colors.cyan);
-    player.setAbility(null);
-    portal0.direction = [direction[0] ? direction[0] : direction[1], direction[1] ? direction[1] : direction[0]]
-//    portal0.setCoords();
+
 
     let countDown = setInterval(function () {
       duration--;
       player.setMessage(`You'have portal open for ${duration} seconds..`);
+
       if (!duration) {
-//        player.setGhost(false);
-        portal0.die(1);
-        portal1.die(1);
         player.setMessage('');
         clearInterval(countDown);
 
-        player.game.players.forEach(function ( player ) {
-          const body = player.body;
+        game.tick.onCallbacks.push(function ( players ) {
 
-          player.body.forEach(function ( part, index ) {
+          players.forEach(function ( player ) {
+            const body = player.body;
+            const length = body.length;
 
-            if ((part[0] === portal0.coords[0]
-              && part[1] === portal0.coords[1])) {
+            body.forEach(function ( part, index ) {
+              const distance1 = game.getDistance(part, portal1.coords);
 
-              console.log(`${player.constructor.name} ${player.id} is thorn int two by ${point.constructor.name} ${point.id}`);
+              if (distance1 < 2
+                && (part[0] === portal1.coords[0]
+                  || part[1] === portal1.coords[1])) {
 
-              if (!bodyIndex) {
-                player.die();
-              } else {
-                player.drop(rest, bodyIndex, player.body.splice(bodyIndex, rest));
+                console.log(`${player.constructor.name} ${player.id} is thorn into half by ${portal1.constructor.name} ${portal1.id}`);
+
+                if (!index) {
+                  player.die();
+                } else {
+                  const rest = length - index;
+                  player.drop(rest, index, body.splice(index, rest));
+                }
               }
-            }
+            });
           });
+
+          return false;
         });
+        
+        portal0.die(1);
+        portal1.die(1);
       }
     },1000);
   };

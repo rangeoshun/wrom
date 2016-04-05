@@ -12,7 +12,7 @@ module.exports = class Worm extends Entity {
     worm.nextDirection = false;
 
     worm.body = [];
-    worm.size = 5;
+    worm.size = 4;
     worm.setMessage('Good luck!');
     worm.spawn();
   }

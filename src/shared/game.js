@@ -65,11 +65,11 @@ module.exports = class Game {
   }
 
   getRandomPoint () {
-    const factor = Math.round(Math.random() * 11);
-
-    return PortalPoint;
+    const factor = Math.round(Math.random() * 12);
 
     if (factor > 10) {
+      return PortalPoint;
+    } else if (factor > 10) {
       return GhostPoint;
     } else if (factor > 9) {
       return PickupMinePoint;
@@ -145,6 +145,11 @@ module.exports = class Game {
       let pointState = {};
 
       if (point.alive) {
+
+        if (point.colorUpdated || fullState) {
+          pointState.cl = point.color;
+          point.colorUpdated = fullState;
+        }
 
         if (point.nameUpdated || fullState) {
           pointState.nm = point.name;

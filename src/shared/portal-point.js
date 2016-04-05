@@ -37,7 +37,7 @@ module.exports = class PortalPoint extends Point {
       else point.setColor(colors.cyan);
       const color =  point.color;
 
-      pixels.push(new Pixel(1, color[1], color[2], color[3], point.coords));
+      pixels.push(new Pixel(1, 0, 0, 0, point.coords).setColor(color));
       return pixels;
     };
   }

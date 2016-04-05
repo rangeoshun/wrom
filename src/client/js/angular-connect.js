@@ -207,6 +207,10 @@ module.exports = function ( $scope ) {
             foundPoint.setCoords(pointUpdate.co);
           }
 
+          if (pointUpdate.cl) {
+            foundPoint.setColor(pointUpdate.cl);
+          }
+
           if (pointUpdate.am) {
             foundPoint.arm();
           }
