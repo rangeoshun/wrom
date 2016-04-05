@@ -44,7 +44,7 @@ module.exports = class Worm extends Entity {
   drop ( number, index, body ) {
     const worm = this;
     const game = worm.game;
-    if (!game.server) return;
+    if (!game.server || !worm.alive) return;
 
     console.log(`${worm.constructor.name} ${worm.id} is dropping:`)
     for (let i = index; i < number; i++) {
@@ -60,8 +60,11 @@ module.exports = class Worm extends Entity {
   die () {
     const worm = this;
     const body = worm.body;
-    worm.setMessage('Bad luck... Press [SPACE] to respawn!');
+
+    if (!worm.alive) return;
+
     worm.drop(body.length, 0, body);
+    worm.setMessage('Bad luck... Press [SPACE] to respawn!');
     worm.alive = false;
     worm.updated = true;
   }
