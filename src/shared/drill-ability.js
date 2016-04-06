@@ -36,7 +36,7 @@ module.exports = function DrillAbility ( player ) {
               enemy.drop(rest, index, body.splice(index, rest));
             }
 
-            player.addScore(rest * 10);
+            if (enemy.id !== player.id) player.addScore(rest * 10);
           }
         });
       });
