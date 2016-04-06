@@ -69,13 +69,13 @@ module.exports = class Game {
   getRandomPoint () {
     const factor = Math.round(Math.random() * 34);
 
-    if (factor > 33) {
+    if (factor > 32) {
       return InvisiblePoint;
-    } else if (factor > 32) {
-      return DrillPoint;
     } else if (factor > 31) {
-      return PortalPoint;
+      return DrillPoint;
     } else if (factor > 30) {
+      return PortalPoint;
+    } else if (factor > 29) {
       return GhostPoint;
     } else if (factor > 27) {
       return PickupMinePoint;

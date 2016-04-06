@@ -30,12 +30,12 @@ module.exports = class DrillPoint extends Point {
     return function () {
       let pixels = [];
 
-      if (!point || !point.alive) {
+      if (!point.alive) {
         pixels.die = true;
         return pixels;
       }
 
-      const factor = Math.sin(new Date().getMilliseconds() / 100) + 0.2;
+      let factor = Math.sin((new Date().getMilliseconds() / 1000) / 10) + 0.2;
 
       pixels.push(new Pixel(0,0,0,0, point.coords).setColor(point.color, factor));
       return pixels;

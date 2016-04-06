@@ -9,6 +9,7 @@ const GhostPoint = require('./ghost-point.js');
 const PortalPoint = require('./portal-point.js');
 const PortalIOPoint = require('./portal-io-point.js');
 const InvisiblePoint = require('./invisible-point.js');
+const DrillPoint = require('./drill-point.js');
 
 const Worm = require('./worm.js');
 const Game = require('./game.js');
@@ -192,7 +193,11 @@ module.exports = function ( $scope ) {
             break;
             case 'ivp':
               type = InvisiblePoint;
-            break;          }
+            break;
+            case 'dip':
+              type = InvisiblePoint;
+            break;
+          }
 
           foundPoint = game.addPoint(type);
           foundPoint.id = pointID;

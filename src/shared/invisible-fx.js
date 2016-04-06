@@ -21,7 +21,7 @@ module.exports = function InvisibleFX ( entity ) {
 
     for (let i = 0; i < length; i++) {
       let factor = Math.sqrt(Math.abs(new Date().getMilliseconds() / 1000));
-      if (!i) factor *= 3;
+      if (!i) factor *= 4;
       if (!isSelf) factor /= 10;
 
       const coords = body[i];
