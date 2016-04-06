@@ -68,9 +68,9 @@ module.exports = class Game {
 
   getRandomPoint () {
     const factor = Math.round(Math.random() * 34);
-    return InvisiblePoint;
 
     if (factor > 33) {
+      return InvisiblePoint;
     } else if (factor > 32) {
       return DrillPoint;
     } else if (factor > 31) {
