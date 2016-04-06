@@ -32,9 +32,12 @@ module.exports = class PortalPoint extends Point {
         pixels.die = true;
         return pixels;
       }
+
       const colorState = Math.round(new Date().getMilliseconds() / 1000);
+
       if (colorState) point.setColor(colors.orange);
       else point.setColor(colors.cyan);
+
       const color =  point.color;
 
       pixels.push(new Pixel(1, 0, 0, 0, point.coords).setColor(color));

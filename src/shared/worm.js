@@ -2,6 +2,7 @@
 const Globals = require('./globals.js');
 const Entity = require('./entity.js');
 const Pixel = require('./pixel.js');
+const InvisibleFX = require('./invisible-fx.js');
 
 module.exports = class Worm extends Entity {
   constructor ( game ) {
@@ -9,12 +10,23 @@ module.exports = class Worm extends Entity {
     const worm = this;
     worm.color = worm.client ? [0.5,0.5,1] : [1,0.5,0.5];
     worm.direction = [];
+    worm.invisible = 0;
     worm.nextDirection = false;
 
     worm.body = [];
     worm.size = 4;
     worm.setMessage('Good luck!');
     worm.spawn();
+  }
+
+  setInvisible ( state ) {
+    const worm = this;
+    if (!worm.game.server) {
+      if (state) new InvisibleFX(worm);
+    } else {
+      worm.invisible = state;
+      worm.updated = worm.invisibleUpdated = true;
+    }
   }
 
   setMessage ( msg ) {
@@ -132,6 +144,7 @@ module.exports = class Worm extends Entity {
           if (game.areColliding(worm.coords, part)) {
             console.log(`${worm.constructor.name} ${worm.id} is colliding with ${worm.constructor.name} ${player.id}`);
             worm.die();
+            player.addScore(worm.body.length * 10);
             collision = true;
           }
         });

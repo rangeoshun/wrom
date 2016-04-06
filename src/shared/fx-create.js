@@ -2,7 +2,7 @@
 const Pixel = require('./pixel.js');
 const colors = require('./colors.js');
 
-module.exports = function pickUpFX ( entity, color ) {
+module.exports = function CreateFX ( entity, color ) {
   const game = entity.game;
   const createTime = new Date().getTime();
   let duration = 1000;

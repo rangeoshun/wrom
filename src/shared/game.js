@@ -6,6 +6,7 @@ const MinePoint = require('./mine-point.js');
 const PickupMinePoint = require('./pickup-mine-point.js');
 const GhostPoint = require('./ghost-point.js');
 const PortalPoint = require('./portal-point.js');
+const InvisiblePoint = require('./invisible-point.js');
 const Worm = require('./worm.js');
 
 module.exports = class Game {
@@ -65,15 +66,17 @@ module.exports = class Game {
   }
 
   getRandomPoint () {
-    const factor = Math.round(Math.random() * 32);
+    const factor = Math.round(Math.random() * 33);
 
-    if (factor > 31) {
+    if (factor > 32) {
+      return InvisiblePoint;
+    } else if (factor > 31) {
       return PortalPoint;
     } else if (factor > 30) {
       return GhostPoint;
     } else if (factor > 29) {
       return PickupMinePoint;
-    } else if (factor > 20) {
+    } else if (factor > 25) {
       return GoldenPoint;
     } else {
       return Point;
@@ -189,6 +192,11 @@ module.exports = class Game {
       let playerState = {};
 
       if (player.alive) {
+
+        if (player.invisibleUpdated || fullState) {
+          playerState.iv = player.invisible;
+          player.invisibleUpdated = fullState;
+        }
 
         if (player.abilityUpdated || fullState) {
           playerState.ai = 1;

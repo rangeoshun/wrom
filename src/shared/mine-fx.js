@@ -2,7 +2,7 @@
 const Pixel = require('./pixel.js');
 const colors = require('./colors.js');
 
-module.exports = function blowUpFX ( entity ) {
+module.exports = function MineFX ( entity ) {
   const game = entity.game;
   const color = colors.red;
   const coords = entity.coords;

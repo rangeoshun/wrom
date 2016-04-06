@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function PickupMineAbility ( player ) {
+module.exports = function GhostAbility ( player ) {
   const game = player.game;
   const message = 'Press [SPACE] to become a ghost for a while!';
   let duration = 10;

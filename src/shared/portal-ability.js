@@ -49,20 +49,22 @@ module.exports = function PortalAbility ( player ) {
                   || part[1] === portal1.coords[1])) {
 
                 console.log(`${player.constructor.name} ${player.id} is thorn into half by ${portal1.constructor.name} ${portal1.id}`);
+                const rest = length - index;
 
                 if (!index) {
                   player.die();
                 } else {
-                  const rest = length - index;
                   player.drop(rest, index, body.splice(index, rest));
                 }
+
+                if (player.id !== point.creator) point.game.getPlayerById(point.creator).addScore(rest * 10);
               }
             });
           });
 
           return false;
         });
-        
+
         portal0.die(1);
         portal1.die(1);
       }

@@ -3,7 +3,7 @@ const Utils = require('./utils.js');
 const Pixel = require('./pixel.js');
 const Globals = require('./globals.js');
 const colors = require('./colors.js');
-const pickUpFX = require('./fx-pickup.js');
+const PickUpFX = require('./fx-pickup.js');
 
 module.exports = class Entity {
   constructor ( game ) {
@@ -23,7 +23,7 @@ module.exports = class Entity {
     entity.type = '';
     entity.typeUpdated = true;
 
-    entity.dieFX = !game.server ? pickUpFX : null;
+    entity.dieFX = !game.server ? PickUpFX : null;
 
     if (!game.server) {
       Globals.renderCallbacks.push(entity.render());

@@ -8,6 +8,7 @@ const PickupMinePoint = require('./pickup-mine-point.js');
 const GhostPoint = require('./ghost-point.js');
 const PortalPoint = require('./portal-point.js');
 const PortalIOPoint = require('./portal-io-point.js');
+const InvisiblePoint = require('./invisible-point.js');
 
 const Worm = require('./worm.js');
 const Game = require('./game.js');
@@ -189,7 +190,9 @@ module.exports = function ( $scope ) {
             case 'piop':
               type = PortalIOPoint;
             break;
-          }
+            case 'ivp':
+              type = InvisiblePoint;
+            break;          }
 
           foundPoint = game.addPoint(type);
           foundPoint.id = pointID;
@@ -199,21 +202,10 @@ module.exports = function ( $scope ) {
           foundPoint.die(pointUpdate.de);
         } else {
 
-          if (pointUpdate.ce) {
-            foundPoint.setCreator(pointUpdate.ce);
-          }
-
-          if (pointUpdate.co) {
-            foundPoint.setCoords(pointUpdate.co);
-          }
-
-          if (pointUpdate.cl) {
-            foundPoint.setColor(pointUpdate.cl);
-          }
-
-          if (pointUpdate.am) {
-            foundPoint.arm();
-          }
+          if (pointUpdate.ce) foundPoint.setCreator(pointUpdate.ce);
+          if (pointUpdate.co) foundPoint.setCoords(pointUpdate.co);
+          if (pointUpdate.cl) foundPoint.setColor(pointUpdate.cl);
+          if (pointUpdate.am) foundPoint.arm();
         }
       }
 
@@ -242,12 +234,6 @@ module.exports = function ( $scope ) {
           if (typeof playerUpdate.ms === 'string') $scope.status.message = playerUpdate.ms;
         }
 
-        if (playerUpdate.nm) foundPlayer.setName(playerUpdate.nm);
-        if (playerUpdate.cl) foundPlayer.setColor(playerUpdate.cl);
-        if (playerUpdate.go !== undefined) foundPlayer.setGhost(!!playerUpdate.go);
-        if (playerUpdate.bd) foundPlayer.body = playerUpdate.bd;
-        if (playerUpdate.co) foundPlayer.coords = foundPlayer.body[0];
-
         if (playerUpdate.de) {
           if (foundPlayer.id === Globals.selfID) {
             $scope.$apply(function () {
@@ -256,6 +242,15 @@ module.exports = function ( $scope ) {
           }
 
           foundPlayer.die();
+
+        } else {
+
+          if (playerUpdate.iv) foundPlayer.setInvisible(playerUpdate.iv);
+          if (playerUpdate.nm) foundPlayer.setName(playerUpdate.nm);
+          if (playerUpdate.cl) foundPlayer.setColor(playerUpdate.cl);
+          if (playerUpdate.go !== undefined) foundPlayer.setGhost(!!playerUpdate.go);
+          if (playerUpdate.bd) foundPlayer.body = playerUpdate.bd;
+          if (playerUpdate.co) foundPlayer.coords = foundPlayer.body[0];
         }
       }
 

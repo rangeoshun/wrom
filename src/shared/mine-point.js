@@ -1,8 +1,8 @@
 "use strict";
 const Pixel = require('./pixel.js');
 const Point = require('./point.js');
-const blowUpFX = require('./fx-blowup.js');
 const colors = require('./colors.js');
+const mineFX = require('./mine-fx.js');
 
 module.exports = class MinePoint extends Point {
   constructor ( game ) {
@@ -51,7 +51,7 @@ module.exports = class MinePoint extends Point {
     const point = this;
 
     if (!point.armed) {
-      if (!point.game.server) new blowUpFX(point);
+      if (!point.game.server) new MineFXFX(point);
       point.armed = true;
       point.armedUpdated = true;
       point.updated = true;
@@ -68,6 +68,8 @@ module.exports = class MinePoint extends Point {
     } else {
       player.drop(rest, bodyIndex, player.body.splice(bodyIndex, rest));
     }
+
+    point.game.getPlayerById(point.creator).addScore(rest * 10);
   }
 
   isColliding () {
