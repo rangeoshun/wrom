@@ -70,9 +70,9 @@ module.exports = class Game {
     const factor = Math.round(Math.random() * 34);
 
     if (factor > 33) {
-      return DrillPoint;
-    } else if (factor > 32) {
       return InvisiblePoint;
+    } else if (factor > 32) {
+      return DrillPoint;
     } else if (factor > 31) {
       return PortalPoint;
     } else if (factor > 30) {

@@ -164,7 +164,7 @@ module.exports = class Worm extends Entity {
           if (game.areColliding(worm.coords, part)) {
             console.log(`${worm.constructor.name} ${worm.id} is colliding with ${worm.constructor.name} ${player.id}`);
             worm.die();
-            player.addScore(worm.body.length * 10);
+            if (player.id !== worm.id) player.addScore(worm.body.length * 10);
             collision = true;
           }
         });

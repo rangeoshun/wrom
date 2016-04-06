@@ -35,17 +35,9 @@ module.exports = class DrillPoint extends Point {
         return pixels;
       }
 
-      let r = point.color[0];
-      let g = point.color[1];
-      let b = point.color[2];
-
       const factor = Math.sin(new Date().getMilliseconds() / 100) + 0.2;
 
-      r *= factor;
-      g *= factor;
-      b *= factor;
-
-      pixels.push(new Pixel(1, r, g, b, point.coords));
+      pixels.push(new Pixel(0,0,0,0, point.coords).setColor(point.color, factor));
       return pixels;
     };
   }
