@@ -2,7 +2,7 @@
 const Pixel = require('./pixel.js');
 const Point = require('./point.js');
 const colors = require('./colors.js');
-const mineFX = require('./mine-fx.js');
+const MineFX = require('./mine-fx.js');
 
 module.exports = class MinePoint extends Point {
   constructor ( game ) {
@@ -51,17 +51,17 @@ module.exports = class MinePoint extends Point {
     const point = this;
 
     if (!point.armed) {
-      if (!point.game.server) new MineFXFX(point);
+      if (!point.game.server) new MineFX(point);
       point.armed = true;
       point.armedUpdated = true;
       point.updated = true;
     }
   }
 
-  onCollision ( player, bodyIndex ) {
+  onCollision ( player, bodyIndex, scorer ) {
     const point = this;
     const length = player.body.length;
-    const rest = length - bodyIndex - 1;
+    const rest = length - bodyIndex;
 
     if (!bodyIndex) {
       player.die();
@@ -69,12 +69,13 @@ module.exports = class MinePoint extends Point {
       player.drop(rest, bodyIndex, player.body.splice(bodyIndex, rest));
     }
 
-    point.game.getPlayerById(point.creator).addScore(rest * 10);
+    game.getPlayerById(scorer).addScore(rest * 10);
   }
 
   isColliding () {
     const point = this;
     const game = point.game;
+    const scorer = point.creator;
 
     return function ( players ) {
       const coords = point.coords;
@@ -102,7 +103,7 @@ module.exports = class MinePoint extends Point {
             if (!point.countDown) {
 
               console.log(`${player.constructor.name} ${player.id} is blown to peaces by ${point.constructor.name} ${point.id}`);
-              point.onCollision(player, index);
+              point.onCollision(player, index, scorer);
             }
           }
         });

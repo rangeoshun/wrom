@@ -77,9 +77,9 @@ module.exports = class Game {
       return PortalPoint;
     } else if (factor > 30) {
       return GhostPoint;
-    } else if (factor > 29) {
+    } else if (factor > 27) {
       return PickupMinePoint;
-    } else if (factor > 25) {
+    } else if (factor > 24) {
       return GoldenPoint;
     } else {
       return Point;
