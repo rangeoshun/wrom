@@ -23,11 +23,11 @@ module.exports = function DrillFX ( entity ) {
     let factor = Math.sin(new Date().getMilliseconds() / 100);
 
     const coords = body[0];
-    pixels.push(new Pixel(0,1,1,1,[coords[0] + 1, coords[1]]).setColor(flameColor, factor));
-    pixels.push(new Pixel(0,1,1,1,[coords[0] - 1, coords[1]]).setColor(flameColor, factor));
-    pixels.push(new Pixel(0,1,1,1,[coords[0], coords[1] + 1]).setColor(flameColor, factor));
-    pixels.push(new Pixel(0,1,1,1,[coords[0], coords[1] - 1]).setColor(flameColor, factor));
-    pixels.push(new Pixel(0,1,1,1,[coords[0], coords[1]]).setColor(color, factor));
+    pixels.push(new Pixel(0,0,0,0,[coords[0] + 1, coords[1]]).setColor(flameColor, factor));
+    pixels.push(new Pixel(0,0,0,0,[coords[0] - 1, coords[1]]).setColor(flameColor, factor));
+    pixels.push(new Pixel(0,0,0,0,[coords[0], coords[1] + 1]).setColor(flameColor, factor));
+    pixels.push(new Pixel(0,0,0,0,[coords[0], coords[1] - 1]).setColor(flameColor, factor));
+    pixels.push(new Pixel(0,0,0,0,[coords[0], coords[1]]).setColor(color, factor));
 
     return pixels;
   });

@@ -11,7 +11,7 @@ module.exports = class DrillPoint extends Point {
     const point = this;
     point.value = 0;
     point.type = 'dip';
-    point.color = colors.yellow;
+    point.color = colors.orange;
   }
 
   onCollision ( player ) {
@@ -39,7 +39,7 @@ module.exports = class DrillPoint extends Point {
       let g = point.color[1];
       let b = point.color[2];
 
-      const factor = Math.sin(new Date().getMilliseconds() / 1000) + 0.2;
+      const factor = Math.sin(new Date().getMilliseconds() / 100) + 0.2;
 
       r *= factor;
       g *= factor;
