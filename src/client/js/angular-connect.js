@@ -245,6 +245,7 @@ module.exports = function ( $scope ) {
 
         } else {
 
+          if (playerUpdate.di) foundPlayer.setDrill(playerUpdate.di);
           if (playerUpdate.iv) foundPlayer.setInvisible(playerUpdate.iv);
           if (playerUpdate.nm) foundPlayer.setName(playerUpdate.nm);
           if (playerUpdate.cl) foundPlayer.setColor(playerUpdate.cl);

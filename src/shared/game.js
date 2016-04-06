@@ -7,6 +7,7 @@ const PickupMinePoint = require('./pickup-mine-point.js');
 const GhostPoint = require('./ghost-point.js');
 const PortalPoint = require('./portal-point.js');
 const InvisiblePoint = require('./invisible-point.js');
+const DrillPoint = require('./drill-point.js');
 const Worm = require('./worm.js');
 
 module.exports = class Game {
@@ -66,8 +67,9 @@ module.exports = class Game {
   }
 
   getRandomPoint () {
-    const factor = Math.round(Math.random() * 33);
+    const factor = Math.round(Math.random() * 34);
 
+    return DrillPoint;
     if (factor > 32) {
       return InvisiblePoint;
     } else if (factor > 31) {
@@ -192,6 +194,11 @@ module.exports = class Game {
       let playerState = {};
 
       if (player.alive) {
+
+        if (player.drillUpdated || fullState) {
+          playerState.di = player.drill;
+          player.drillUpdated = fullState;
+        }
 
         if (player.invisibleUpdated || fullState) {
           playerState.iv = player.invisible;
