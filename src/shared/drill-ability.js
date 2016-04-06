@@ -40,6 +40,8 @@ module.exports = function DrillAbility ( player ) {
           }
         });
       });
+
+      return player.alive;
     });
 
     let countDown = setInterval(function () {

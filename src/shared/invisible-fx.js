@@ -17,7 +17,7 @@ module.exports = function InvisibleFX ( entity ) {
     const pixels = [];
     const body = entity.body;
     const length = entity.body.length;
-    pixels.die = !on;
+    pixels.die = !entity.alive || !on;
 
     for (let i = 0; i < length; i++) {
       let factor = Math.sqrt(Math.abs(new Date().getMilliseconds() / 1000));

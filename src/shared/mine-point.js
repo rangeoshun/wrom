@@ -61,24 +61,24 @@ module.exports = class MinePoint extends Point {
   onCollision ( player, bodyIndex, scorer ) {
     const point = this;
     const length = player.body.length;
-    const rest = length - bodyIndex;
+    const rest = length - bodyIndex - 1;
 
+    player.game.getPlayerById(scorer).addScore(rest * 10);
     if (!bodyIndex) {
       player.die();
     } else {
       player.drop(rest, bodyIndex, player.body.splice(bodyIndex, rest));
     }
 
-    game.getPlayerById(scorer).addScore(rest * 10);
   }
 
   isColliding () {
     const point = this;
     const game = point.game;
-    const scorer = point.creator;
 
     return function ( players ) {
       const coords = point.coords;
+      const scorer = point.creator;
 
       if (point.armed) {
         point.countDown--;
