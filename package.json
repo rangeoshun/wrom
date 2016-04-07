@@ -3,6 +3,9 @@
   "version": "0.0.24",
   "description": "A multiplayer snake clone for you pleasure.",
   "license": "MIT",
+  "scripts": {
+    "start": "gulp"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/rangeoshun/wormer.git"

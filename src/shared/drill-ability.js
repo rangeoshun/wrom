@@ -22,7 +22,7 @@ module.exports = function DrillAbility ( player ) {
         const length = body.length;
 
         body.forEach(function ( part, index ) {
-          if (!index && enemy.id === player.id) return;
+          if (!index && enemy.id === player.id || enemy.ghost) return;
 
           if (part[0] === head[0]
             && part[1] === head[1]) {
@@ -41,7 +41,7 @@ module.exports = function DrillAbility ( player ) {
         });
       });
 
-      return player.alive;
+      return player.alive && duration > 0;
     });
 
     let countDown = setInterval(function () {

@@ -58,12 +58,13 @@ module.exports = class MinePoint extends Point {
     }
   }
 
-  onCollision ( player, bodyIndex, scorer ) {
+  onCollision ( player, bodyIndex, scorerID ) {
     const point = this;
     const length = player.body.length;
     const rest = length - bodyIndex - 1;
+    const scorer = player.game.getPlayerById(scorerID);
+    if (scorer) scorer.addScore(rest * 10);
 
-    player.game.getPlayerById(scorer).addScore(rest * 10);
     if (!bodyIndex) {
       player.die();
     } else {
@@ -78,7 +79,7 @@ module.exports = class MinePoint extends Point {
 
     return function ( players ) {
       const coords = point.coords;
-      const scorer = point.creator;
+      const scorerID = point.creator;
 
       if (point.armed) {
         point.countDown--;
@@ -103,7 +104,7 @@ module.exports = class MinePoint extends Point {
             if (!point.countDown) {
 
               console.log(`${player.constructor.name} ${player.id} is blown to peaces by ${point.constructor.name} ${point.id}`);
-              point.onCollision(player, index, scorer);
+              point.onCollision(player, index, scorerID);
             }
           }
         });
