@@ -2,7 +2,7 @@
   "dev": {
     "www": "build/client",
     "http": 8889,
-    "socket": 6667
+    "socket": 3001
   },
   "live": {
     "www": "dist/client",
