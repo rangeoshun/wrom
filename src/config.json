@@ -1,7 +1,7 @@
 {
   "dev": {
     "www": "build/client",
-    "http": 80,
+    "http": 8889,
     "socket": 667
   },
   "live": {
