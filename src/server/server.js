@@ -8,15 +8,13 @@ const url = require("url");
 const path = require("path");
 const fs = require("fs");
 
-const httpPort = process.env.PORT || process.argv[2] || 8888;
-const socketPort = process.argv[3] || 666;
+const httpPort = process.env.PORT || process.argv[2] || 80;
 const WebSocketServer = require('websocket').server;
 const http = require('http');
 
 let socketServer = http.createServer(function () {})
-let wss = new WebSocketServer({httpServer: socketServer});
 
-http.createServer(function ( request, response ) {
+const httpServer = http.createServer(function ( request, response ) {
 
   let uri = '{{www}}' + url.parse(request.url).pathname;
   let filename = path.join(process.cwd(), uri);
@@ -48,8 +46,7 @@ http.createServer(function ( request, response ) {
 }).listen(parseInt(httpPort, 10));
 console.log(`HTTP server listening on port: ${httpPort}`);
 // Websocket server
-socketServer.listen(socketPort, function () {});
-console.log(`Socket server listening on port: ${socketPort}`);
+let wss = new WebSocketServer({httpServer: httpServer});
 
 wss.on('request', function ( request ) {
   let connection = request.accept(null, request.origin);

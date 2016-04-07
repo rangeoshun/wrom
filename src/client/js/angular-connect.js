@@ -94,7 +94,7 @@ module.exports = function ( $scope ) {
     }, true);
 
     WebSocket = WebSocket || MozWebSocket;
-    connection = new WebSocket(`ws://${location.hostname}:{{socket}}`);
+    connection = new WebSocket(`ws://${location.hostname}:80`);
     connection.onopen = function () {
 
       connection.send(JSON.stringify({
