@@ -8,7 +8,7 @@ const url = require("url");
 const path = require("path");
 const fs = require("fs");
 
-const httpPort = process.argv[2] || 8888;
+const httpPort = process.env.PORT || 8888;
 const socketPort = process.argv[3] || 666;
 const WebSocketServer = require('websocket').server;
 const http = require('http');
