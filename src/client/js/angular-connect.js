@@ -249,6 +249,8 @@ module.exports = function ( $scope ) {
         if (playerUpdate.co) foundPlayer.coords = foundPlayer.body[0];
 
         if (playerUpdate.de) {
+//          connection.send('{"rs":1}');
+
           if (foundPlayer.id === Globals.selfID) {
             $scope.$apply(function () {
               $scope.showScores = true;
