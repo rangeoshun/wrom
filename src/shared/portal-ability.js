@@ -16,7 +16,7 @@ module.exports = function PortalAbility ( player ) {
     player.setMessage(`You'have portal open for ${duration} seconds..`);
     const head = player.body[0];
     const direction = player.direction;
-    const scorer = player.id;
+    const scorer = player;
     let portal0 = game.addPoint(PortalIOPoint);
     let portal1 = game.addPoint(PortalIOPoint);
 
@@ -58,7 +58,7 @@ module.exports = function PortalAbility ( player ) {
                   player.drop(rest, index, body.splice(index, rest));
                 }
 
-                if (player.id !== scorer) point.game.getPlayerById(scorer).addScore(rest * 10);
+                if (scorer && player.id !== scorer.id) scorer.addScore(rest * 10);
               }
             });
           });

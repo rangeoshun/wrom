@@ -59,6 +59,10 @@ module.exports = function ( $scope ) {
     });
   });
 
+  addEventListener('keydown', function ( ev ) {
+    if (ev.keyCode === 13 && $scope.state === 'setup') $scope.$emit('goPlay');
+  });
+
   $scope.$on('goPlay', function () {
     $scope.state = 'screen';
     if (connection) return;
@@ -94,7 +98,7 @@ module.exports = function ( $scope ) {
     }, true);
 
     WebSocket = WebSocket || MozWebSocket;
-    connection = new WebSocket(`ws://${location.hostname}:80`);
+    connection = new WebSocket(`ws://${location.hostname}:${location.port}`);
     connection.onopen = function () {
 
       connection.send(JSON.stringify({

@@ -156,9 +156,9 @@ module.exports = class Worm extends Entity {
       let collision = false;
 
       players.forEach(function ( player, index ) {
-        if (worm.isImmune() || player.ghost) return;
 
         player.body.forEach(function ( part, index ) {
+          if (worm.isImmune() || player.ghost) return;
           if (player === worm && !index) return;
 
           if (game.areColliding(worm.coords, part)) {
