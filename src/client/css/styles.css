@@ -29,11 +29,11 @@ div[ng-controller=connect] {
 }
 
 div[ng-controller=connect].setup {
-  transform: rotateY(180deg) scale(2) translateY(25%);
+  transform: rotateY(180deg) scale(3) translateY(35%);
 }
 
 div[ng-controller=connect].screen {
-  transform: rotateY(0deg) scale(2) translateY(25%);
+  transform: rotateY(0deg) scale(3) translateY(35%);
 }
 
 div.status {
