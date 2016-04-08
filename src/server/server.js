@@ -140,8 +140,6 @@ wss.on('request', function ( request ) {
     Globals.players.splice(Globals.players.indexOf(player), 1);
   });
 
-  game.allTimeHigh = [];
-
   function sortScores ( scores ) {
     if (!scores) return [];
     return scores.sort(function ( s0, s1 ) {
