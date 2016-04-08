@@ -42,6 +42,6 @@ if (!window.clientInit) {
   client.controller('colors', ['$scope', colors]);
   client.controller('screen', ['$scope', render]);
   client.controller('scores', ['$scope', '$filter', scores]);
-  client.controller('athScores', ['$scope', '$filter', athScores]);
+  client.controller('athScores', ['$scope', athScores]);
   angular.bootstrap(document.body, ['client']);
 }

@@ -1,3 +1,11 @@
+body {
+  width: 320px;
+  margin: 0 auto;
+  position: relative;
+  transform-origin: 50% 0;
+  transform: scale(3);
+}
+
 body, body div, body label, body input, body button {
   background-color: #646464;
   font-smoothing : none;
@@ -16,10 +24,10 @@ label {
   margin-top: 5px;
 }
 
-div[ng-controller=connect] {
+div.screen, div.setup {
   margin-top: 5px;
   -webkit-transform-style: preserve-3d;
-  transform: rotateY(180deg) scale(2) translateY(25%);
+  transform: rotateY(180deg);
   transform-style: preserve-3d;
   transition: all 0.3s ease-out;
   position: relative;
@@ -28,15 +36,16 @@ div[ng-controller=connect] {
   height: 200px;
 }
 
-div[ng-controller=connect].setup {
-  transform: rotateY(180deg) scale(3) translateY(35%);
+div.setup {
+  transform: rotateY(180deg);
 }
 
-div[ng-controller=connect].screen {
-  transform: rotateY(0deg) scale(3) translateY(35%);
+div.screen {
+  transform: rotateY(0deg);
 }
 
 div.status {
+  padding-top: 5px;
   height: 9px;
   width: 100%;
 }
@@ -56,8 +65,8 @@ div[ng-controller=setup], div[ng-controller=screen], div[ng-controller=scores] {
   backface-visibility: hidden;
   background-color: black;
   position: absolute;
-  width: 100%;
-  height: 100%;
+  width: 320px;
+  height: 200px;
   transform: rotateY(0);
 }
 
@@ -70,17 +79,20 @@ div[ng-controller=scores], div[ng-controller=scores] * {
 }
 
 div[ng-controller=setup] {
-  transform: rotateY(180deg) translateZ(0.01px);
+  transform: rotateY(180deg);
+}
+
+div.welcome {
+  padding-top: 15px;
+  width: 190px;
+  display: inline-block;
+  float: left;
 }
 
 div[ng-controller=athScores] {
-  position: absolute;
-  top: 220px;
-}
-
-.setup div[ng-controller=athScores] {
-  transform: rotateY(180deg);
-  left: 220px;
+  width: 120px;
+  float: right;
+  padding-top: 20px;
 }
 
 canvas {
@@ -97,8 +109,8 @@ canvas {
   left: 50%;
   top: 50%;
   transform: translateX(-50%) translateY(-50%);
-  width: 100%;
-  height: 100%;
+  width: 320px;
+  height: 200px;
 }
 
 canvas.score {

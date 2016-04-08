@@ -7,8 +7,8 @@
   <style>
   </style>
 </head>
-<body>
-  <div class="{{state}}" ng-controller="connect">
+<body ng-controller="connect">
+  <div class="{{state}}">
     <div class="status">
       <span class="msg" ng-if="state == 'screen'">{{status.message}}</span>
       <span class="score" ng-if="state == 'screen'">{{status.score}}</span>
@@ -59,21 +59,36 @@
         </tr>
       </table>
     </div>
-    <div ng-controller="athScores" class="allTimeHigh">
-      ALL TIME HIGH SCORES
-      <table>
-        <tr>
-          <th>#</th>
-          <th>NAME</th>
-          <th>SCORE</th>
-        </tr>
-        <tr ng-repeat="score in athScores">
-          <td>{{score.pa}}</td>
-          <td>{{score.nm}}</td>
-          <td>{{score.so}}</td>
-        </tr>
-      </table>
-    </div>
+  </div>
+  <div class="welcome">
+    <p>WELCOME TO WROMIA!</p>
+    <p>The super fun awesome world, that is like snake,
+    but super fun and awesome.</p>
+    <p>You can control you're worm with [UP], [DOWN],
+    [LEFT] and [RIGHT].</p>
+    <p>You can use [SPACE] to utilize special ability, obtained
+    by eating up strange points on the field.</p>
+    <p>The dead have the special ability to respawn, so in
+    the highly likely case of dying, use [SPACE] to
+    respawn.</p>
+    <p>Gain points by eating certain dots, or by killing and
+    dismembering your fellow worms.</p>
+    <p>Become immortal by getting on the scoreboard on the right.</p>
+  </div>
+  <div ng-controller="athScores" class="allTimeHigh">
+    ALL TIME HIGH SCORES
+    <table>
+      <tr>
+        <th>#</th>
+        <th>NAME</th>
+        <th>SCORE</th>
+      </tr>
+      <tr ng-repeat="score in athScores">
+        <td>{{score.pa}}</td>
+        <td>{{score.nm}}</td>
+        <td>{{score.so}}</td>
+      </tr>
+    </table>
   </div>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.js"></script>
   <script src="js/angular-client.js"></script>
