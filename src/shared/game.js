@@ -21,7 +21,7 @@ module.exports = class Game {
     game.server = server;
     game.previousState = {};
     game.paused = false;
-
+    game.allTimeHigh = [];
     if (server) {
       function correctPoints () {
         let pointCount = 0;
