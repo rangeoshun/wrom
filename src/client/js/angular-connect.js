@@ -63,12 +63,46 @@ module.exports = function ( $scope ) {
     if (ev.keyCode === 13 && $scope.state === 'setup') $scope.$emit('goPlay');
   });
 
-  $scope.$on('goPlay', function () {
-    $scope.state = 'screen';
-    if (connection) return;
+  WebSocket = WebSocket || MozWebSocket;
+  connection = new WebSocket(`ws://${location.hostname}:${location.port}`);
+  connection.onopen = function () {
+
+    $scope.$on('goPlay', function () {
+      $scope.state = 'screen';
+      if (connection) return;
+
+      addEventListener('keydown', function showScores ( ev ) {
+        if (ev.keyCode === 9 && !$scope.showScores) {
+
+          $scope.$apply(function () {
+            $scope.showScores = true;
+          });
+
+          addEventListener('keyup', function hideScores ( ev ) {
+            if (ev.keyCode === 9) {
+              $scope.$apply(function () {
+                $scope.showScores = false;
+              });
+              removeEventListener('keyup', hideScores);
+            }
+          });
+
+        } else if (ev.keyCode === 27) {
+
+          $scope.$apply(function () {
+            $scope.state = $scope.state === 'screen' ? 'setup' : 'screen';
+          });
+
+          if ($scope.state === 'setup') {
+            connection.send(JSON.stringify({de: 1}));
+          } else {
+            ev.preventDefault();
+          }
+        }
+      }, true);
+    });
 
     addEventListener('keydown', function ( ev ) {
-      if ($scope.state === 'screen') ev.preventDefault();
       let code = ev.keyCode;
       let direction;
       let respawn = 0;
@@ -76,20 +110,55 @@ module.exports = function ( $scope ) {
 
       switch (code) {
         case 38:
+          ev.preventDefault();
           direction = 1;
         break;
         case 39:
+          ev.preventDefault();
           direction = 2;
         break;
         case 40:
+          ev.preventDefault();
           direction = 3;
         break;
         case 37:
+        ev.preventDefault();
           direction = 4;
         break;
         case 32:
+          ev.preventDefault();
           respawn = !Globals.self.alive ? 1 : 0;
           ability = !respawn ? 1 : 0;
+        break;
+        case 9:
+          ev.preventDefault();
+          if (!$scope.showScores) {
+
+            $scope.$apply(function () {
+              $scope.showScores = true;
+            });
+
+            addEventListener('keyup', function hideScores ( ev ) {
+              if (ev.keyCode === 9) {
+                $scope.$apply(function () {
+                  $scope.showScores = false;
+                });
+                removeEventListener('keyup', hideScores);
+              }
+            });
+          }
+        break;
+        case 27:
+          ev.preventDefault();
+          $scope.$apply(function () {
+            $scope.state = $scope.state === 'screen' ? 'setup' : 'screen';
+          });
+
+          if ($scope.state === 'setup') {
+            connection.send(JSON.stringify({de: 1}));
+          } else {
+            ev.preventDefault();
+          }
         break;
       }
 
@@ -104,42 +173,6 @@ module.exports = function ( $scope ) {
 
       if (direction || respawn || ability) connection.send(JSON.stringify(message));
     });
-
-    addEventListener('keydown', function showScores ( ev ) {
-      if (ev.keyCode === 9 && !$scope.showScores) {
-
-        $scope.$apply(function () {
-          $scope.showScores = true;
-        });
-
-        addEventListener('keyup', function hideScores ( ev ) {
-          if (ev.keyCode === 9) {
-            $scope.$apply(function () {
-              $scope.showScores = false;
-            });
-            removeEventListener('keyup', hideScores);
-          }
-        });
-
-      } else if (ev.keyCode === 27) {
-
-        $scope.$apply(function () {
-          $scope.state = $scope.state === 'screen' ? 'setup' : 'screen';
-        });
-
-        if ($scope.state === 'setup') {
-          connection.send(JSON.stringify({de: 1}));
-        } else {
-          ev.preventDefault();
-        }
-      }
-    }, true);
-  });
-
-
-  WebSocket = WebSocket || MozWebSocket;
-  connection = new WebSocket(`ws://${location.hostname}:${location.port}`);
-  connection.onopen = function () {
 
     connection.send(JSON.stringify({
       nm: $scope.name,

@@ -173,7 +173,7 @@ wss.on('request', function ( request ) {
     });
 
     if (!added) game.allTimeHigh.push(currentScore);
-    console.log(game.allTimeHigh)
+
     game.allTimeHigh = sortScores(game.allTimeHigh);
     fs.writeFile('./db/high-scores.json', JSON.stringify(game.allTimeHigh), function () {
       game.allTimeHigh.updated = true;
