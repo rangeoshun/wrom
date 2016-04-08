@@ -73,6 +73,16 @@ div[ng-controller=setup] {
   transform: rotateY(180deg) translateZ(0.01px);
 }
 
+div[ng-controller=athScores] {
+  position: absolute;
+  top: 220px;
+}
+
+.setup div[ng-controller=athScores] {
+  transform: rotateY(180deg);
+  left: 220px;
+}
+
 canvas {
   image-rendering: optimizeSpeed;             /* Older versions of FF          */
   image-rendering: -moz-crisp-edges;          /* FF 6.0+                       */

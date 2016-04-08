@@ -37,14 +37,14 @@ module.exports = function ( $scope ) {
   $scope.$on('changeName', function ( ev, name ) {
     Globals.user.name = name;
     localStorage.wormer = btoa(JSON.stringify(Globals.user));
-    if (connection) connection.send(JSON.stringify({nm: name}));
+    if (connection && connection.readyState === 1) connection.send(JSON.stringify({nm: name}));
     else $scope.name = name;
   });
 
   $scope.$on('changeColor', function ( ev, color ) {
     Globals.user.color = color;
     localStorage.wormer = btoa(JSON.stringify(Globals.user));
-    if (connection) connection.send(JSON.stringify({cl: color}));
+    if (connection && connection.readyState === 1) connection.send(JSON.stringify({cl: color}));
     else $scope.color = color;
   });
 
@@ -66,6 +66,44 @@ module.exports = function ( $scope ) {
   $scope.$on('goPlay', function () {
     $scope.state = 'screen';
     if (connection) return;
+
+    addEventListener('keydown', function ( ev ) {
+      if ($scope.state === 'screen') ev.preventDefault();
+      let code = ev.keyCode;
+      let direction;
+      let respawn = 0;
+      let ability = 0;
+
+      switch (code) {
+        case 38:
+          direction = 1;
+        break;
+        case 39:
+          direction = 2;
+        break;
+        case 40:
+          direction = 3;
+        break;
+        case 37:
+          direction = 4;
+        break;
+        case 32:
+          respawn = !Globals.self.alive ? 1 : 0;
+          ability = !respawn ? 1 : 0;
+        break;
+      }
+
+      let message = {};
+      if (direction) {
+        message.dr = direction;
+      } else if (respawn) {
+        message.rs = respawn;
+      } else if (ability) {
+        message.ai = ability;
+      }
+
+      if (direction || respawn || ability) connection.send(JSON.stringify(message));
+    });
 
     addEventListener('keydown', function showScores ( ev ) {
       if (ev.keyCode === 9 && !$scope.showScores) {
@@ -96,178 +134,143 @@ module.exports = function ( $scope ) {
         }
       }
     }, true);
+  });
 
-    WebSocket = WebSocket || MozWebSocket;
-    connection = new WebSocket(`ws://${location.hostname}:${location.port}`);
-    connection.onopen = function () {
 
-      connection.send(JSON.stringify({
-        nm: $scope.name,
-        cl: $scope.color
-      }));
+  WebSocket = WebSocket || MozWebSocket;
+  connection = new WebSocket(`ws://${location.hostname}:${location.port}`);
+  connection.onopen = function () {
 
-      addEventListener('keydown', function ( ev ) {
-        if ($scope.state === 'screen') ev.preventDefault();
-        let code = ev.keyCode;
-        let direction;
-        let respawn = 0;
-        let ability = 0;
+    connection.send(JSON.stringify({
+      nm: $scope.name,
+      cl: $scope.color
+    }));
+  };
 
-        switch (code) {
-          case 38:
-            direction = 1;
-          break;
-          case 39:
-            direction = 2;
-          break;
-          case 40:
-            direction = 3;
-          break;
-          case 37:
-            direction = 4;
-          break;
-          case 32:
-            respawn = !Globals.self.alive ? 1 : 0;
-            ability = !respawn ? 1 : 0;
-          break;
-        }
+  connection.onerror = function (error) {
+    connection.close();
+  };
 
-        let message = {};
-        if (direction) {
-          message.dr = direction;
-        } else if (respawn) {
-          message.rs = respawn;
-        } else if (ability) {
-          message.ai = ability;
-        }
+  connection.onmessage = handleIdentityupdate;
 
-        if (direction || respawn || ability) connection.send(JSON.stringify(message));
-      });
-    };
-
-    connection.onerror = function (error) {
-      connection.close();
-    };
-
-    connection.onmessage = handleIdentityupdate;
-
-    function handleIdentityupdate ( message ) {
+  function handleIdentityupdate ( message ) {
 //      game.tick.step();
-      let update = JSON.parse(message.data);
-      Globals.selfID = update.id;
-      connection.onmessage = handleStateupdate;
-      game.tick.step();
-    }
+    let update = JSON.parse(message.data);
+    Globals.selfID = update.id;
+    connection.onmessage = handleStateupdate;
+    game.tick.step();
+  }
 
-    function handleStateupdate (message) {
+  function handleStateupdate (message) {
 //      game.tick.step();
-      let update = JSON.parse(message.data);
+    let update = JSON.parse(message.data);
 
-      $scope.$apply(function () {
-        $scope.$broadcast('update', update.sc);
-      });
+    $scope.$apply(function () {
+      $scope.$broadcast('update', update.sc);
+      if (update.ath) $scope.$broadcast('athUpdate', update.ath);
+    });
 
-      for (let pointID in update.pi) {
-        let pointUpdate = update.pi[pointID];
-        let foundPoint = game.getPointById(pointID, Point);
-        let type = '';
+    for (let pointID in update.pi) {
+      let pointUpdate = update.pi[pointID];
+      let foundPoint = game.getPointById(pointID, Point);
+      let type = '';
 
-        if (!foundPoint) {
-          switch (pointUpdate.tp) {
-            case 'p':
-              type = Point;
-            break;
-            case 'glp':
-              type = GoldenPoint;
-            break;
-            case 'mnp':
-              type = MinePoint;
-            break;
-            case 'pcp':
-              type = PickupMinePoint;
-            break;
-            case 'gop':
-              type = GhostPoint;
-            break;
-            case 'prp':
-              type = PortalPoint;
-            break;
-            case 'piop':
-              type = PortalIOPoint;
-            break;
-            case 'ivp':
-              type = InvisiblePoint;
-            break;
-            case 'dip':
-              type = InvisiblePoint;
-            break;
-          }
-
-          foundPoint = game.addPoint(type);
-          foundPoint.id = pointID;
+      if (!foundPoint) {
+        switch (pointUpdate.tp) {
+          case 'p':
+            type = Point;
+          break;
+          case 'glp':
+            type = GoldenPoint;
+          break;
+          case 'mnp':
+            type = MinePoint;
+          break;
+          case 'pcp':
+            type = PickupMinePoint;
+          break;
+          case 'gop':
+            type = GhostPoint;
+          break;
+          case 'prp':
+            type = PortalPoint;
+          break;
+          case 'piop':
+            type = PortalIOPoint;
+          break;
+          case 'ivp':
+            type = InvisiblePoint;
+          break;
+          case 'dip':
+            type = InvisiblePoint;
+          break;
         }
 
-        if (pointUpdate.de) {
-          foundPoint.die(pointUpdate.de);
-        } else {
-
-          if (pointUpdate.ce) foundPoint.setCreator(pointUpdate.ce);
-          if (pointUpdate.co) foundPoint.setCoords(pointUpdate.co);
-          if (pointUpdate.cl) foundPoint.setColor(pointUpdate.cl);
-          if (pointUpdate.am) foundPoint.arm();
-        }
+        foundPoint = game.addPoint(type);
+        foundPoint.id = pointID;
       }
 
-      for (let playerID in update.pa) {
-        let playerUpdate = update.pa[playerID];
-        let foundPlayer = game.getPlayerById(playerID);
+      if (pointUpdate.de) {
+        foundPoint.die(pointUpdate.de);
+      } else {
 
-        if (!foundPlayer) {
+        if (pointUpdate.ce) foundPoint.setCreator(pointUpdate.ce);
+        if (pointUpdate.co) foundPoint.setCoords(pointUpdate.co);
+        if (pointUpdate.cl) foundPoint.setColor(pointUpdate.cl);
+        if (pointUpdate.am) foundPoint.arm();
+      }
+    }
 
-          foundPlayer = game.addPlayer();
-          foundPlayer.id = playerID;
+    for (let playerID in update.pa) {
+      let playerUpdate = update.pa[playerID];
+      let foundPlayer = game.getPlayerById(playerID);
 
-          if (foundPlayer.id === Globals.selfID) {
+      if (!foundPlayer) {
 
-            $scope.$apply(function () {
-              $scope.showScores = false;
-            });
-
-            Globals.self = foundPlayer;
-            $scope.showScores = false;
-            foundPlayer.client = true;
-          }
-        }
+        foundPlayer = game.addPlayer();
+        foundPlayer.id = playerID;
 
         if (foundPlayer.id === Globals.selfID) {
-          if (typeof playerUpdate.ms === 'string') $scope.status.message = playerUpdate.ms;
-        }
 
-        if (playerUpdate.de) {
-//          connection.send('{"rs":1}');
+          $scope.$apply(function () {
+            $scope.showScores = false;
+          });
 
-          if (foundPlayer.id === Globals.selfID) {
-            $scope.$apply(function () {
-              $scope.showScores = true;
-            });
-          }
-
-          foundPlayer.die();
-
-        } else {
-
-          if (playerUpdate.di) foundPlayer.setDrill(playerUpdate.di);
-          if (playerUpdate.iv) foundPlayer.setInvisible(playerUpdate.iv);
-          if (playerUpdate.nm) foundPlayer.setName(playerUpdate.nm);
-          if (playerUpdate.cl) foundPlayer.setColor(playerUpdate.cl);
-          if (playerUpdate.go !== undefined) foundPlayer.setGhost(!!playerUpdate.go);
-          if (playerUpdate.bd) foundPlayer.body = playerUpdate.bd;
-          if (playerUpdate.co) foundPlayer.coords = foundPlayer.body[0];
+          Globals.self = foundPlayer;
+          $scope.showScores = false;
+          foundPlayer.client = true;
         }
       }
 
-      game.ditchTheDead();
-      game.tick.step();
+      if (foundPlayer.id === Globals.selfID) {
+        if (typeof playerUpdate.ms === 'string') $scope.status.message = playerUpdate.ms;
+      }
+
+      if (playerUpdate.de) {
+//          connection.send('{"rs":1}');
+
+        if (foundPlayer.id === Globals.selfID) {
+          $scope.$apply(function () {
+            $scope.showScores = true;
+          });
+        }
+
+        foundPlayer.die();
+
+      } else {
+
+        if (playerUpdate.di) foundPlayer.setDrill(playerUpdate.di);
+        if (playerUpdate.iv) foundPlayer.setInvisible(playerUpdate.iv);
+        if (playerUpdate.nm) foundPlayer.setName(playerUpdate.nm);
+        if (playerUpdate.cl) foundPlayer.setColor(playerUpdate.cl);
+        if (playerUpdate.go !== undefined) foundPlayer.setGhost(!!playerUpdate.go);
+        if (playerUpdate.bd) foundPlayer.body = playerUpdate.bd;
+        if (playerUpdate.co) foundPlayer.coords = foundPlayer.body[0];
+      }
     }
-  });
+
+    game.ditchTheDead();
+    game.tick.step();
+  }
+
 }

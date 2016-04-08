@@ -59,6 +59,21 @@
         </tr>
       </table>
     </div>
+    <div ng-controller="athScores" class="allTimeHigh">
+      ALL TIME HIGH SCORES
+      <table>
+        <tr>
+          <th>#</th>
+          <th>NAME</th>
+          <th>SCORE</th>
+        </tr>
+        <tr ng-repeat="score in athScores">
+          <td>{{score.pa}}</td>
+          <td>{{score.nm}}</td>
+          <td>{{score.so}}</td>
+        </tr>
+      </table>
+    </div>
   </div>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.js"></script>
   <script src="js/angular-client.js"></script>

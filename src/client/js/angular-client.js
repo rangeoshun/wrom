@@ -5,6 +5,7 @@ const connect = require('./angular-connect.js');
 const render = require('./angular-render.js');
 const setup = require('./angular-setup.js');
 const scores = require('./angular-scores.js');
+const athScores = require('./angular-all-time-high.js');
 const colors = require('./angular-colorpicker.js');
 
 if (!window.clientInit) {
@@ -41,5 +42,6 @@ if (!window.clientInit) {
   client.controller('colors', ['$scope', colors]);
   client.controller('screen', ['$scope', render]);
   client.controller('scores', ['$scope', '$filter', scores]);
+  client.controller('athScores', ['$scope', '$filter', athScores]);
   angular.bootstrap(document.body, ['client']);
 }

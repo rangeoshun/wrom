@@ -1,12 +1,14 @@
 "use strict";
+const url = require("url");
+const path = require("path");
+const fs = require("fs");
+
 const Globals = require('./globals.js');
 const Player = require('./player.js');
 const Game = require('./game.js');
 const game = new Game(true, Globals);
-
-const url = require("url");
-const path = require("path");
-const fs = require("fs");
+game.allTimeHigh = JSON.parse(fs.readFileSync('./db/high-scores.json'));
+game.allTimeHigh.updated = true;
 
 const httpPort = process.env.PORT || process.argv[2] || 80;
 const WebSocketServer = require('websocket').server;
@@ -137,4 +139,44 @@ wss.on('request', function ( request ) {
     player.entity.die();
     Globals.players.splice(Globals.players.indexOf(player), 1);
   });
+
+  game.allTimeHigh = [];
+
+  function sortScores ( scores ) {
+    if (!scores) return [];
+    return scores.sort(function ( s0, s1 ) {
+      return s0.so > s1.so ? -1 : s0.so == s1.so ? 0 : 1;
+    }).map(function ( score, index ) {
+      return {
+        pa: index + 1,
+        so: score.so,
+        nm: score.nm,
+      };
+    });
+  };
+
+  game.onDieCallback = function ( worm ) {
+    let currentScore = {
+      nm: worm.player.name,
+      so: worm.player.score
+    };
+
+    if (!currentScore.so) return;
+
+    let added = false;
+
+    game.allTimeHigh.forEach(function ( highScore ) {
+      if (highScore.nm === currentScore.nm) {
+        added = true;
+        if (highScore.so < currentScore.so) highScore.so = currentScore.so;
+      }
+    });
+
+    if (!added) game.allTimeHigh.push(currentScore);
+    console.log(game.allTimeHigh)
+    game.allTimeHigh = sortScores(game.allTimeHigh);
+    fs.writeFile('./db/high-scores.json', JSON.stringify(game.allTimeHigh), function () {
+      game.allTimeHigh.updated = true;
+    });
+  };
 });

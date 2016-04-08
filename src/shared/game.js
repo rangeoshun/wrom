@@ -133,8 +133,12 @@ module.exports = class Game {
     const game = this;
     let state = {};
 
-    state.sc = [];
+    if (game.allTimeHigh && (game.allTimeHigh.updated || fullState)) {
+      state.ath = game.allTimeHigh;
+      game.allTimeHigh.updated = fullState;
+    }
 
+    state.sc = [];
     game.globals.players.forEach(function ( player ) {
       state.sc.push({
         id: player.id,
