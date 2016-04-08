@@ -2,24 +2,26 @@
 const Point = require('./point.js');
 const Pixel = require('./pixel.js');
 const colors = require('./colors.js');
-const PortalAbility = require('./portal-ability.js');
+const DrillFX = require('./drill-fx.js');
+const DrillAbility = require('./drill-ability.js');
 
-module.exports = class PortalPoint extends Point {
+module.exports = class DrillPoint extends Point {
   constructor ( game ) {
     super(game);
     const point = this;
     point.value = 0;
-    point.type = 'prp';
+    point.type = 'dip';
+    point.color = colors.orange;
   }
 
   onCollision ( player ) {
     const point = this;
+    const body = player.body;
     const game = player.game;
 
-    point.die(1);
-
+    point.die(player.id);
     if (game.server) {
-      player.setAbility(new PortalAbility(player));
+      player.setAbility(new DrillAbility(player));
     }
   }
 
@@ -28,19 +30,14 @@ module.exports = class PortalPoint extends Point {
     return function () {
       let pixels = [];
 
-      if (!point || !point.alive) {
+      if (!point.alive) {
         pixels.die = true;
         return pixels;
       }
 
-      const colorState = Math.round(new Date().getMilliseconds() / 1000);
+      let factor = Math.sin((new Date().getMilliseconds() / 1000) / 10) + 0.2;
 
-      if (colorState) point.setColor(colors.orange);
-      else point.setColor(colors.cyan);
-
-      const color =  point.color;
-
-      pixels.push(new Pixel(1, 0, 0, 0, point.coords).setColor(color));
+      pixels.push(new Pixel(0,0,0,0, point.coords).setColor(point.color, factor));
       return pixels;
     };
   }

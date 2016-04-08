@@ -16,6 +16,7 @@ module.exports = function PortalAbility ( player ) {
     player.setMessage(`You'have portal open for ${duration} seconds..`);
     const head = player.body[0];
     const direction = player.direction;
+    const scorer = player;
     let portal0 = game.addPoint(PortalIOPoint);
     let portal1 = game.addPoint(PortalIOPoint);
 
@@ -49,20 +50,22 @@ module.exports = function PortalAbility ( player ) {
                   || part[1] === portal1.coords[1])) {
 
                 console.log(`${player.constructor.name} ${player.id} is thorn into half by ${portal1.constructor.name} ${portal1.id}`);
+                const rest = length - index;
 
                 if (!index) {
                   player.die();
                 } else {
-                  const rest = length - index;
                   player.drop(rest, index, body.splice(index, rest));
                 }
+
+                if (scorer && player.id !== scorer.id) scorer.addScore(rest * 10);
               }
             });
           });
 
           return false;
         });
-        
+
         portal0.die(1);
         portal1.die(1);
       }

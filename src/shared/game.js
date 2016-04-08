@@ -6,6 +6,8 @@ const MinePoint = require('./mine-point.js');
 const PickupMinePoint = require('./pickup-mine-point.js');
 const GhostPoint = require('./ghost-point.js');
 const PortalPoint = require('./portal-point.js');
+const InvisiblePoint = require('./invisible-point.js');
+const DrillPoint = require('./drill-point.js');
 const Worm = require('./worm.js');
 
 module.exports = class Game {
@@ -33,7 +35,7 @@ module.exports = class Game {
 
       function cleanup () {
         //  console.timeEnd(`Sync takes`);
-          game.ditchTheDead();
+        game.ditchTheDead();
       }
 
       function syncPlayers ( player ) {
@@ -65,15 +67,19 @@ module.exports = class Game {
   }
 
   getRandomPoint () {
-    const factor = Math.round(Math.random() * 32);
+    const factor = Math.round(Math.random() * 34);
 
-    if (factor > 31) {
-      return PortalPoint;
+    if (factor > 32) {
+      return InvisiblePoint;
+    } else if (factor > 31) {
+      return DrillPoint;
     } else if (factor > 30) {
-      return GhostPoint;
+      return PortalPoint;
     } else if (factor > 29) {
+      return GhostPoint;
+    } else if (factor > 27) {
       return PickupMinePoint;
-    } else if (factor > 20) {
+    } else if (factor > 24) {
       return GoldenPoint;
     } else {
       return Point;
@@ -189,6 +195,16 @@ module.exports = class Game {
       let playerState = {};
 
       if (player.alive) {
+
+        if (player.drillUpdated || fullState) {
+          playerState.di = player.drill;
+          player.drillUpdated = fullState;
+        }
+
+        if (player.invisibleUpdated || fullState) {
+          playerState.iv = player.invisible;
+          player.invisibleUpdated = fullState;
+        }
 
         if (player.abilityUpdated || fullState) {
           playerState.ai = 1;
