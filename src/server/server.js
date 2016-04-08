@@ -22,6 +22,25 @@ const httpServer = http.createServer(function ( request, response ) {
   let filename = path.join(process.cwd(), uri);
 
   try {
+
+    if (uri.indexOf('highscores') > -1) {
+      fs.readFile('./db/high-scores.json', "utf8", function( err, file ) {
+        if (err) {
+
+          response.writeHead(500, {"Content-Type": "text/plain"});
+          response.write(err + "\n");
+          response.end();
+          return;
+        }
+
+        response.writeHead(200, {"Content-Type": "text/json"});
+        response.write(file, "utf8");
+        response.end();
+      });
+
+      return;
+    }
+
     if (fs.statSync(filename).isDirectory()) {
       filename += 'index.html';
     }
