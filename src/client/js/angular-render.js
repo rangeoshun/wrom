@@ -28,9 +28,35 @@ module.exports = function ( $scope ) {
 */
 //  document.querySelector('[ng-controller=screen]').appendChild(_scores);
 
+  function getBoundCoords () {
+    const globals = $scope.globals;
+    const self = globals.self;
+    const body = self.body;
+    const head = body[0];
+    const length = body.length;
+    const minX = 160;
+    const minY = 100;
+    const startY = head[1] - Math.max(minY / 2, length);
+    const endY = head[1] + Math.max(minY / 2, length);
+    const dimensionY = endY - startY;
+    const startX = head[0] - Math.max(minX / 2, dimensionY / 2 * 1.6);
+    const endX = head[0] + Math.max(minX / 2, dimensionY / 2 * 1.6);
+    const dimensionX = endX - startX;
+    const start = [startX, startY];
+    const end = [endX, endY];
+    return [start, end, dimensionX, dimensionY];
+  }
+
   function render () {
+    const globals = $scope.globals;
 
     if ($scope.state === 'screen') {
+      const bounds = getBoundCoords();
+
+      if (_screen_canvas.width !== bounds[2]) {
+        _screen_canvas.width = bounds[2];
+        _screen_canvas.height = bounds[3];
+      }
 
       _screen.fillStyle = '#000';
       _screen.fillRect(0, 0, Globals.resolution[0], Globals.resolution[1]);
@@ -40,13 +66,21 @@ module.exports = function ( $scope ) {
         const pixels = callback(_screen);
 
         for (let k = 0; k < pixels.length; k++) {
+
           const pixel = pixels[k];
           const x = pixel[4][0];
           const y = pixel[4][1];
-          const color = pixel.getHex();
 
-          _screen.fillStyle = color;
-          _screen.fillRect(x * Globals.scale, y * Globals.scale, Globals.scale, Globals.scale);
+          if (x >= bounds[0][0]
+            && x <= bounds[1][0]
+            && y >= bounds[0][1]
+            && y <= bounds[1][1]) {
+
+            const color = pixel.getHex();
+
+            _screen.fillStyle = color;
+            _screen.fillRect((x - bounds[0][0]) * Globals.scale, (y - bounds[0][1]) * Globals.scale, Globals.scale, Globals.scale);
+          }
         }
 
         if (pixels.die) {
