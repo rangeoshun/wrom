@@ -44,6 +44,8 @@ module.exports = function ( $scope ) {
   const screenNode = document.querySelector('[ng-controller=screen]');
   screenNode.appendChild(_screen_canvas);
 
+//  document.body.appendChild(_world_canvas);
+
   let deleteCue = [];
 
   function getBoundCoords () {
@@ -161,12 +163,11 @@ module.exports = function ( $scope ) {
 
   function isInNormalizedBounds ( pixelCoords, normBounds ) {
     const x = pixelCoords[0];
-    const y = pixelCoords[0];
+    const y = pixelCoords[1];
     let verdict = false;
-    let bounds = null;
 
     for (let i = 0; i < normBounds.length; i++) {
-      bounds = normBounds[i];
+      let bounds = normBounds[i];
       if (bounds) {
 /*
         _world.strokeStyle = '#222';
@@ -177,13 +178,12 @@ module.exports = function ( $scope ) {
           && y >= bounds[0][1]
           && y <= bounds[1][1]) {
 
-          verdict = true;
+          return true;
         }
-        bounds = null;
       }
     }
 
-    return verdict;
+    return false;
   }
 
   function render () {
@@ -212,13 +212,13 @@ module.exports = function ( $scope ) {
           const x = pixel[4][0];
           const y = pixel[4][1];
 isInNormalizedBounds([x, y], normBounds)
-//          if (isInNormalizedBounds([x, y], normBounds)) {
+          if (isInNormalizedBounds([x, y], normBounds)) {
 
             const color = pixel.getHex();
 
             _world.fillStyle = color;
             _world.fillRect(x, y, 1, 1);
-//          }
+          }
         }
 
         if (pixels.die) {
