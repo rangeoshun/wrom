@@ -149,7 +149,8 @@ module.exports = function ( $scope ) {
           }
         break;
         case 27:
-          ev.preventDefault();
+        ev.preventDefault();
+
           $scope.$apply(function () {
             $scope.state = $scope.state === 'screen' ? 'setup' : 'screen';
           });
@@ -195,7 +196,9 @@ module.exports = function ( $scope ) {
   }
 
   function handleStateupdate (message) {
-//      game.tick.step();
+
+    game.ditchTheDead();
+
     let update = JSON.parse(message.data);
 
     $scope.$apply(function () {
@@ -302,8 +305,6 @@ module.exports = function ( $scope ) {
       }
     }
 
-    game.ditchTheDead();
     game.tick.step();
   }
-
 }
