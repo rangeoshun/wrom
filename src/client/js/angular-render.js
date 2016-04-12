@@ -53,10 +53,7 @@ module.exports = function ( $scope ) {
     const self = globals.self;
     const body = self.body;
     const head = body[0];
-    const length = body.length;
-    const minX = 160;
-    const minY = 100;
-    const scaleY = Math.round(Math.max(minY / 2, length)) + 1;
+    const scaleY = globals.screen[1] / 2;
     const scaleX = Math.round(scaleY * 1.6);
     const startY = head[1] - scaleY;
     const endY = head[1] + scaleY;
@@ -211,7 +208,7 @@ module.exports = function ( $scope ) {
           const pixel = pixels[k];
           const x = pixel[4][0];
           const y = pixel[4][1];
-isInNormalizedBounds([x, y], normBounds)
+
           if (isInNormalizedBounds([x, y], normBounds)) {
 
             const color = pixel.getHex();
@@ -239,7 +236,7 @@ isInNormalizedBounds([x, y], normBounds)
               whereToRender[0] += normBounds[8][1][0] - normBounds[8][0][0];
             }
 
-            if (normBounds[6]) {
+            if (normBounds[5]) {
               whereToRender[1] += normBounds[5][1][0] - normBounds[5][0][0];
             }
           break;

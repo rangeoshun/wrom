@@ -33,13 +33,13 @@ module.exports = class Tick {
 
         onCallbacks.forEach(function ( callback, index ) {
             if (callback(players, points) === false) {
-              game.tick.onCallbacks.splice(index, 1);
+              onCallbacks.splice(index, 1);
             }
         });
 
         afterCallbacks.forEach(function ( callback, index ) {
             if (callback(players, points) === false) {
-              game.tick.onCallbacks.splice(index, 1);
+              afterCallbacks.splice(index, 1);
             }
         });
       }
