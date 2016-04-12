@@ -1,6 +1,6 @@
 "use strict";
 module.exports = {
-  resolution: [160, 100],
+  resolution: [1600, 1000],
   players: [],
   renderCallbacks: [],
   fps: 60,
