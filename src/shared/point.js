@@ -13,7 +13,7 @@ module.exports = class Point extends Entity {
 
     if (game.server) {
       game.tick.onCallbacks.push(point.isColliding());
-      game.tick.onCallbacks.push(point.isOutOfBounds());
+      game.tick.afterCallbacks.push(point.isOutOfBounds());
     }
 
     new createFX(point);

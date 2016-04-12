@@ -24,6 +24,19 @@ module.exports = function PortalAbility ( player ) {
     portal0.setColor(colors.orange);
     portal0.setCoords([head[0] + direction[0] * 7, head[1] + direction[1] * 7]);
 
+    const p0Coords = portal0.coords;
+    if (p0Coords[0] >= game.globals.resolution[0]) {
+      p0Coords[0] = game.globals.resolution[0] - p0Coords[0];
+    } else if (p0Coords[0] < 0) {
+      p0Coords[0] = game.globals.resolution[0] + p0Coords[0];
+    }
+
+    if (p0Coords[1] >= game.globals.resolution[1]) {
+      p0Coords[1] = game.globals.resolution[1] - p0Coords[1];
+    } else if (p0Coords[1] < 0) {
+      p0Coords[1] = game.globals.resolution[1] + p0Coords[0];
+    }
+
     portal1.pair = portal0;
     portal1.setColor(colors.cyan);
 
