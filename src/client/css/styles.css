@@ -20,6 +20,11 @@ h1 {
   text-align: center;
 }
 
+h1 > sub {
+  color: black;
+  font-size: 3px;
+}
+
 label {
   margin-top: 5px;
 }
