@@ -1,9 +1,14 @@
 "use strict";
 
-module.exports = class Pixel extends Array {
+module.exports = class Pixel {
   constructor ( drawn, r, g, b, coords ) {
-    super(drawn || 0, r || 0, g || 0, b || 0, coords);
     const pixel = this;
+
+    pixel[0] = drawn || 0;
+    pixel[1] =  r || 0;
+    pixel[2] =  g || 0;
+    pixel[3] =  b || 0;
+    pixel[4] =  coords;
 
     pixel.r = function () {
       let component = this[1];

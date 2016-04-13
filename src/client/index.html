@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html charset="UTF-8" lang="en_EN">
 <head>
   <title>WROM</title>
+  <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
+  <meta content="utf-8" http-equiv="encoding" />
   <link rel="stylesheet" type="text/css" href="css/fonts/c64fonts.css" />
   <link rel="stylesheet" type="text/css" href="css/styles.css" />
-  <style>
-  </style>
 </head>
 <body ng-controller="connect">
   <div class="{{state}}">
@@ -28,13 +28,23 @@
           <div ng-controller="colors">
             Color <br />
             <div ng-repeat="color in colors">
+              <!--[if lte IE 11]>
               <div
                 class="color-sample"
-                style="background-color: {{color.hex}}; border-color: {{isSelected(color)}}"
+                ng-style="margin-right: 2px;float:left; background-color: {{color.hex}}; border-color: {{isSelected(color)}};"
+                ng-click="changeColor(color.array)">
+                  &nbsp;
+              </div>
+              <! [endif]-->
+              <!--[if !IE]> -->
+              <div
+                class="color-sample"
+                style="background-color: {{color.hex}}; border-color: {{isSelected(color)}};"
                 ng-click="changeColor(color.array)"
                 style="margin-right: 2px;float:left;">
                   &nbsp;
               </div>
+              <!-- <![endif]-->
             </div>
           </div>
         </label>

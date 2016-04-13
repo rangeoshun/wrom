@@ -136,9 +136,11 @@ gulp.task('build-client', function () {
     ])
     .pipe(replace(/{{socket}}/g, config.dev.socket))
     .pipe(stripDebug())
+/*
     .pipe(babel({
       presets: ['es2015']
     }))
+*/
     .pipe(gulp.dest('build/client/js/'))
     .on('end', function () {
       gulp.src('build/client/js/*.js')

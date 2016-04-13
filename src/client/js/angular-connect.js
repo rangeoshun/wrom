@@ -1,4 +1,4 @@
-"use strict"
+"use strict";
 
 const Globals = require('./globals.js');
 const Point = require('./point.js');

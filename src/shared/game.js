@@ -24,7 +24,7 @@ module.exports = class Game {
     if (!game.server) game.allTimeHigh = [];
 
     if (server) {
-      function correctPoints () {
+      let correctPoints = function () {
         let pointCount = 0;
         game.points.forEach(function ( point ) {
           if (!point.creator) pointCount++;
@@ -34,12 +34,12 @@ module.exports = class Game {
         }
       }
 
-      function cleanup () {
+      let cleanup = function () {
         //  console.timeEnd(`Sync takes`);
         game.ditchTheDead();
       }
 
-      function syncPlayers ( player ) {
+      let syncPlayers = function ( player ) {
         //  console.time(`Sync takes`);
         let state = game.getState();
         game.syncCallbacks.forEach(function ( callback, index ) {

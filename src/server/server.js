@@ -4,6 +4,7 @@ const path = require("path");
 const fs = require("fs");
 
 const Globals = require('./globals.js');
+const MimeTypes = require('./mime-types.js');
 const Player = require('./player.js');
 const Game = require('./game.js');
 const game = new Game(true, Globals);
@@ -47,14 +48,13 @@ const httpServer = http.createServer(function ( request, response ) {
 
     fs.readFile(filename, "binary", function( err, file ) {
       if (err) {
-
         response.writeHead(500, {"Content-Type": "text/plain"});
         response.write(err + "\n");
         response.end();
         return;
       }
-
-      response.writeHead(200);
+      const mimeType = MimeTypes['.'+ filename.split('.')[1]] || 'text/plain';
+      response.writeHead(200, {"Content-Type": mimeType});
       response.write(file, "binary");
       response.end();
     });
