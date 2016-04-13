@@ -5,38 +5,43 @@ const Globals = require('./globals.js');
 module.exports = function ( $scope ) {
   const globals = $scope.globals;
   const resolution = globals.resolution;
+  const resolutionX = resolution[0];
+  const resolutionY = resolution[1];
 
   const _background_canvas = document.createElement('canvas');
-  _background_canvas.width = resolution[0];
-  _background_canvas.height = resolution[1];
+  _background_canvas.width = resolutionX;
+  _background_canvas.height = resolutionY;
 
   const _background = _background_canvas.getContext("2d");
   _background.strokeStyle = '#222';
 
   const _world_canvas = document.createElement('canvas');
-  _world_canvas.width = resolution[0];
-  _world_canvas.height = resolution[1];
+  _world_canvas.width = resolutionX;
+  _world_canvas.height = resolutionY;
   const _world = _world_canvas.getContext("2d");
 
-  for (let i = 1; i < resolution[0]; i += 10) {
+  for (let i = 1; i < resolutionX; i += 10) {
     _background.beginPath();
     _background.lineWidth = .5;
     _background.moveTo(i, 0);
-    _background.lineTo(i, resolution[1]);
+    _background.lineTo(i, resolutionY);
     _background.stroke();
   }
 
-  for (let i = 1; i < resolution[1]; i += 10) {
+  for (let i = 1; i < resolutionY; i += 10) {
     _background.beginPath();
     _background.lineWidth = .5;
     _background.moveTo(0, i);
-    _background.lineTo(resolution[0], i);
+    _background.lineTo(resolutionX, i);
     _background.stroke();
   }
-  const backgroundImg = _background.getImageData(0, 0, resolution[0], resolution[1]);
+
+  const backgroundImg = _background.getImageData(0, 0, resolutionX, resolutionY);
 
   const _screen_canvas = document.createElement('canvas');
   const _screen = _screen_canvas.getContext("2d");
+  _screen_canvas.width = globals.screen[0];
+  _screen_canvas.height = globals.screen[1];
   _screen_canvas.className = 'screen';
 
   const _renderCallbacks = Globals.renderCallbacks;
@@ -75,53 +80,53 @@ module.exports = function ( $scope ) {
 
     if (bounds[0][0] < 0) {
 
-      subX = resolution[0] + bounds[0][0];
+      subX = resolutionX + bounds[0][0];
       bounds[0][0] = 0;
     }
 
-    if (bounds[1][0] > resolution[0]) {
+    if (bounds[1][0] > resolutionX) {
 
-      superX = bounds[1][0] - resolution[0];
-      bounds[1][0] = resolution[0];
+      superX = bounds[1][0] - resolutionX;
+      bounds[1][0] = resolutionX;
     }
 
     if (bounds[0][1] < 0) {
 
-      subY = resolution[1] + bounds[0][1];
+      subY = resolutionY + bounds[0][1];
       bounds[0][1] = 0;
     }
 
-    if (bounds[1][1] > resolution[1]) {
+    if (bounds[1][1] > resolutionY) {
 
-      superY = bounds[1][1] - resolution[1];
-      bounds[1][1] = resolution[1];
+      superY = bounds[1][1] - resolutionY;
+      bounds[1][1] = resolutionY;
     }
 
     if (subX && subY) {
       normBounds[0] = [
         [subX, subY],
-        [resolution[0], resolution[1]]
+        [resolutionX, resolutionY]
       ];
     }
 
     if (subY) {
       normBounds[1] = [
         [bounds[0][0], subY],
-        [bounds[1][0], resolution[1]]
+        [bounds[1][0], resolutionY]
       ];
     }
 
     if (superX && subY) {
       normBounds[2] = [
         [0, subY],
-        [superX, resolution[1]]
+        [superX, resolutionY]
       ];
     }
 
     if (subX) {
       normBounds[3] = [
         [subX, bounds[0][1]],
-        [resolution[0], bounds[1][1]]
+        [resolutionX, bounds[1][1]]
       ];
     }
 
@@ -137,7 +142,7 @@ module.exports = function ( $scope ) {
     if (subX && superY) {
       normBounds[6] = [
         [subX, 0],
-        [resolution[0], superY]
+        [resolutionX, superY]
       ];
     }
 
@@ -168,7 +173,7 @@ module.exports = function ( $scope ) {
       if (bounds) {
 /*
         _world.strokeStyle = '#222';
-        _world.strokeRect(bounds[0][0],bounds[0][1],bounds[1][0] - bounds[0][0],bounds[1][1] - bounds[0][1]);
+        _world.strokeRect(bounds[0][0],bounds[0][1],bounds[1][0] - bounds[0][0],bounds[1][1] - bounds[0][1);
 */
         if (x >= bounds[0][0]
           && x <= bounds[1][0]
@@ -183,21 +188,20 @@ module.exports = function ( $scope ) {
     return false;
   }
 
+  function renderSegmentOnScreen ( bounds, where ) {
+    const entitiesImg = _world.getImageData(bounds[0][0], bounds[0][1], bounds[1][0], bounds[1][1]);
+    _screen.putImageData(entitiesImg, where[0], where[1]);
+  }
+
   function render () {
-    _world.fillStyle = '#000';
-    _world.fillRect(0,0,resolution[0], resolution[1]);
-    const globals = $scope.globals;
-    _world.putImageData(backgroundImg, 0, 0);
 
     if ($scope.state === 'screen') {
-      const bounds = getBoundCoords();
-//      console.log(bounds)
-      const normBounds = normalizeBounds(bounds);
 
-      if (_screen_canvas.width !== bounds[2]) {
-        _screen_canvas.width = bounds[2];
-        _screen_canvas.height = bounds[3];
-      }
+      _world.fillStyle = '#000';
+      _world.fillRect(0,0,resolutionX, resolutionY);
+      _world.putImageData(backgroundImg, 0, 0);
+//      console.log(bounds)
+      let normBounds = normalizeBounds(getBoundCoords());
 
       for (let i = 0; i < _renderCallbacks.length; i++) {
         const callback = _renderCallbacks[i];
@@ -211,8 +215,17 @@ module.exports = function ( $scope ) {
 
           if (isInNormalizedBounds([x, y], normBounds)) {
 
-            const color = pixel.getHex();
+            /*
+            let renderedPixel = _world.createImageData(1, 1);
+            let pixelData = renderedPixel.data;
+            pixelData[0] = pixel.r();
+            pixelData[1] = pixel.g();
+            pixelData[2] = pixel.b();
+            pixelData[3] = 255;
+            _world.putImageData(renderedPixel, x, y);
+            */
 
+            const color = pixel.getHex();
             _world.fillStyle = color;
             _world.fillRect(x, y, 1, 1);
           }
@@ -223,116 +236,133 @@ module.exports = function ( $scope ) {
         }
       }
 
-      let boundsDrawn = [0, 0];
-      normBounds.forEach(function ( bounds, index ) {
-        if (!bounds) return;
-        let renderedSize = [bounds[1][0] - bounds[0][0], bounds[1][0] - bounds[0][0]];
+      const segment0 = normBounds[0];
+      const segment1 = normBounds[1];
+      const segment2 = normBounds[2];
+      const segment3 = normBounds[3];
+      const segment4 = normBounds[4];
+      const segment5 = normBounds[5];
+      const segment6 = normBounds[6];
+      const segment7 = normBounds[7];
+      const segment8 = normBounds[8];
+
+      if (segment0) {
         let whereToRender = [0, 0];
-        boundsDrawn.push(index);
-
-        switch (index) {
-          case 0:
-            if (normBounds[8]) {
-              whereToRender[0] += normBounds[8][1][0] - normBounds[8][0][0];
-            }
-
-            if (normBounds[5]) {
-              whereToRender[1] += normBounds[5][1][0] - normBounds[5][0][0];
-            }
-          break;
-          case 1:
-            if (normBounds[0]) {
-              whereToRender[0] += normBounds[0][1][0] - normBounds[0][0][0];
-            }
-          break;
-          case 2:
-            if (normBounds[0]) {
-              whereToRender[0] += normBounds[0][1][0] - normBounds[0][0][0];
-            }
-
-            if (normBounds[1]) {
-              whereToRender[0] += normBounds[1][1][0] - normBounds[1][0][0];
-            }
-          break;
-          case 3:
-            if (normBounds[0]) {
-              whereToRender[1] += normBounds[0][1][1] - normBounds[0][0][1];
-            }
-          break;
-          case 4:
-            if (normBounds[0]) {
-              whereToRender[1] += normBounds[0][1][1] - normBounds[0][0][1];
-            } else if (normBounds[1]) {
-              whereToRender[1] += normBounds[1][1][1] - normBounds[1][0][1];
-            } else if (normBounds[2] && normBounds[5]) {
-              whereToRender[0] += normBounds[5][1][0] - normBounds[5][0][0];
-            }
-
-            if (normBounds[3]) {
-              whereToRender[0] += normBounds[3][1][0] - normBounds[3][0][0];
-            }
-          break;
-          case 5:
-            if (normBounds[0]) {
-              whereToRender[0] += normBounds[0][1][0] - normBounds[0][0][0];
-              whereToRender[1] += normBounds[0][1][1] - normBounds[0][0][1];
-            }
-
-            if (normBounds[4]) {
-              whereToRender[0] += normBounds[4][1][0] - normBounds[4][0][0];
-            }
-
-            if (normBounds[2]) {
-              whereToRender[1] += normBounds[2][1][1] - normBounds[2][0][1];
-            }
-
-          break;
-          case 6:
-            if (normBounds[0]) {
-              whereToRender[1] += normBounds[0][1][1] - normBounds[0][0][1];
-            }
-
-            if (normBounds[3]) {
-              whereToRender[1] += normBounds[3][1][1] - normBounds[3][0][1];
-            }
-          break;
-          case 7:
-
-            if (normBounds[4]) {
-              whereToRender[1] += normBounds[4][1][1] - normBounds[4][0][1];
-            } else if (normBounds[3]) {
-              whereToRender[1] += normBounds[3][1][1] - normBounds[3][0][1];
-            }
-
-            if (normBounds[6]) {
-              whereToRender[0] += normBounds[6][1][0] - normBounds[6][0][0];
-            }
-          break;
-          case 8:
-            if (normBounds[4]) {
-              whereToRender[0] += normBounds[4][1][0] - normBounds[4][0][0];
-            }
-
-            if (normBounds[5]) {
-              whereToRender[1] += normBounds[5][1][1] - normBounds[5][0][1];
-            }
-          break;
+        if (segment8) {
+          whereToRender[0] += segment8[1][0] - segment8[0][0];
         }
 
-        const entitiesImg = _world.getImageData(bounds[0][0], bounds[0][1], bounds[1][0], bounds[1][1]);
-        _screen.putImageData(entitiesImg, whereToRender[0], whereToRender[1]);
-/*
-        _screen.font = "20px serif";
-        _screen.fillStyle = '#fff';
-        _screen.fillText(index, whereToRender[0] + 5, whereToRender[1] + 20);
-*/
-      });
+        if (segment5) {
+          whereToRender[1] += segment5[1][0] - segment5[0][0];
+        }
+        renderSegmentOnScreen(segment0, whereToRender);
+      }
+
+      if (segment1) {
+        let whereToRender = [0, 0];
+        if (segment0) {
+          whereToRender[0] += segment0[1][0] - segment0[0][0];
+        }
+        renderSegmentOnScreen(segment1, whereToRender);
+      }
+
+      if (segment2) {
+        let whereToRender = [0, 0];
+        if (segment0) {
+          whereToRender[0] += segment0[1][0] - segment0[0][0];
+        }
+
+        if (segment1) {
+          whereToRender[0] += segment1[1][0] - segment1[0][0];
+        }
+        renderSegmentOnScreen(segment2, whereToRender);
+      }
+
+      if (segment3) {
+        let whereToRender = [0, 0];
+        if (segment0) {
+          whereToRender[1] += segment0[1][1] - segment0[0][1];
+        }
+        renderSegmentOnScreen(segment3, whereToRender);
+      }
+
+      if (segment4) {
+        let whereToRender = [0, 0];
+        if (segment0) {
+          whereToRender[1] += segment0[1][1] - segment0[0][1];
+        } else if (segment1) {
+          whereToRender[1] += segment1[1][1] - segment1[0][1];
+        } else if (segment2 && segment5) {
+          whereToRender[0] += segment5[1][0] - segment5[0][0];
+        }
+
+        if (segment3) {
+          whereToRender[0] += segment3[1][0] - segment3[0][0];
+        }
+        renderSegmentOnScreen(segment4, whereToRender);
+      }
+
+      if (segment5) {
+        let whereToRender = [0, 0];
+        if (segment0) {
+          whereToRender[0] += segment0[1][0] - segment0[0][0];
+          whereToRender[1] += segment0[1][1] - segment0[0][1];
+        }
+
+        if (segment4) {
+          whereToRender[0] += segment4[1][0] - segment4[0][0];
+        }
+
+        if (segment2) {
+          whereToRender[1] += segment2[1][1] - segment2[0][1];
+        }
+        renderSegmentOnScreen(segment5, whereToRender);
+      }
+
+      if (segment6) {
+        let whereToRender = [0, 0];
+        if (segment0) {
+          whereToRender[1] += segment0[1][1] - segment0[0][1];
+        }
+
+        if (segment3) {
+          whereToRender[1] += segment3[1][1] - segment3[0][1];
+        }
+        renderSegmentOnScreen(segment6, whereToRender);
+      }
+
+      if (segment7) {
+        let whereToRender = [0, 0];
+        if (segment4) {
+          whereToRender[1] += segment4[1][1] - segment4[0][1];
+        } else if (segment3) {
+          whereToRender[1] += segment3[1][1] - segment3[0][1];
+        }
+
+        if (segment6) {
+          whereToRender[0] += segment6[1][0] - segment6[0][0];
+        }
+        renderSegmentOnScreen(segment7, whereToRender);
+      }
+
+      if (segment8) {
+        let whereToRender = [0, 0];
+        if (segment4) {
+          whereToRender[0] += segment4[1][0] - segment4[0][0];
+        }
+
+        if (segment5) {
+          whereToRender[1] += segment5[1][1] - segment5[0][1];
+        }
+        renderSegmentOnScreen(segment8, whereToRender);
+      }
+
+      normBounds = null;
     }
 
     deleteCue.forEach(function ( callback ) {
       _renderCallbacks.splice(_renderCallbacks.indexOf(callback), 1);
     });
-
     deleteCue = [];
     requestAnimationFrame(render);
   }

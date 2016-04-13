@@ -3,6 +3,7 @@ body {
   margin: 0 auto;
   position: relative;
   transform-origin: 50% 0;
+  -moz-transform: scale(3);
   transform: scale(3);
 }
 
@@ -123,7 +124,6 @@ canvas.score {
   font-smoothing: none;
   -webkit-font-smoothing: none;
   position: absolute;
-  transform: scaleX(2) scaleY(2);
 }
 
 input, .color-sample {
