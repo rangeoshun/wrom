@@ -194,6 +194,7 @@ module.exports = function ( $scope ) {
     _screen.putImageData(entitiesImg, where[0], where[1]);
   }
 
+  const renderedPixel = _world.createImageData(1, 1);
   function render () {
 
     if ($scope.state === 'screen') {
@@ -218,19 +219,18 @@ module.exports = function ( $scope ) {
 
           if (isInNormalizedBounds([x, y], normBounds)) {
 
-            /*
-            let renderedPixel = _world.createImageData(1, 1);
             let pixelData = renderedPixel.data;
             pixelData[0] = pixel.r();
             pixelData[1] = pixel.g();
             pixelData[2] = pixel.b();
             pixelData[3] = 255;
             _world.putImageData(renderedPixel, x, y);
-            */
 
+            /*
             const color = pixel.getHex();
             _world.fillStyle = color;
             _world.fillRect(x, y, 1, 1);
+            */
           }
         }
 
@@ -248,9 +248,10 @@ module.exports = function ( $scope ) {
       const segment6 = normBounds[6];
       const segment7 = normBounds[7];
       const segment8 = normBounds[8];
+      let whereToRender = [0, 0];
 
       if (segment0) {
-        let whereToRender = [0, 0];
+        whereToRender = [0, 0];
         if (segment8) {
           whereToRender[0] += segment8[1][0] - segment8[0][0];
         }
@@ -262,7 +263,7 @@ module.exports = function ( $scope ) {
       }
 
       if (segment1) {
-        let whereToRender = [0, 0];
+        whereToRender = [0, 0];
         if (segment0) {
           whereToRender[0] += segment0[1][0] - segment0[0][0];
         }
@@ -270,7 +271,7 @@ module.exports = function ( $scope ) {
       }
 
       if (segment2) {
-        let whereToRender = [0, 0];
+        whereToRender = [0, 0];
         if (segment0) {
           whereToRender[0] += segment0[1][0] - segment0[0][0];
         }
@@ -282,7 +283,7 @@ module.exports = function ( $scope ) {
       }
 
       if (segment3) {
-        let whereToRender = [0, 0];
+        whereToRender = [0, 0];
         if (segment0) {
           whereToRender[1] += segment0[1][1] - segment0[0][1];
         }
@@ -290,7 +291,7 @@ module.exports = function ( $scope ) {
       }
 
       if (segment4) {
-        let whereToRender = [0, 0];
+        whereToRender = [0, 0];
         if (segment0) {
           whereToRender[1] += segment0[1][1] - segment0[0][1];
         } else if (segment1) {
@@ -306,7 +307,7 @@ module.exports = function ( $scope ) {
       }
 
       if (segment5) {
-        let whereToRender = [0, 0];
+        whereToRender = [0, 0];
         if (segment0) {
           whereToRender[0] += segment0[1][0] - segment0[0][0];
           whereToRender[1] += segment0[1][1] - segment0[0][1];
@@ -323,7 +324,7 @@ module.exports = function ( $scope ) {
       }
 
       if (segment6) {
-        let whereToRender = [0, 0];
+        whereToRender = [0, 0];
         if (segment0) {
           whereToRender[1] += segment0[1][1] - segment0[0][1];
         }
@@ -335,7 +336,7 @@ module.exports = function ( $scope ) {
       }
 
       if (segment7) {
-        let whereToRender = [0, 0];
+        whereToRender = [0, 0];
         if (segment4) {
           whereToRender[1] += segment4[1][1] - segment4[0][1];
         } else if (segment3) {
@@ -349,8 +350,8 @@ module.exports = function ( $scope ) {
       }
 
       if (segment8) {
-        let whereToRender = [0, 0];
         if (segment4) {
+          whereToRender = [0, 0];
           whereToRender[0] += segment4[1][0] - segment4[0][0];
         }
 
