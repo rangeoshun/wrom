@@ -157,6 +157,11 @@ module.exports = class Game {
 
       if (point.alive) {
 
+        if (point.creatorUpdated || fullState) {
+          pointState.ce = point.creator;
+          point.creatorUpdated = fullState;
+        }
+
         if (point.colorUpdated || fullState) {
           pointState.cl = point.color;
           point.colorUpdated = fullState;

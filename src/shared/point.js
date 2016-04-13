@@ -19,12 +19,6 @@ module.exports = class Point extends Entity {
     new createFX(point);
   }
 
-  setCreator ( creatorID ) {
-    const point = this;
-    point.creator = creatorID;
-    point.updated = point.creatorUpdated = true;
-  }
-
   isOutOfBounds () {
     const point = this;
     return function () {

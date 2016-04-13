@@ -30,24 +30,19 @@ module.exports = class MinePoint extends Point {
   }
 
   render () {
-    const point = this;
-
+    let point = this;
+    const game = point.game;
     return function ( screen ) {
       const armed = point.armed;
 
       let pixels = [];
-      if (!point.game.getPointById(point.id) || !point.alive) {
+      if (!game.getPointById(point.id) || !point.alive) {
         pixels.die = [];
         return pixels;
       }
 
-      const sinTime = 1;//!armed ? 1 : Math.sin(parseFloat('0.'+ (new Date().getTime() / 1000).toString().split('.')[1]) * Math.PI);
-      let color = !armed ? point.color : point.armedColor;
-      let r = color[0] * sinTime;
-      let g = color[1] * sinTime;
-      let b = color[2] * sinTime;
-
-      pixels.push(new Pixel(1, r, g, b, point.coords));
+      const color = !armed && game.globals.selfID !== point.creator ? point.color : point.armedColor;
+      pixels.push(new Pixel(1, 1, 1, 1, point.coords).setColor(color));
 
       return pixels;
     };

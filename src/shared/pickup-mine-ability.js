@@ -12,7 +12,7 @@ module.exports = function PickupMineAbility ( player ) {
     const mine = game.addPoint(MinePoint);
 
     mine.setCoords([coords[0], coords[1]]);
-    mine.creator = player.id;
+    mine.setCreator(player.id);
     player.setAbility(null);
     player.setMessage('');
   };

@@ -32,10 +32,16 @@ module.exports = class Entity {
     console.log(`${entity.constructor.name} ${entity.id} is alive`);
   }
 
+  setCreator ( creatorID ) {
+    const point = this;
+    point.creator = creatorID;
+    point.updated = point.creatorUpdated = true;
+  }
+
   setCoords ( coords ) {
     let entity = this;
     entity.coords = coords;
-    entity.updated = entity.nameCoords = true;
+    entity.updated = entity.coordsUpdated = true;
   }
 
 
