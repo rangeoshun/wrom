@@ -14,11 +14,9 @@ module.exports = function ( $scope ) {
 
   const _background = _background_canvas.getContext("2d");
   _background.strokeStyle = '#222';
+  _background.fillStyle = '#000';
+  _background.fillRect(0,0,resolutionX, resolutionY);
 
-  const _world_canvas = document.createElement('canvas');
-  _world_canvas.width = resolutionX;
-  _world_canvas.height = resolutionY;
-  const _world = _world_canvas.getContext("2d");
 
   for (let i = 1; i < resolutionX; i += 10) {
     _background.beginPath();
@@ -37,6 +35,11 @@ module.exports = function ( $scope ) {
   }
 
   const backgroundImg = _background.getImageData(0, 0, resolutionX, resolutionY);
+
+  const _world_canvas = document.createElement('canvas');
+  _world_canvas.width = resolutionX;
+  _world_canvas.height = resolutionY;
+  const _world = _world_canvas.getContext("2d");
 
   const _screen_canvas = document.createElement('canvas');
   const _screen = _screen_canvas.getContext("2d");
@@ -199,8 +202,6 @@ module.exports = function ( $scope ) {
 
     if ($scope.state === 'screen') {
 
-      _world.fillStyle = '#000';
-      _world.fillRect(0,0,resolutionX, resolutionY);
       _world.putImageData(backgroundImg, 0, 0);
 //      console.log(bounds)
       const callbackLength = _renderCallbacks.length;
