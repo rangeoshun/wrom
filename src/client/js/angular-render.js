@@ -166,9 +166,10 @@ module.exports = function ( $scope ) {
   function isInNormalizedBounds ( pixelCoords, normBounds ) {
     const x = pixelCoords[0];
     const y = pixelCoords[1];
+    const normBoundsLength = normBounds.length;
     let verdict = false;
 
-    for (let i = 0; i < normBounds.length; i++) {
+    for (let i = 0; i < normBoundsLength; i++) {
       let bounds = normBounds[i];
       if (bounds) {
 /*
@@ -201,13 +202,15 @@ module.exports = function ( $scope ) {
       _world.fillRect(0,0,resolutionX, resolutionY);
       _world.putImageData(backgroundImg, 0, 0);
 //      console.log(bounds)
+      const callbackLength = _renderCallbacks.length;
       let normBounds = normalizeBounds(getBoundCoords());
 
-      for (let i = 0; i < _renderCallbacks.length; i++) {
+      for (let i = 0; i < callbackLength; i++) {
         const callback = _renderCallbacks[i];
         const pixels = callback(_screen);
+        const pixelsLength = pixels.length;
 
-        for (let k = 0; k < pixels.length; k++) {
+        for (let k = 0; k < pixelsLength; k++) {
 
           const pixel = pixels[k];
           const x = pixel[4][0];
@@ -360,10 +363,12 @@ module.exports = function ( $scope ) {
       normBounds = null;
     }
 
-    deleteCue.forEach(function ( callback ) {
-      _renderCallbacks.splice(_renderCallbacks.indexOf(callback), 1);
-    });
+    const deleteCueLength = deleteCue.length;
+    for (let i = 0; i < deleteCueLength; i++) {
+      _renderCallbacks.splice(_renderCallbacks.indexOf(deleteCue[i]), 1);
+    }
     deleteCue = [];
+
     requestAnimationFrame(render);
   }
   requestAnimationFrame(render);
