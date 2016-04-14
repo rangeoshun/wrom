@@ -15,7 +15,7 @@ module.exports = function ( $scope ) {
       if (color.array === colorArray) color.selected = true;
       else color.selected = false;
     });
-    $scope.$emit('changeColor', colorArray);
+    $scope.emit('changeColor', colorArray);
   };
 
   for (let colorName in colors) {
@@ -31,5 +31,5 @@ module.exports = function ( $scope ) {
   }
 
   $scope.playerColor = $scope.playerColor || $scope.colors[Math.round(Math.random()*$scope.colors.length)].array;
-  $scope.$emit('changeColor', $scope.playerColor);
+  $scope.emit('changeColor', $scope.playerColor);
 }
