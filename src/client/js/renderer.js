@@ -1,12 +1,12 @@
 'use strict';
-
+/*
 let requestAnimationFrame;
 if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
   requestAnimationFrame = function () {};
 } else {
   requestAnimationFrame = window.requestAnimationFrame;
 }
-
+*/
 module.exports = class Renderer {
   constructor ( client ) {
     const renderer = this;
@@ -257,9 +257,9 @@ module.exports = class Renderer {
             y = pixel[4][1];
 
             if (isInNormalizedBounds([x, y], normBounds)) {
-              pixelData[0] = pixel.r();
-              pixelData[1] = pixel.g();
-              pixelData[2] = pixel.b();
+              pixelData[0] = pixel.r;
+              pixelData[1] = pixel.g;
+              pixelData[2] = pixel.b;
               pixelData[3] = 255;
 
               _world.putImageData(renderedPixel, x, y);
@@ -405,6 +405,6 @@ module.exports = class Renderer {
     }
     requestAnimationFrame(render);
 
-    renderer.render = render;
+//    renderer.render = render();
   }
 }

@@ -18,7 +18,7 @@ const game = new Game(false, Globals);
 module.exports = class Connection {
   constructor ( client ) {
     let connection;
-    const globals = Globals;
+    const globals = client.globals;
     game.globals = globals;
     globals.user = JSON.parse(atob(localStorage.wormer || 'e30='));
 
@@ -287,10 +287,10 @@ module.exports = class Connection {
         }
       }
 
-      game.tick.step();
+      game.tick.step();/*
       if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
         client.renderer.render();
-      }
+      }*/
     }
   }
 }

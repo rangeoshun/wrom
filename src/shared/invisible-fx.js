@@ -13,20 +13,27 @@ module.exports = function InvisibleFX ( entity ) {
     on = !on;
   }, 10000);
 
+  const pixels = [];
+
   game.globals.renderCallbacks.push(function ( screen ) {
-    const pixels = [];
+    if (!entity.alive || !on) {
+      pixels.die = true;
+      pixels.splice(0);
+      return pixels;
+    }
+
     const body = entity.body;
-    const length = entity.body.length;
-    pixels.die = !entity.alive || !on;
+    let length = entity.body.length
 
     for (let i = 0; i < length; i++) {
+
+      if (!pixels[i]) pixels.push(new Pixel());
+
       let factor = Math.sqrt(Math.abs(new Date().getMilliseconds() / 1000));
       if (!i) factor *= 4;
       if (!isSelf) factor /= 10;
 
-      const coords = body[i];
-
-      pixels.push(new Pixel(0,1,1,1,coords).setColor(color, factor));
+      pixels[i].setCoords(body[i]).setColor(color, factor);
     }
 
     return pixels;

@@ -34,17 +34,17 @@ module.exports = class Point extends Entity {
     const game = point.game;
 
     player.grow(point.value / 10);
-    player.player.score += point.value;
+    if (game.server) player.player.score += point.value;
     point.die(player.id);
   }
 
   isColliding () {
-    const point = this;
-    const game = point.game;
+    let point = this;
 
     return function ( players ) {
+      const game = point.game;
       const coords = point.coords;
-
+      const color = point.color;
       players.forEach(function ( player ) {
         if (game.areColliding(player.coords, coords)) {
           console.log(`${player.constructor.name} ${player.id} is collecting ${point.constructor.name} ${point.id}`);

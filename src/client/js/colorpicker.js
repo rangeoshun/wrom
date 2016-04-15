@@ -16,7 +16,7 @@ module.exports = function ( client ) {
               id="color-${name}"
               class="color-sample"
               data-name="${name}"
-              style="background-color:${colorPicker.setColor(color).getHex()};">
+              style="background-color:${colorPicker.setColor(color).hex};">
 
                 &nbsp;
             </div>`;

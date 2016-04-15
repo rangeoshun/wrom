@@ -24,7 +24,8 @@ module.exports = class Player {
   setColor ( color ) {
     const player = this;
     player.color = color;
-    player.entity.setColor(color);
+    console.log(player.entity.id)
+    if (player.entity) player.entity.setColor(color);
   }
 
   setConnection ( connection ) {

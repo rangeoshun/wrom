@@ -11,6 +11,6 @@ module.exports = class GoldenPoint extends Point {
     point.color = colors.gold;
     point.type = 'glp';
 
-    game.tick.onCallbacks.push(point.isColliding());
+//    game.tick.onCallbacks.push(point.isColliding());
   }
 };

@@ -116,7 +116,8 @@ module.exports = class Worm extends Entity {
       worm.setGhost(true);
     }
 
-    worm.direction = [dirX, dirY];
+    worm.direction[0] = dirX;
+    worm.direction[1] = dirY;
     worm.body = [];
     worm.relocate();
 
@@ -154,18 +155,18 @@ module.exports = class Worm extends Entity {
 
   isColliding ( callback ) {
     const worm = this;
-    const game = worm.game;
 
     return function ( players ) {
       let collision = false;
+      const game = worm.game;
 
       players.forEach(function ( player, index ) {
 
         player.body.forEach(function ( part, index ) {
           if (worm.isImmune() || player.ghost) return;
-          if (player === worm && !index) return;
+          if (player === worm && (index < 4)) return;
 
-          if (game.areColliding(worm.coords, part)) {
+          if (game.areColliding(worm.coords, part, true)) {
             console.log(`${worm.constructor.name} ${worm.id} is colliding with ${worm.constructor.name} ${player.id}`);
             worm.die();
             if (player.id !== worm.id) player.addScore(worm.body.length * 10);
@@ -245,21 +246,27 @@ module.exports = class Worm extends Entity {
   }
 
   render () {
-    let worm = this;
+    const worm = this;
+    let pixels = [];
     return function () {
-      let pixels = [];
 
       if (!worm.game.getPlayerById(worm.id) || !worm.alive) {
         pixels.die = true;
+        pixels.splice(0);
         return pixels;
       }
 
-      worm.body.forEach(function ( part ) {
+      const body = worm.body;
+      const bodyLength = worm.body.length;
+
+      for (var i = 0; i < bodyLength; i++) {
+
+        if (!pixels[i]) pixels.push(new Pixel());
 
         let r = worm.color[0];
         let g = worm.color[1];
         let b = worm.color[2];
-        let pixel;
+        let pixel = pixels[i];
 
         if (worm.ghost) {
           const factor = Math.sin(parseFloat('0.'+ (new Date().getTime() / 1000).toString().split('.')[1]) * Math.PI);
@@ -268,8 +275,13 @@ module.exports = class Worm extends Entity {
           b *= factor;
         }
 
-        pixels.push(new Pixel(1, r, g, b, part));
-      });
+        pixel[1] = r;
+        pixel[2] = g;
+        pixel[3] = b;
+        pixel[4] = body[i];
+      }
+
+      if (pixels.length > bodyLength) pixels.splice(bodyLength - 1);
 
       return pixels;
     };

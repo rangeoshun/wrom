@@ -27,8 +27,9 @@ module.exports = class DrillPoint extends Point {
 
   render () {
     const point = this;
+    let pixels = [new Pixel()];
+
     return function () {
-      let pixels = [];
 
       if (!point.game.getPointById(point.id) || !point.alive) {
         pixels.die = [];
@@ -37,7 +38,7 @@ module.exports = class DrillPoint extends Point {
 
       let factor = Math.sin((new Date().getMilliseconds() / 1000) / 10) + 0.2;
 
-      pixels.push(new Pixel(0,0,0,0, point.coords).setColor(point.color, factor));
+      pixels[0].setCoords(point.coords).setColor(point.color, factor);
       return pixels;
     };
   }

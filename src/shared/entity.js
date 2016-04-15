@@ -104,21 +104,28 @@ module.exports = class Entity {
   }
 
   render () {
-    let entity = this;
+    const entity = this;
+    const pixels = [];
     return function () {
       const sinTime = 1;//Math.sin(parseFloat('0.'+ (new Date().getTime() / 1000).toString().split('.')[1]) * Math.PI);
 
-      let pixels = [];
       if (!entity.game.getPointById(entity.id) || !entity.alive) {
-        pixels.die = [];
+        pixels.die = true;
+        pixels.splice(0);
         return pixels;
       }
+
+      if (!pixels[0]) pixels.push(new Pixel());
+      let pixel = pixels[0];
 
       let r = entity.color[0] * sinTime;
       let g = entity.color[1] * sinTime;
       let b = entity.color[2] * sinTime;
 
-      pixels.push(new Pixel(1, r, g, b, entity.coords));
+      pixel[1] = r;
+      pixel[2] = g;
+      pixel[3] = b;
+      pixel.setCoords(entity.coords);
 
       return pixels;
     };

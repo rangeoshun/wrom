@@ -27,7 +27,7 @@ module.exports = class Scores {
           place: (score.da) ? index + 1 : 'X',
           score: score.so,
           name: score.nm,
-          color: colorPicker.setColor(score.cl).getHex()
+          color: colorPicker.setColor(score.cl).hex
         };
       });
 

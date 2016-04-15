@@ -16,16 +16,27 @@ module.exports = function MineFX ( entity ) {
     return duration > 0;
   });
 
+  const pixels = [];
+  let factor;
+
   game.globals.renderCallbacks.push(function ( screen ) {
-    const pixels = [];
     pixels.die = duration < 0;
 
-    for (let i = 0; i < count; i++) {
-      const factor = duration / 1000 + 0.001;
-      pixels.push(new Pixel(0,1,1,1,[coords[0] + i, coords[1]]).setColor(color, factor));
-      pixels.push(new Pixel(0,1,1,1,[coords[0] - i, coords[1]]).setColor(color, factor));
-      pixels.push(new Pixel(0,1,1,1,[coords[0], coords[1] + i]).setColor(color, factor));
-      pixels.push(new Pixel(0,1,1,1,[coords[0], coords[1] - i]).setColor(color, factor));
+    for (let i = 0; i < count;) {
+
+      factor = duration / 1000 + 0.001;
+
+      if (!pixels[i]) {
+        pixels.push(new Pixel(0,1,1,1,[coords[0] + i, coords[1]]));
+        pixels.push(new Pixel(0,1,1,1,[coords[0] - i, coords[1]]));
+        pixels.push(new Pixel(0,1,1,1,[coords[0], coords[1] + i]));
+        pixels.push(new Pixel(0,1,1,1,[coords[0], coords[1] - i]));
+      }
+
+      pixels[i].setColor(color, factor);
+      pixels[i++].setColor(color, factor);
+      pixels[i++].setColor(color, factor);
+      pixels[i++].setColor(color, factor);
     }
 
     return pixels;

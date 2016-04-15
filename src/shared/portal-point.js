@@ -17,7 +17,6 @@ module.exports = class PortalPoint extends Point {
     const game = player.game;
 
     point.die(1);
-
     if (game.server) {
       player.setAbility(new PortalAbility(player));
     }
