@@ -164,7 +164,7 @@ module.exports = class Worm extends Entity {
 
         player.body.forEach(function ( part, index ) {
           if (worm.isImmune() || player.ghost) return;
-          if (player === worm && (index < 4)) return;
+          if (player === worm) return;
 
           if (game.areColliding(worm.coords, part, true)) {
             console.log(`${worm.constructor.name} ${worm.id} is colliding with ${worm.constructor.name} ${player.id}`);
