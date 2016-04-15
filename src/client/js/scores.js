@@ -36,7 +36,7 @@ module.exports = class Scores {
       for (let score of scores) {
         tempInner += `<tr>
                         <td>${score.place}</td>
-                        <td class="color: ${score.color};">${score.name}</td>
+                        <td style="color: ${score.color};">${score.name}</td>
                         <td>${score.score}</td>
                       </tr>`
       }
@@ -45,5 +45,6 @@ module.exports = class Scores {
         scoreBoard.innerHTML = boardInner = tempInner;
       }
     });
+
   }
 };

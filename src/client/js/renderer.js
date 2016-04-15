@@ -1,5 +1,12 @@
 'use strict';
 
+let requestAnimationFrame;
+if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
+  requestAnimationFrame = function () {};
+} else {
+  requestAnimationFrame = window.requestAnimationFrame;
+}
+
 module.exports = class Renderer {
   constructor ( client ) {
     const renderer = this;
@@ -51,21 +58,34 @@ module.exports = class Renderer {
     const screenNode = document.querySelector('[id=screen]');
     screenNode.appendChild(_screen_canvas);
 
-    //  document.body.appendChild(_world_canvas);
+//    document.body.appendChild(_world_canvas);
+    let self;
+    let body;
+    let head;
+    let scaleY;
+    let scaleX;
+    let startY;
+    let endY;
+    let dimensionY;
+    let startX;
+    let endX;
+    let dimensionX;
+    let start;
+    let end;
     let getBoundCoords = function getBoundCoords () {
-      const self = globals.self;
-      const body = self.body;
-      const head = body[0];
-      const scaleY = globals.screen[1] / 2;
-      const scaleX = Math.round(scaleY * 1.6);
-      const startY = head[1] - scaleY;
-      const endY = head[1] + scaleY;
-      const dimensionY = endY - startY;
-      const startX = head[0] - scaleX;
-      const endX = head[0] + scaleX;
-      const dimensionX = endX - startX;
-      const start = [startX, startY];
-      const end = [endX, endY];
+      self = globals.self;
+      body = self.body;
+      head = body[0];
+      scaleY = globals.screen[1] / 2;
+      scaleX = Math.round(scaleY * 1.6);
+      startY = head[1] - scaleY;
+      endY = head[1] + scaleY;
+      dimensionY = endY - startY;
+      startX = head[0] - scaleX;
+      endX = head[0] + scaleX;
+      dimensionX = endX - startX;
+      start = [startX, startY];
+      end = [endX, endY];
       return [start, end, dimensionX, dimensionY];
     }
 
@@ -162,6 +182,7 @@ module.exports = class Renderer {
     }
 
     let isInNormalizedBounds = function isInNormalizedBounds ( pixelCoords, normBounds ) {
+
       const x = pixelCoords[0];
       const y = pixelCoords[1];
       const normBoundsLength = normBounds.length;
@@ -194,12 +215,17 @@ module.exports = class Renderer {
 
     let renderedPixel = _world.createImageData(1, 1);
     let pixelData = renderedPixel.data;
+
     let deleteCue = [];
     let deleteCueLength;
+
     let callback;
     let pixels;
     let pixelsLength;
     let pixel;
+    let x;
+    let y;
+
     let segment0;
     let segment1;
     let segment2;
@@ -219,14 +245,13 @@ module.exports = class Renderer {
         //      console.log(bounds)
         const callbackLength = _renderCallbacks.length;
         let normBounds = normalizeBounds(getBoundCoords());
-
         for (let i = 0; i < callbackLength; i++) {
           callback = _renderCallbacks[i];
+          pixels = callback(_screen);
+          pixelsLength = pixels.length;
 
           for (let k = 0; k < pixelsLength; k++) {
 
-            pixels = callback(_screen);
-            pixelsLength = pixels.length;
             pixel = pixels[k];
             x = pixel[4][0];
             y = pixel[4][1];
@@ -236,20 +261,14 @@ module.exports = class Renderer {
               pixelData[1] = pixel.g();
               pixelData[2] = pixel.b();
               pixelData[3] = 255;
+
               _world.putImageData(renderedPixel, x, y);
-
-              /*
-              const color = pixel.getHex();
-              _world.fillStyle = color;
-              _world.fillRect(x, y, 1, 1);
-              */
-            }
-
-            if (pixels.die) {
-              deleteCue.push(callback);
             }
           }
-
+          if (pixels.die) {
+            deleteCue.push(callback);
+          }
+          pixels = null;
         }
 
         segment0 = normBounds[0];
@@ -375,16 +394,17 @@ module.exports = class Renderer {
         }
 
         normBounds = null;
-      }
 
-      deleteCueLength = deleteCue.length;
-      for (let i = 0; i < deleteCueLength; i++) {
-        _renderCallbacks.splice(_renderCallbacks.indexOf(deleteCue[i]), 1);
+        deleteCueLength = deleteCue.length;
+        for (let d = 0; d < deleteCueLength; d++) {
+          _renderCallbacks.splice(_renderCallbacks.indexOf(deleteCue[d]), 1);
+        }
+        deleteCue = [];
       }
-      deleteCue = [];
-
       requestAnimationFrame(render);
     }
     requestAnimationFrame(render);
+
+    renderer.render = render;
   }
 }

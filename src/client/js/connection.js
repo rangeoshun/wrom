@@ -18,15 +18,12 @@ const game = new Game(false, Globals);
 module.exports = class Connection {
   constructor ( client ) {
     let connection;
-    const mainView = document.getElementById('main');
     const globals = Globals;
     game.globals = globals;
     globals.user = JSON.parse(atob(localStorage.wormer || 'e30='));
 
-    client.status = {
-      message: '',
-      score: 0
-    };
+    client.message = '';
+    client.score = 0;
 
     client.game = game;
     client.state = 'setup';
@@ -35,15 +32,16 @@ module.exports = class Connection {
       return client.state;
     };
 
-    client.on('changeName', function ( ev, name ) {
+    client.on('changeName', function ( name ) {
       globals.user.name = name;
       localStorage.wormer = btoa(JSON.stringify(globals.user));
       if (connection && connection.readyState === 1) connection.send(JSON.stringify({nm: name}));
       else client.name = name;
     });
 
-    client.on('changeColor', function ( ev, color ) {
+    client.on('changeColor', function ( color, colorName ) {
       globals.user.color = color;
+      color[4] = colorName;
       localStorage.wormer = btoa(JSON.stringify(globals.user));
       if (connection && connection.readyState === 1) connection.send(JSON.stringify({cl: color}));
       else client.color = color;
@@ -56,12 +54,8 @@ module.exports = class Connection {
 
     client.on('update', function ( scores ) {
       scores.forEach(function ( score ) {
-        if (score.id === globals.selfID) client.status.score = score.so;
+        if (score.id === globals.selfID) client.score = score.so;
       });
-    });
-
-    addEventListener('keydown', function ( ev ) {
-      if (ev.keyCode === 13 && client.state === 'setup') client.emit('goPlay');
     });
 
     WebSocket = WebSocket || MozWebSocket;
@@ -69,7 +63,7 @@ module.exports = class Connection {
     connection.onopen = function () {
 
       client.on('goPlay', function () {
-        mainView.className = client.state = 'screen';
+        client.state = 'screen';
         if (connection) return;
 
         addEventListener('keydown', function showScores ( ev ) {
@@ -184,18 +178,23 @@ module.exports = class Connection {
       game.tick.step();
     }
 
+    let update;
+    let foundPoint;
+    let pointUpdate;
+    let playerUpdate;
+    let foundPlayer;
     function handleStateupdate (message) {
 
       game.ditchTheDead();
 
-      let update = JSON.parse(message.data);
+      update = JSON.parse(message.data);
 
       client.emit('update', update.sc);
       if (update.ath) client.emit('allTimeUpdate', update.ath);
 
       for (let pointID in update.pi) {
-        let pointUpdate = update.pi[pointID];
-        let foundPoint = game.getPointById(pointID, Point);
+        pointUpdate = update.pi[pointID];
+        foundPoint = game.getPointById(pointID, Point);
         let type = '';
 
         if (!foundPoint) {
@@ -245,8 +244,8 @@ module.exports = class Connection {
       }
 
       for (let playerID in update.pa) {
-        let playerUpdate = update.pa[playerID];
-        let foundPlayer = game.getPlayerById(playerID);
+        playerUpdate = update.pa[playerID];
+        foundPlayer = game.getPlayerById(playerID);
 
         if (!foundPlayer) {
 
@@ -264,7 +263,7 @@ module.exports = class Connection {
         }
 
         if (foundPlayer.id === globals.selfID) {
-          if (typeof playerUpdate.ms === 'string') client.status.message = playerUpdate.ms;
+          if (typeof playerUpdate.ms === 'string') client.message = playerUpdate.ms;
         }
 
         if (playerUpdate.de) {
@@ -289,6 +288,9 @@ module.exports = class Connection {
       }
 
       game.tick.step();
+      if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
+        client.renderer.render();
+      }
     }
   }
 }

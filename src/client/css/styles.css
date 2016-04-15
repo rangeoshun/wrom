@@ -137,6 +137,10 @@ button {
   padding: 2px 6px;
 }
 
+input, #colors {
+  width: 100px;
+}
+
 .setup-content {
   display: inline-block;
   position: relative;
@@ -147,7 +151,11 @@ button {
 }
 
 .color-sample {
-  border: 1px solid;
+  border: 1px solid transparent;
   margin-right: 2px;
   float:left;
+}
+
+.color-sample.selected {
+  border: 1px solid black;
 }

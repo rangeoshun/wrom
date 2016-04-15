@@ -1,5 +1,5 @@
 "use strict";
-const Globals = require('./globals.js');
+const globals = require('./globals.js');
 const Entity = require('./entity.js');
 const Pixel = require('./pixel.js');
 const InvisibleFX = require('./invisible-fx.js');
@@ -11,6 +11,7 @@ module.exports = class Worm extends Entity {
     const worm = this;
     worm.color = worm.client ? [0.5,0.5,1] : [1,0.5,0.5];
     worm.direction = [];
+    worm.directionCue = [];
 
     worm.invisible = 0;
     worm.ghost = 0;
@@ -104,9 +105,10 @@ module.exports = class Worm extends Entity {
   }
 
   spawn () {
-
     const worm = this;
     const game = worm.game;
+    const globals = game.globals;
+
     let dirX = Math.round(Math.random() * 2) - 1;
     let dirY = (dirX) ? 0 : (Math.round(Math.random())) ? -1 : 1;
 
@@ -134,7 +136,7 @@ module.exports = class Worm extends Entity {
         worm.updated = true;
 
         if (!game.server) {
-          Globals.renderCallbacks.push(worm.render());
+          globals.renderCallbacks.push(worm.render());
         } else {
 
           game.tick.beforeCallbacks.push(worm.move());
@@ -183,12 +185,15 @@ module.exports = class Worm extends Entity {
   setDirection ( direction ) {
     const worm = this;
     const game = worm.game;
-    if (direction[0] === worm.direction [0] * -1
-      && direction[1] === worm.direction [1] * -1) {
+    if (worm.directionCue[worm.directionCue.length] &&
+      (direction[0] === worm.directionCue[worm.directionCue.length][0] * -1
+      && direction[1] === worm.directionCue[worm.directionCue.length] * -1
+      || (direction[0] === worm.directionCue[worm.directionCue.length][0]
+      && direction[1] !== worm.directionCue[worm.directionCue.length]))) {
+
       return;
     }
-
-    worm.nextDirection = direction;
+    worm.directionCue.push(direction);
   }
 
   grow ( by ) {
@@ -211,7 +216,7 @@ module.exports = class Worm extends Entity {
       const head = worm.body[0];
       let tail = worm.body[worm.body.length - 1];
       let direction = worm.direction;
-      const nextDirection = worm.nextDirection;
+      const nextDirection = worm.directionCue.shift();
 
       if (nextDirection && nextDirection[0] !== direction[0] * -1
         && nextDirection[1] !== direction[1] * -1) {
@@ -221,16 +226,16 @@ module.exports = class Worm extends Entity {
       tail[0] = coords[0] = head[0] + direction[0];
       tail[1] = coords[1] = head[1] + direction[1];
 
-      if (tail[0] >= Globals.resolution[0]) {
-        tail[0] -= Globals.resolution[0];
+      if (tail[0] >= globals.resolution[0]) {
+        tail[0] -= globals.resolution[0];
       } else if (tail[0] < 0) {
-        tail[0] = Globals.resolution[0];
+        tail[0] = globals.resolution[0];
       }
 
-      if (tail[1] >= Globals.resolution[1]) {
-        tail[1] -= Globals.resolution[1];
+      if (tail[1] >= globals.resolution[1]) {
+        tail[1] -= globals.resolution[1];
       } else if (tail[1] < 0) {
-        tail[1] = Globals.resolution[1];
+        tail[1] = globals.resolution[1];
       }
 
       body.unshift(body.pop());
