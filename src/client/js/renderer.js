@@ -1,12 +1,4 @@
 'use strict';
-/*
-let requestAnimationFrame;
-if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
-  requestAnimationFrame = function () {};
-} else {
-  requestAnimationFrame = window.requestAnimationFrame;
-}
-*/
 module.exports = class Renderer {
   constructor ( client ) {
     const renderer = this;
@@ -20,12 +12,12 @@ module.exports = class Renderer {
     _background_canvas.height = resolutionY;
 
     const _background = _background_canvas.getContext("2d");
-    _background.strokeStyle = '#222';
+    _background.strokeStyle = '#0f0f0f';
     _background.fillStyle = '#000';
-    _background.fillRect(0,0,resolutionX, resolutionY);
+    _background.fillRect(0, 0, resolutionX, resolutionY);
     _background.translate(0.5, 0.5);
 
-    for (let i = 1; i < resolutionX; i += 20) {
+    for (let i = 0; i < resolutionX; i += 20) {
       _background.beginPath();
       _background.lineWidth = .5;
       _background.moveTo(i, 0);
@@ -33,7 +25,7 @@ module.exports = class Renderer {
       _background.stroke();
     }
 
-    for (let i = 1; i < resolutionY; i += 20) {
+    for (let i = 0; i < resolutionY; i += 20) {
       _background.beginPath();
       _background.lineWidth = .5;
       _background.moveTo(0, i);
@@ -55,12 +47,39 @@ module.exports = class Renderer {
     _screen_canvas.height = globals.screen[1];
     _screen_canvas.className = 'screen';
 
+    const _buffer_canvas = document.createElement('canvas');
+    const _buffer = _buffer_canvas.getContext("2d");
+    _buffer_canvas.width = resolution[0] * 2;
+    _buffer_canvas.height = resolution[1] * 2;
+
     const _renderCallbacks = globals.renderCallbacks;
     const setupNode = document.querySelector('[id=setup]');
     const screenNode = document.querySelector('[id=screen]');
     screenNode.appendChild(_screen_canvas);
 
-//    document.body.appendChild(_world_canvas);
+    _background.mozImageSmoothingEnabled = false;
+    _background.webkitImageSmoothingEnabled = false;
+    _background.msImageSmoothingEnabled = false;
+    _background.imageSmoothingEnabled = false;
+
+    _world.mozImageSmoothingEnabled = false;
+    _world.webkitImageSmoothingEnabled = false;
+    _world.msImageSmoothingEnabled = false;
+    _world.imageSmoothingEnabled = false;
+
+    _screen.mozImageSmoothingEnabled = false;
+    _screen.webkitImageSmoothingEnabled = false;
+    _screen.msImageSmoothingEnabled = false;
+    _screen.imageSmoothingEnabled = false;
+
+    _buffer.mozImageSmoothingEnabled = false;
+    _buffer.webkitImageSmoothingEnabled = false;
+    _buffer.msImageSmoothingEnabled = false;
+    _buffer.imageSmoothingEnabled = false;
+/*
+    document.body.appendChild(_world_canvas);
+    document.body.appendChild(_buffer_canvas);
+*/
     let self;
     let body;
     let head;
@@ -91,8 +110,43 @@ module.exports = class Renderer {
       return [start, end, dimensionX, dimensionY];
     }
 
+    let renderedPixel = _world.createImageData(1, 1);
+    let pixelData = renderedPixel.data;
+
+    let deleteCue = [];
+    let deleteCueLength;
+
+    let callback;
+    let pixels;
+    let pixelsLength;
+    let pixel;
+    let x;
+    let y;
+
+    let segment0 = [[],[],[]];
+    let segment1 = [[],[],[]];
+    let segment2 = [[],[],[]];
+    let segment3 = [[],[],[]];
+    let segment4 = [[],[],[]];
+    let segment5 = [[],[],[]];
+    let segment6 = [[],[],[]];
+    let segment7 = [[],[],[]];
+    let segment8 = [[],[],[]];
+    let whereToRender;
+
+    let normBounds = [
+      segment0,
+      segment1,
+      segment2,
+      segment3,
+      segment4,
+      segment5,
+      segment6,
+      segment7,
+      segment8
+    ];
+
     let normalizeBounds = function normalizeBounds ( bounds ) {
-      let normBounds = [];
       let subX;
       let subY;
       let superX;
@@ -122,68 +176,186 @@ module.exports = class Renderer {
         bounds[1][1] = resolutionY;
       }
 
+      for (let i = 0; i < 9; i++) {
+        const currentBounds = normBounds[i];
+        currentBounds.touched = 0;
+      }
+
       if (subX && subY) {
-        normBounds[0] = [
-          [subX, subY],
-          [resolutionX, resolutionY]
-        ];
+        segment0[0] = [subX, subY],
+        segment0[1] = [resolutionX, resolutionY]
+        segment0.touched = 1;
       }
 
       if (subY) {
-        normBounds[1] = [
-          [bounds[0][0], subY],
-          [bounds[1][0], resolutionY]
-        ];
+        segment1[0] = [bounds[0][0], subY],
+        segment1[1] = [bounds[1][0], resolutionY]
+        segment1.touched = 1;
       }
 
       if (superX && subY) {
-        normBounds[2] = [
-          [0, subY],
-          [superX, resolutionY]
-        ];
+        segment2[0] = [0, subY];
+        segment2[1] = [superX, resolutionY];
+        segment2.touched = 1;
       }
 
       if (subX) {
-        normBounds[3] = [
-          [subX, bounds[0][1]],
-          [resolutionX, bounds[1][1]]
-        ];
+        segment3[0] = [subX, bounds[0][1]],
+        segment3[1] = [resolutionX, bounds[1][1]]
+        segment3.touched = 1;
       }
 
-      normBounds[4] = [bounds[0], bounds[1]];
+      segment4[0] = bounds[0];
+      segment4[1] = bounds[1];
+      segment4.touched = 1;
 
       if (superX) {
-        normBounds[5] = [
-          [0, bounds[0][1]],
-          [superX, bounds[1][1]]
-        ];
+        segment5[0] = [0, bounds[0][1]];
+        segment5[1] = [superX, bounds[1][1]];
+        segment5.touched = 1;
       }
 
       if (subX && superY) {
-        normBounds[6] = [
-          [subX, 0],
-          [resolutionX, superY]
-        ];
+        segment6[0] = [subX, 0];
+        segment6[1] = [resolutionX, superY];
+        segment6.touched = 1;
       }
 
       if (superY) {
-        normBounds[7] = [
-          [bounds[0][0], 0],
-          [bounds[1][0], superY]
-        ];
+        segment7[0] = [bounds[0][0], 0];
+        segment7[1] = [bounds[1][0], superY];
+        segment7.touched = 1;
       }
 
       if (superX && superY) {
-        normBounds[8] = [
-          [0, 0],
-          [superX, superY]
-        ];
+        segment8[0] = [0, 0];
+        segment8[1] = [superX, superY];
+        segment8.touched = 1;
       }
 
-      return normBounds;
+      if (segment0.touched) {
+        whereToRender = segment0[2];
+        whereToRender[0] = 0;
+        whereToRender[1] = 0;
+        if (segment8.touched) {
+          whereToRender[0] += segment8[1][0] - segment8[0][0];
+        }
+
+        if (segment5.touched) {
+          whereToRender[1] += segment5[1][0] - segment5[0][0];
+        }
+      }
+
+      if (segment1.touched) {
+        whereToRender = segment1[2];
+        whereToRender[0] = 0;
+        whereToRender[1] = 0;
+
+        if (segment0.touched) {
+          whereToRender[0] += segment0[1][0] - segment0[0][0];
+        }
+      }
+
+      if (segment2.touched) {
+        whereToRender = segment2[2];
+        whereToRender[0] = 0;
+        whereToRender[1] = 0;
+        if (segment0.touched) {
+          whereToRender[0] += segment0[1][0] - segment0[0][0];
+        }
+
+        if (segment1.touched) {
+          whereToRender[0] += segment1[1][0] - segment1[0][0];
+        }
+      }
+
+      if (segment3.touched) {
+        whereToRender = segment3[2];
+        whereToRender[0] = 0;
+        whereToRender[1] = 0;
+        if (segment0.touched) {
+          whereToRender[1] += segment0[1][1] - segment0[0][1];
+        }
+      }
+
+      if (segment4.touched) {
+        whereToRender = segment4[2];
+        whereToRender[0] = 0;
+        whereToRender[1] = 0;
+        if (segment0.touched) {
+          whereToRender[1] += segment0[1][1] - segment0[0][1];
+        } else if (segment1.touched) {
+          whereToRender[1] += segment1[1][1] - segment1[0][1];
+        } else if (segment2.touched && segment5.touched) {
+          whereToRender[0] += segment5[1][0] - segment5[0][0];
+        }
+
+        if (segment3.touched) {
+          whereToRender[0] += segment3[1][0] - segment3[0][0];
+        }
+      }
+
+      if (segment5.touched) {
+        whereToRender = segment5[2];
+        whereToRender[0] = 0;
+        whereToRender[1] = 0;
+        if (segment0.touched) {
+          whereToRender[0] += segment0[1][0] - segment0[0][0];
+          whereToRender[1] += segment0[1][1] - segment0[0][1];
+        }
+
+        if (segment4.touched) {
+          whereToRender[0] += segment4[1][0] - segment4[0][0];
+        }
+
+        if (segment2.touched) {
+          whereToRender[1] += segment2[1][1] - segment2[0][1];
+        }
+      }
+
+      if (segment6.touched) {
+        whereToRender = segment6[2];
+        whereToRender[0] = 0;
+        whereToRender[1] = 0;
+        if (segment0.touched) {
+          whereToRender[1] += segment0[1][1] - segment0[0][1];
+        }
+
+        if (segment3.touched) {
+          whereToRender[1] += segment3[1][1] - segment3[0][1];
+        }
+      }
+
+      if (segment7.touched) {
+        whereToRender = segment7[2];
+        whereToRender[0] = 0;
+        whereToRender[1] = 0;
+        if (segment4.touched) {
+          whereToRender[1] += segment4[1][1] - segment4[0][1];
+        } else if (segment3.touched) {
+          whereToRender[1] += segment3[1][1] - segment3[0][1];
+        }
+
+        if (segment6.touched) {
+          whereToRender[0] += segment6[1][0] - segment6[0][0];
+        }
+      }
+
+      if (segment8.touched) {
+        whereToRender = segment8[2];
+        whereToRender[0] = 0;
+        whereToRender[1] = 0;
+        if (segment4.touched) {
+          whereToRender[0] += segment4[1][0] - segment4[0][0];
+        }
+
+        if (segment5.touched) {
+          whereToRender[1] += segment5[1][1] - segment5[0][1];
+        }
+      }
     }
 
-    let isInNormalizedBounds = function isInNormalizedBounds ( pixelCoords, normBounds ) {
+    let isInNormalizedBounds = function isInNormalizedBounds ( pixelCoords ) {
 
       const x = pixelCoords[0];
       const y = pixelCoords[1];
@@ -192,17 +364,17 @@ module.exports = class Renderer {
 
       for (let i = 0; i < normBoundsLength; i++) {
         let bounds = normBounds[i];
-        if (bounds) {
-        /*
+        if (bounds.touched) {
+/*
         _world.strokeStyle = '#222';
-        _world.strokeRect(bounds[0][0],bounds[0][1],bounds[1][0] - bounds[0][0],bounds[1][1] - bounds[0][1);
-        */
+        _world.strokeRect(bounds[0][0],bounds[0][1],bounds[1][0] - bounds[0][0],bounds[1][1] - bounds[0][1]);
+*/
         if (x >= bounds[0][0]
           && x <= bounds[1][0]
           && y >= bounds[0][1]
           && y <= bounds[1][1]) {
 
-            return true;
+            return bounds;
           }
         }
       }
@@ -210,46 +382,19 @@ module.exports = class Renderer {
       return false;
     }
 
-    let renderSegmentOnScreen = function renderSegmentOnScreen ( bounds, where ) {
-      const entitiesImg = _world.getImageData(bounds[0][0], bounds[0][1], bounds[1][0], bounds[1][1]);
-      _screen.putImageData(entitiesImg, where[0], where[1]);
-    }
-
-    let renderedPixel = _world.createImageData(1, 1);
-    let pixelData = renderedPixel.data;
-
-    let deleteCue = [];
-    let deleteCueLength;
-
-    let callback;
-    let pixels;
-    let pixelsLength;
-    let pixel;
-    let x;
-    let y;
-
-    let segment0;
-    let segment1;
-    let segment2;
-    let segment3;
-    let segment4;
-    let segment5;
-    let segment6;
-    let segment7;
-    let segment8;
-    let whereToRender = [0, 0];
-
+    let currentBounds;
     function render () {
 
       if (client.state === 'screen') {
 
         _world.putImageData(backgroundImg, 0, 0);
         //      console.log(bounds)
+
         const callbackLength = _renderCallbacks.length;
-        let normBounds = normalizeBounds(getBoundCoords());
+        normalizeBounds(getBoundCoords());
         for (let i = 0; i < callbackLength; i++) {
           callback = _renderCallbacks[i];
-          pixels = callback(_screen, _world);
+          pixels = callback(_world);
           pixelsLength = pixels.length;
 
           for (let k = 0; k < pixelsLength; k++) {
@@ -258,13 +403,14 @@ module.exports = class Renderer {
             x = pixel[4][0];
             y = pixel[4][1];
 
-            if (isInNormalizedBounds([x, y], normBounds)) {
+            currentBounds = isInNormalizedBounds(pixels[k][4], normBounds);
+            if (currentBounds.touched) {
               pixelData[0] = pixel.r;
               pixelData[1] = pixel.g;
               pixelData[2] = pixel.b;
               pixelData[3] = 255;
-
-              _world.putImageData(renderedPixel, x, y);
+//console.log(currentBounds[2])
+              _world.putImageData(renderedPixel, x, y );
             }
           }
           if (pixels.die) {
@@ -273,140 +419,28 @@ module.exports = class Renderer {
           pixels = null;
         }
 
-        segment0 = normBounds[0];
-        segment1 = normBounds[1];
-        segment2 = normBounds[2];
-        segment3 = normBounds[3];
-        segment4 = normBounds[4];
-        segment5 = normBounds[5];
-        segment6 = normBounds[6];
-        segment7 = normBounds[7];
-        segment8 = normBounds[8];
-        whereToRender = [0, 0];
-
-        if (segment0) {
-          whereToRender = [0, 0];
-          if (segment8) {
-            whereToRender[0] += segment8[1][0] - segment8[0][0];
-          }
-
-          if (segment5) {
-            whereToRender[1] += segment5[1][0] - segment5[0][0];
-          }
-          renderSegmentOnScreen(segment0, whereToRender);
-        }
-
-        if (segment1) {
-          whereToRender = [0, 0];
-          if (segment0) {
-            whereToRender[0] += segment0[1][0] - segment0[0][0];
-          }
-          renderSegmentOnScreen(segment1, whereToRender);
-        }
-
-        if (segment2) {
-          whereToRender = [0, 0];
-          if (segment0) {
-            whereToRender[0] += segment0[1][0] - segment0[0][0];
-          }
-
-          if (segment1) {
-            whereToRender[0] += segment1[1][0] - segment1[0][0];
-          }
-          renderSegmentOnScreen(segment2, whereToRender);
-        }
-
-        if (segment3) {
-          whereToRender = [0, 0];
-          if (segment0) {
-            whereToRender[1] += segment0[1][1] - segment0[0][1];
-          }
-          renderSegmentOnScreen(segment3, whereToRender);
-        }
-
-        if (segment4) {
-          whereToRender = [0, 0];
-          if (segment0) {
-            whereToRender[1] += segment0[1][1] - segment0[0][1];
-          } else if (segment1) {
-            whereToRender[1] += segment1[1][1] - segment1[0][1];
-          } else if (segment2 && segment5) {
-            whereToRender[0] += segment5[1][0] - segment5[0][0];
-          }
-
-          if (segment3) {
-            whereToRender[0] += segment3[1][0] - segment3[0][0];
-          }
-          renderSegmentOnScreen(segment4, whereToRender);
-        }
-
-        if (segment5) {
-          whereToRender = [0, 0];
-          if (segment0) {
-            whereToRender[0] += segment0[1][0] - segment0[0][0];
-            whereToRender[1] += segment0[1][1] - segment0[0][1];
-          }
-
-          if (segment4) {
-            whereToRender[0] += segment4[1][0] - segment4[0][0];
-          }
-
-          if (segment2) {
-            whereToRender[1] += segment2[1][1] - segment2[0][1];
-          }
-          renderSegmentOnScreen(segment5, whereToRender);
-        }
-
-        if (segment6) {
-          whereToRender = [0, 0];
-          if (segment0) {
-            whereToRender[1] += segment0[1][1] - segment0[0][1];
-          }
-
-          if (segment3) {
-            whereToRender[1] += segment3[1][1] - segment3[0][1];
-          }
-          renderSegmentOnScreen(segment6, whereToRender);
-        }
-
-        if (segment7) {
-          whereToRender = [0, 0];
-          if (segment4) {
-            whereToRender[1] += segment4[1][1] - segment4[0][1];
-          } else if (segment3) {
-            whereToRender[1] += segment3[1][1] - segment3[0][1];
-          }
-
-          if (segment6) {
-            whereToRender[0] += segment6[1][0] - segment6[0][0];
-          }
-          renderSegmentOnScreen(segment7, whereToRender);
-        }
-
-        if (segment8) {
-          if (segment4) {
-            whereToRender = [0, 0];
-            whereToRender[0] += segment4[1][0] - segment4[0][0];
-          }
-
-          if (segment5) {
-            whereToRender[1] += segment5[1][1] - segment5[0][1];
-          }
-          renderSegmentOnScreen(segment8, whereToRender);
-        }
-
-        normBounds = null;
-
         deleteCueLength = deleteCue.length;
         for (let d = 0; d < deleteCueLength; d++) {
           _renderCallbacks.splice(_renderCallbacks.indexOf(deleteCue[d]), 1);
         }
         deleteCue = [];
       }
+
+      _buffer.drawImage(_world_canvas, 0, 0);
+      _buffer.drawImage(_world_canvas, resolutionX, 0);
+      _buffer.drawImage(_world_canvas, 0, resolutionY);
+      _buffer.drawImage(_world_canvas, resolutionX, resolutionY);
+
+      let screenOffset;
+      if (segment0.touched) screenOffset = segment0[0];
+      else if (segment1.touched) screenOffset = segment1[0];
+      else if (segment3.touched) screenOffset = segment3[0];
+      else screenOffset = segment4[0];
+
+      _screen.drawImage(_buffer_canvas, 0 - screenOffset[0], 0 - screenOffset[1]);
+
       requestAnimationFrame(render);
     }
     requestAnimationFrame(render);
-
-//    renderer.render = render();
   }
 }

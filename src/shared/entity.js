@@ -64,7 +64,6 @@ module.exports = class Entity {
     let killer = entity.game.getPlayerById(killerID);
 
     if (killer) new PickupBeamFX(killer, entity.coords, entity.color);
-    if (!entity.game.server) new CreateFX(entity);
 
     entity.alive = false;
     entity.killerID = killerID;

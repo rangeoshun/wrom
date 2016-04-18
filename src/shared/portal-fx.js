@@ -30,15 +30,15 @@ module.exports = function portalFX ( entity ) {
     }
 
     const factor = Math.sin(new Date().getMilliseconds() / 100) + 0.2;
-    pixels[0].setCoords([coords[0] + 1, coords[1]]).setColor(color, factor);
-    pixels[1].setCoords([coords[0] - 1, coords[1]]).setColor(color, factor);
-    pixels[2].setCoords([coords[0], coords[1] + 1]).setColor(color, factor);
-    pixels[3].setCoords([coords[0], coords[1] - 1]).setColor(color, factor);
+    pixels[0].setCoords([coords[0] + 1, coords[1]]).setColor(color, factor / 2);
+    pixels[1].setCoords([coords[0] - 1, coords[1]]).setColor(color, factor / 2);
+    pixels[2].setCoords([coords[0], coords[1] + 1]).setColor(color, factor / 2);
+    pixels[3].setCoords([coords[0], coords[1] - 1]).setColor(color, factor / 2);
 
-    pixels[4].setCoords([coords[0] + 2, coords[1]]).setColor(color, factor / 2);
-    pixels[5].setCoords([coords[0] - 2, coords[1]]).setColor(color, factor / 2);
-    pixels[6].setCoords([coords[0], coords[1] + 2]).setColor(color, factor / 2);
-    pixels[7].setCoords([coords[0], coords[1] - 2]).setColor(color, factor / 2);
+    pixels[4].setCoords([coords[0] + 2, coords[1]]).setColor(color, factor);
+    pixels[5].setCoords([coords[0] - 2, coords[1]]).setColor(color, factor);
+    pixels[6].setCoords([coords[0], coords[1] + 2]).setColor(color, factor);
+    pixels[7].setCoords([coords[0], coords[1] - 2]).setColor(color, factor);
 
     pixels[8].setCoords([coords[0] + 1, coords[1] + 1]).setColor(color, factor / 2);
     pixels[9].setCoords([coords[0] - 1, coords[1] - 1]).setColor(color, factor / 2);

@@ -54,7 +54,7 @@ module.exports = class Point extends Entity {
         }
       };
 
-      return game.server && point.alive;
+      return game.server &&point.alive;
     };
   }
 };

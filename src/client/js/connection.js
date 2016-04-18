@@ -253,7 +253,6 @@ module.exports = class Connection {
           foundPlayer.id = playerID;
 
           if (foundPlayer.id === globals.selfID) {
-
             client.showScores = false;
 
             globals.self = foundPlayer;
@@ -287,10 +286,7 @@ module.exports = class Connection {
         }
       }
 
-      game.tick.step();/*
-      if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
-        client.renderer.render();
-      }*/
+      game.tick.step();
     }
   }
 }

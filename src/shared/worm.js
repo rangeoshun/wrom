@@ -133,18 +133,18 @@ module.exports = class Worm extends Entity {
 
       } else {
 
+        console.log(`${worm.constructor.name} ${worm.id} is spawning`);
         worm.alive = true;
         worm.updated = true;
-
         if (!game.server) {
+
           globals.renderCallbacks.push(worm.render());
+
         } else {
 
-          game.tick.beforeCallbacks.push(worm.move());
+          game.tick.beforeCallbacks.unshift(worm.move());
           game.tick.onCallbacks.push(worm.isColliding());
-        }
 
-        if (game.server) {
           setTimeout(function () {
             worm.setGhost(false);
           }, 5000);
@@ -167,8 +167,8 @@ module.exports = class Worm extends Entity {
 
         for (var j = 0; j < bodyLength; j++) {
 
-          if (worm.isImmune() || player.ghost) return;
-          if (player === worm) return;
+          if (worm.isImmune() || player.ghost) break;
+          if (player === worm) break;
 
           const part = body[j];
 
@@ -247,6 +247,7 @@ module.exports = class Worm extends Entity {
       }
 
       body.unshift(body.pop());
+
       worm.updated = worm.bodyUpdated = true;
       return worm.alive;
     };

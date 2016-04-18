@@ -21,7 +21,7 @@ module.exports = class PortalIOPoint extends Point {
     const game = point.game;
     const coords = point.pair.coords;
     const direction = player.direction;
-    player.body[0] = [coords[0] + direction[0] * 4, coords[1] + direction[1] * 4];
+    player.body[0] = [coords[0] + direction[0] * 3, coords[1] + direction[1] * 3];
 
     return point.alive;
   }
@@ -40,7 +40,7 @@ module.exports = class PortalIOPoint extends Point {
         }
       });
 
-      return game.server && point.alive;
+      return game.server &&point.alive;
     };
   }
 };
