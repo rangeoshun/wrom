@@ -221,7 +221,8 @@ module.exports = class Worm extends Entity {
 
       if (nextDirection && nextDirection[0] !== direction[0] * -1
         && nextDirection[1] !== direction[1] * -1) {
-        worm.direction = nextDirection;
+        worm.direction[0] = nextDirection[0];
+        worm.direction[1] = nextDirection[1];
       }
 
       tail[0] = coords[0] = head[0] + direction[0];

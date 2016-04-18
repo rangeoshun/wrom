@@ -29,7 +29,7 @@ module.exports = class Game {
         game.points.forEach(function ( point ) {
           if (!point.creator) pointCount++;
         });
-        if (pointCount < Math.round(game.players.length * 20)) {
+        if (pointCount < Math.round(game.players.length * 80)) {
           game.addPoint();
         }
       }
@@ -269,7 +269,7 @@ module.exports = class Game {
 
   areColliding ( v1, v2, strict ) {
     if (strict) return (v1[0] === v2[0] && v1[1] === v2[1])
-    else return this.getDistance(v1, v2) < 2;
+    else return this.getDistance(v1, v2) < 4;
   }
 
   getDistance ( v1, v2 ) {

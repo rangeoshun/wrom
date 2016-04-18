@@ -24,7 +24,7 @@ module.exports = class Renderer {
     _background.fillStyle = '#000';
     _background.fillRect(0,0,resolutionX, resolutionY);
 
-    for (let i = 1; i < resolutionX; i += 10) {
+    for (let i = 1; i < resolutionX; i += 20) {
       _background.beginPath();
       _background.lineWidth = .5;
       _background.moveTo(i, 0);
@@ -32,7 +32,7 @@ module.exports = class Renderer {
       _background.stroke();
     }
 
-    for (let i = 1; i < resolutionY; i += 10) {
+    for (let i = 1; i < resolutionY; i += 20) {
       _background.beginPath();
       _background.lineWidth = .5;
       _background.moveTo(0, i);

@@ -3,7 +3,9 @@ const Utils = require('./utils.js');
 const Pixel = require('./pixel.js');
 const Globals = require('./globals.js');
 const colors = require('./colors.js');
+const CreateFX = require('./fx-create.js');
 const PickUpFX = require('./fx-pickup.js');
+const PickupBeamFX = require('./pickup-beam.js');
 
 module.exports = class Entity {
   constructor ( game ) {
@@ -60,6 +62,9 @@ module.exports = class Entity {
   die ( killerID ) {
     let entity = this;
     let killer = entity.game.getPlayerById(killerID);
+
+    if (killer) new PickupBeamFX(killer, entity.coords, entity.color);
+    if (!entity.game.server) new CreateFX(entity);
 
     entity.alive = false;
     entity.killerID = killerID;

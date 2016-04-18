@@ -1,7 +1,7 @@
 "use strict";
 module.exports = {
-  resolution: [320, 200],
-  screen: [160, 100],
+  resolution: [640, 400],
+  screen: [320, 200],
   players: [],
   renderCallbacks: [],
   fps: 60,

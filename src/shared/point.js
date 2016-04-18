@@ -1,6 +1,6 @@
 "use strict";
 const Entity = require('./entity.js');
-const createFX = require('./fx-create.js');
+const CreateFX = require('./fx-create.js');
 
 module.exports = class Point extends Entity {
   constructor ( game ) {
@@ -16,7 +16,7 @@ module.exports = class Point extends Entity {
       game.tick.afterCallbacks.push(point.isOutOfBounds());
     }
 
-    new createFX(point);
+    new CreateFX(point);
   }
 
   isOutOfBounds () {
