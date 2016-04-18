@@ -8,7 +8,13 @@ const MimeTypes = require('./mime-types.js');
 const Player = require('./player.js');
 const Game = require('./game.js');
 const game = new Game(true, Globals);
-game.allTimeHigh = JSON.parse(fs.readFileSync('./db/high-scores.json'));
+try {
+  game.allTimeHigh = JSON.parse(fs.readFileSync('./db/high-scores.json'));
+} catch ( e ) {
+  console.log(e);
+  game.allTimeHigh = [];
+}
+
 game.allTimeHigh.updated = true;
 
 const httpPort = process.env.PORT || process.argv[2] || 80;
