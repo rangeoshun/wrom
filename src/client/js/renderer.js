@@ -23,6 +23,7 @@ module.exports = class Renderer {
     _background.strokeStyle = '#222';
     _background.fillStyle = '#000';
     _background.fillRect(0,0,resolutionX, resolutionY);
+    _background.translate(0.5, 0.5);
 
     for (let i = 1; i < resolutionX; i += 20) {
       _background.beginPath();
@@ -46,6 +47,7 @@ module.exports = class Renderer {
     _world_canvas.width = resolutionX;
     _world_canvas.height = resolutionY;
     const _world = _world_canvas.getContext("2d");
+    _world.translate(0.5, 0.5);
 
     const _screen_canvas = document.createElement('canvas');
     const _screen = _screen_canvas.getContext("2d");
@@ -247,7 +249,7 @@ module.exports = class Renderer {
         let normBounds = normalizeBounds(getBoundCoords());
         for (let i = 0; i < callbackLength; i++) {
           callback = _renderCallbacks[i];
-          pixels = callback(_screen);
+          pixels = callback(_screen, _world);
           pixelsLength = pixels.length;
 
           for (let k = 0; k < pixelsLength; k++) {

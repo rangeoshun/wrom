@@ -1,6 +1,6 @@
 "use strict";
 const Entity = require('./entity.js');
-const CreateFX = require('./fx-create.js');
+const CreateFX = require('./create-fx.js');
 
 module.exports = class Point extends Entity {
   constructor ( game ) {
@@ -45,14 +45,16 @@ module.exports = class Point extends Entity {
       const game = point.game;
       const coords = point.coords;
       const color = point.color;
-      players.forEach(function ( player ) {
-        if (game.areColliding(player.coords, coords)) {
+      const playersLength = players.length;
+      for (var i = 0; i < playersLength; i++) {
+        const player = players[i];
+        if (game.areColliding(player.coords, coords, false, player)) {
           console.log(`${player.constructor.name} ${player.id} is collecting ${point.constructor.name} ${point.id}`);
           point.onCollision(player);
         }
-      });
+      };
 
-      return point.alive;
-    }
+      return game.server && point.alive;
+    };
   }
 };

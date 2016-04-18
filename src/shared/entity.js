@@ -3,8 +3,8 @@ const Utils = require('./utils.js');
 const Pixel = require('./pixel.js');
 const Globals = require('./globals.js');
 const colors = require('./colors.js');
-const CreateFX = require('./fx-create.js');
-const PickUpFX = require('./fx-pickup.js');
+const CreateFX = require('./create-fx.js');
+const PickUpFX = require('./pickup-fx.js');
 const PickupBeamFX = require('./pickup-beam.js');
 
 module.exports = class Entity {

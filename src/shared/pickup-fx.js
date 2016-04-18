@@ -1,6 +1,5 @@
 "use strict";
 const Pixel = require('./pixel.js');
-const CreateFX = require('./fx-create.js');
 const colors = require('./colors.js');
 
 module.exports = function PickUpFX ( entity, color ) {

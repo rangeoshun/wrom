@@ -33,10 +33,25 @@ module.exports = function MineFX ( entity ) {
         pixels.push(new Pixel(0,1,1,1,[coords[0], coords[1] - i]));
       }
 
-      pixels[i].setColor(color, factor);
-      pixels[i++].setColor(color, factor);
-      pixels[i++].setColor(color, factor);
-      pixels[i++].setColor(color, factor);
+      if (pixels[i]) {
+        pixels[i].setColor(color, factor);
+        i++;
+      }
+
+      if (pixels[i]) {
+        pixels[i].setColor(color, factor);
+        i++;
+      }
+
+      if (pixels[i]) {
+        pixels[i].setColor(color, factor);
+        i++;
+      }
+
+      if (pixels[i]) {
+        pixels[i].setColor(color, factor);
+        i++;
+      }
     }
 
     return pixels;

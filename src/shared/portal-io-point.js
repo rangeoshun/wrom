@@ -25,4 +25,22 @@ module.exports = class PortalIOPoint extends Point {
 
     return point.alive;
   }
+
+  isColliding () {
+    let point = this;
+
+    return function ( players ) {
+      const game = point.game;
+      const coords = point.coords;
+      const color = point.color;
+      players.forEach(function ( player ) {
+        if (game.areColliding(player.coords, coords, false)) {
+          console.log(`${player.constructor.name} ${player.id} is collecting ${point.constructor.name} ${point.id}`);
+          point.onCollision(player);
+        }
+      });
+
+      return game.server && point.alive;
+    };
+  }
 };

@@ -112,7 +112,7 @@ module.exports = class MinePoint extends Point {
       });
 
       if (!countDown) point.die(1);
-      return point.alive;
+      return game.server && point.alive;
     }
   }
 };
