@@ -20,7 +20,7 @@ gulp.task('dev-server', function() {
   dev = spawn('node', ['./build/server/server.js', config.dev.http, config.dev.socket], {stdio: 'inherit'});
   dev.on('close', function (code) {
     if (code === 8) {
-      gulp.log('Error detected, waiting for changes...');
+      //gulp.log('Error detected, waiting for changes...');
     }
   });
 });
@@ -30,7 +30,7 @@ gulp.task('live-server', function() {
   live = spawn('node', ['./dist/server/server.js', config.live.http, config.live.socket], {stdio: 'inherit'});
   live.on('close', function (code) {
     if (code === 8) {
-      gulp.log('Error detected, waiting for changes...');
+      //gulp.log('Error detected, waiting for changes...');
     }
   });
 });
