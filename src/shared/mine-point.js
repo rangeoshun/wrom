@@ -15,7 +15,7 @@ module.exports = class MinePoint extends Point {
     point.color = point.armedColor;
     point.armed = false;
     point.armedUpdated = true;
-    point.countLength = 5;
+    point.countLength = 11;
     point.countDown = point.countLength;
     point.blowRadius = 5;
 
@@ -26,24 +26,45 @@ module.exports = class MinePoint extends Point {
       } else {
         point.color = colors.white;
       }
+      setTimeout(function () {
+        point.arm();
+      }, 15000);
     }, 1000);
   }
 
   render () {
     let point = this;
     const game = point.game;
-    return function ( screen ) {
-      const armed = point.armed;
+    const colorPicker = new Pixel();
+    let pixels = [];
+    pixels.push(new Pixel().setCoords(point.coords).setColor(point.color));
 
-      let pixels = [];
+    return function ( world ) {
+      const armed = point.armed;
+      const coords = point.coords;
       if (!game.getPointById(point.id) || !point.alive) {
-        pixels.die = [];
+        pixels.die = true;
         return pixels;
       }
 
-      const color = !armed && game.globals.selfID !== point.creator ? point.color : point.armedColor;
-      pixels.push(new Pixel(1, 1, 1, 1, point.coords).setColor(color));
+      let color = !armed && game.globals.selfID !== point.creator ? point.color : point.armedColor;
+      const factor = Math.sin(new Date().getMilliseconds() / 100 * 6);
+      const offset = point.blowRadius;
 
+      if (armed) {
+
+        world.beginPath();
+        world.lineWidth = 0.5;
+        world.strokeStyle = colorPicker.setColor(color, factor).hex;
+        world.moveTo(coords[0], coords[1] - offset);
+        world.lineTo(coords[0] + offset, coords[1]);
+        world.lineTo(coords[0], coords[1] + offset);
+        world.lineTo(coords[0] - offset, coords[1]);
+        world.lineTo(coords[0], coords[1] - offset);
+        world.stroke();
+      }
+
+      pixels[0].setCoords(coords).setColor(color);
       return pixels;
     };
   }
@@ -112,7 +133,7 @@ module.exports = class MinePoint extends Point {
       });
 
       if (!countDown) point.die(1);
-      return game.server &&point.alive;
+      return point.alive;
     }
   }
 };

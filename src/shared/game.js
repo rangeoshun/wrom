@@ -29,7 +29,7 @@ module.exports = class Game {
         game.points.forEach(function ( point ) {
           if (!point.creator) pointCount++;
         });
-        if (pointCount < Math.round(game.players.length * 31)) {
+        if (pointCount < Math.round(300 || game.players.length * 31)) {
           game.addPoint();
         }
       }
@@ -268,11 +268,12 @@ module.exports = class Game {
   }
 
   areColliding ( v1, v2, strict, player ) {
+    const game = this;
 
     if (strict) {
       return (v1[0] === v2[0] && v1[1] === v2[1]);
     } else {
-      const distance = (player && player.body) ? Math.round(player.body.length / 4) + 1 : 4;
+      const distance = Math.min(Math.max((player && player.body) ? Math.round(player.body.length / 4) + 1 : 4, 4), 37);
       return this.getDistance(v1, v2) < distance;
     }
   }

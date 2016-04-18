@@ -400,17 +400,20 @@ module.exports = class Renderer {
           for (let k = 0; k < pixelsLength; k++) {
 
             pixel = pixels[k];
-            x = pixel[4][0];
-            y = pixel[4][1];
+            if (pixel[4]) {
 
-            currentBounds = isInNormalizedBounds(pixels[k][4], normBounds);
-            if (currentBounds.touched) {
-              pixelData[0] = pixel.r;
-              pixelData[1] = pixel.g;
-              pixelData[2] = pixel.b;
-              pixelData[3] = 255;
-//console.log(currentBounds[2])
-              _world.putImageData(renderedPixel, x, y );
+              x = pixel[4][0];
+              y = pixel[4][1];
+
+              currentBounds = isInNormalizedBounds(pixels[k][4], normBounds);
+              if (currentBounds.touched) {
+                pixelData[0] = pixel.r;
+                pixelData[1] = pixel.g;
+                pixelData[2] = pixel.b;
+                pixelData[3] = 255;
+                //console.log(currentBounds[2])
+                _world.putImageData(renderedPixel, x, y );
+              }
             }
           }
           if (pixels.die) {
