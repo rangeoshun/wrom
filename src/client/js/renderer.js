@@ -151,6 +151,7 @@ module.exports = class Renderer {
       segment7,
       segment8
     ];
+    const normBoundsLength = normBounds.length;
 
     let normalizeBounds = function normalizeBounds ( bounds ) {
       let subX;
@@ -365,7 +366,6 @@ module.exports = class Renderer {
 
       const x = pixelCoords[0];
       const y = pixelCoords[1];
-      const normBoundsLength = normBounds.length;
       let verdict = false;
 
       for (let i = 0; i < normBoundsLength; i++) {
@@ -434,7 +434,6 @@ module.exports = class Renderer {
         }
         deleteCue = [];
       }
-
       _buffer.drawImage(_world_canvas, 0, 0);
       _buffer.drawImage(_world_canvas, resolutionX, 0);
       _buffer.drawImage(_world_canvas, 0, resolutionY);
@@ -446,10 +445,26 @@ module.exports = class Renderer {
       else if (segment1.touched) screenOffset = segment1[0];
       else if (segment3.touched) screenOffset = segment3[0];
       else screenOffset = segment4[0];
-
       _small_buffer.drawImage(_buffer_canvas, 0 - screenOffset[0], 0 - screenOffset[1]);
       _screen.drawImage(_small_buffer_canvas, 0, 0);
 
+/*
+      for (let i = 0; i < normBoundsLength; i++) {
+        let segment = normBounds[i];
+        if (segment.touched) {
+          _screen.putImageData(
+            _world.getImageData(
+              segment[0][0],
+              segment[0][1],
+              segment[1][0],
+              segment[1][1]
+            ),
+              segment[2][0],
+              segment[2][1]
+          );
+        }
+      }
+*/
       requestAnimationFrame(render);
     }
     requestAnimationFrame(render);
