@@ -4,6 +4,7 @@ module.exports = class Renderer {
     const renderer = this;
     const globals = client.globals;
     const resolution = globals.resolution;
+    const screen = globals.screen;
     const resolutionX = resolution[0];
     const resolutionY = resolution[1];
 
@@ -43,14 +44,19 @@ module.exports = class Renderer {
 
     const _screen_canvas = document.createElement('canvas');
     const _screen = _screen_canvas.getContext("2d");
-    _screen_canvas.width = globals.screen[0];
-    _screen_canvas.height = globals.screen[1];
+    _screen_canvas.width = screen[0];
+    _screen_canvas.height = screen[1];
     _screen_canvas.className = 'screen';
 
     const _buffer_canvas = document.createElement('canvas');
     const _buffer = _buffer_canvas.getContext("2d");
     _buffer_canvas.width = resolution[0] * 2;
     _buffer_canvas.height = resolution[1] * 2;
+
+    const _small_buffer_canvas = document.createElement('canvas');
+    const _small_buffer = _small_buffer_canvas.getContext("2d");
+    _small_buffer_canvas.width = screen[0];
+    _small_buffer_canvas.height = screen[0];
 
     const _renderCallbacks = globals.renderCallbacks;
     const setupNode = document.querySelector('[id=setup]');
@@ -434,13 +440,15 @@ module.exports = class Renderer {
       _buffer.drawImage(_world_canvas, 0, resolutionY);
       _buffer.drawImage(_world_canvas, resolutionX, resolutionY);
 
+
       let screenOffset;
       if (segment0.touched) screenOffset = segment0[0];
       else if (segment1.touched) screenOffset = segment1[0];
       else if (segment3.touched) screenOffset = segment3[0];
       else screenOffset = segment4[0];
 
-      _screen.drawImage(_buffer_canvas, 0 - screenOffset[0], 0 - screenOffset[1]);
+      _small_buffer.drawImage(_buffer_canvas, 0 - screenOffset[0], 0 - screenOffset[1]);
+      _screen.drawImage(_small_buffer_canvas, 0, 0);
 
       requestAnimationFrame(render);
     }
