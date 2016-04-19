@@ -17,12 +17,16 @@ module.exports = function PortalAbility ( player ) {
     const head = player.body[0];
     const direction = player.direction;
     const scorer = player;
+    const portalDistance = 13;
     let portal0 = game.addPoint(PortalIOPoint);
     let portal1 = game.addPoint(PortalIOPoint);
 
     portal0.pair = portal1;
     portal0.setColor(colors.orange);
-    portal0.setCoords([head[0] + direction[0] * 7, head[1] + direction[1] * 7]);
+    portal0.setCoords([
+      head[0] + direction[0] * portalDistance,
+      head[1] + direction[1] * portalDistance
+    ]);
 
     const p0Coords = portal0.coords;
     if (p0Coords[0] >= game.globals.resolution[0]) {
