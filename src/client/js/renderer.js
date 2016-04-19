@@ -14,8 +14,10 @@ module.exports = class Renderer {
 
     const _background = _background_canvas.getContext("2d");
     _background.strokeStyle = '#0f0f0f';
+/*
     _background.fillStyle = '#000';
     _background.fillRect(0, 0, resolutionX, resolutionY);
+*/
     _background.translate(0.5, 0.5);
 
     for (let i = 0; i < resolutionX; i += 20) {
@@ -392,7 +394,7 @@ module.exports = class Renderer {
     function render () {
 
       if (client.state === 'screen') {
-
+        _world.clearRect(0,0,resolutionX,resolutionY);
         _world.putImageData(backgroundImg, 0, 0);
         //      console.log(bounds)
 
@@ -434,18 +436,22 @@ module.exports = class Renderer {
         }
         deleteCue = [];
       }
+
+      _buffer.clearRect(0,0,resolutionX*2,resolutionY*2);
       _buffer.drawImage(_world_canvas, 0, 0);
       _buffer.drawImage(_world_canvas, resolutionX, 0);
       _buffer.drawImage(_world_canvas, 0, resolutionY);
       _buffer.drawImage(_world_canvas, resolutionX, resolutionY);
-
 
       let screenOffset;
       if (segment0.touched) screenOffset = segment0[0];
       else if (segment1.touched) screenOffset = segment1[0];
       else if (segment3.touched) screenOffset = segment3[0];
       else screenOffset = segment4[0];
+      _small_buffer.clearRect(0,0, screen[0], screen[1]);
       _small_buffer.drawImage(_buffer_canvas, 0 - screenOffset[0], 0 - screenOffset[1]);
+
+      _screen.clearRect(0,0, screen[0], screen[1]);
       _screen.drawImage(_small_buffer_canvas, 0, 0);
 
 /*
