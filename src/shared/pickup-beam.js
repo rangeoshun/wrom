@@ -34,11 +34,7 @@ module.exports = function PickupBeamFX ( entity,  _coords, _color ) {
     world.strokeStyle = colorPicker.setColor(color, factor).hex;
     world.moveTo(coords[0], coords[1]);
     world.lineTo(head[0], head[1]);
-    world.stroke();
 
-    world.beginPath();
-    world.lineWidth = 0.5;
-    world.strokeStyle = colorPicker.setColor(color, factor).hex;
     world.moveTo(coords[0], coords[1] - offset);
     world.lineTo(coords[0] + offset, coords[1]);
     world.lineTo(coords[0], coords[1] + offset);
