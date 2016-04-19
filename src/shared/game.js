@@ -273,7 +273,7 @@ module.exports = class Game {
     if (strict) {
       return (v1[0] === v2[0] && v1[1] === v2[1]);
     } else {
-      const distance = Math.min(Math.max((player && player.body) ? Math.round(player.body.length / 4) + 1 : 4, 4), 37);
+      const distance = Math.max((player && player.body) ? Math.sqrt(player.body.length / 4) + 1 : 4, 4);
       return this.getDistance(v1, v2) < distance;
     }
   }
