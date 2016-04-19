@@ -160,25 +160,31 @@ module.exports = class Worm extends Entity {
       let collision = false;
       const game = worm.game;
       const playersLength = players.length;
+
       for (var i = 0; i < playersLength; i++) {
         const player = players[i];
         const body = player.body;
         const bodyLength = body.length;
 
-        for (var j = 0; j < bodyLength; j++) {
+        if (!worm.isImmune() && !player.ghost) {
 
-          if (worm.isImmune() || player.ghost) break;
-          if (player === worm) break;
+          for (var j = 0; j < bodyLength; j++) {
 
-          const part = body[j];
+            if (player.id !== worm.id || j) {
+              const part = body[j];
 
-          if (game.areColliding(worm.coords, part, true)) {
-            console.log(`${worm.constructor.name} ${worm.id} is colliding with ${worm.constructor.name} ${player.id}`);
-            worm.die();
-            if (player.id !== worm.id) player.addScore(worm.body.length * 10);
-            collision = true;
+              if (game.areColliding(worm.coords, part, true)) {
+                console.log(`${worm.constructor.name} ${worm.id} is colliding with ${worm.constructor.name} ${player.id}`);
+
+                worm.die();
+
+                if (player.id !== worm.id) player.addScore(worm.body.length * 10);
+                collision = true;
+              }
+            }
           }
         }
+
       }
 
       if (callback) {
