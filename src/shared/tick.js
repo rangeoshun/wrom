@@ -6,7 +6,7 @@ module.exports = class Tick {
     const server = game.server;
     let callbacks = [[],[],[]];
     let syncCallbacks = [];
-    let tickSpeed = 29;
+    let tickSpeed = 60;
 
     tick.beforeCallbacks = callbacks[0];
     tick.onCallbacks = callbacks[1];

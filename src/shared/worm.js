@@ -222,8 +222,15 @@ module.exports = class Worm extends Entity {
 
   move () {
     const worm = this;
-
+    let doubleTick = 1;
     return function () {
+
+      if (!doubleTick) {
+        doubleTick++;
+        return;
+      }
+      doubleTick--;
+
       const coords = worm.coords;
       let body = worm.body;
       const head = worm.body[0];
@@ -267,7 +274,7 @@ module.exports = class Worm extends Entity {
       if (!worm.game.getPlayerById(worm.id) || !worm.alive) {
         pixels.die = true;
         pixels.splice(0);
-        return pixels;
+        return [];
       }
 
       const body = worm.body;

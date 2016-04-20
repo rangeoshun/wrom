@@ -29,7 +29,7 @@ module.exports = class Game {
         game.points.forEach(function ( point ) {
           if (!point.creator) pointCount++;
         });
-        if (pointCount < Math.round(game.players.length * 39)) {
+        if (pointCount < 300) {
           game.addPoint();
         }
       }
