@@ -474,12 +474,12 @@ module.exports = class Renderer {
           );
         }
       }
+      requestAnimationFrame(render);
     }
 
 //    tick.afterCallbacks.push(function () {
-      requestAnimationFrame(render);
 //    });
+  requestAnimationFrame(render);
   }
 
-  render();
 }
