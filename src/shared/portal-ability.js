@@ -44,7 +44,6 @@ module.exports = function PortalAbility ( player ) {
     portal1.pair = portal0;
     portal1.setColor(colors.cyan);
 
-
     let countDown = setInterval(function () {
       duration--;
       player.setMessage(`You'have portal open for ${duration} seconds..`);
@@ -60,11 +59,8 @@ module.exports = function PortalAbility ( player ) {
             const length = body.length;
 
             body.forEach(function ( part, index ) {
-              const distance1 = game.getDistance(part, portal1.coords);
-
-              if (distance1 < 4
-                && (part[0] === portal1.coords[0]
-                  || part[1] === portal1.coords[1])) {
+              const distance1 = game.getDistance(part, portal0.coords);
+              if (distance1 < 5) {
 
                 console.log(`${player.constructor.name} ${player.id} is thorn into half by ${portal1.constructor.name} ${portal1.id}`);
                 const rest = length - index;
@@ -72,20 +68,21 @@ module.exports = function PortalAbility ( player ) {
                 if (!index) {
                   player.die();
                 } else {
-                  enemy.drop(rest, index, body);
+                  player.drop(rest, index, body);
                   body.splice(index);
                 }
 
                 if (scorer && player.id !== scorer.id) scorer.addScore(rest * 10);
               }
             });
+
+            portal0.die(1);
+            portal1.die(1);
           });
 
           return false;
         });
 
-        portal0.die(1);
-        portal1.die(1);
       }
     },1000);
   };
