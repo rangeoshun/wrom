@@ -95,13 +95,13 @@ module.exports = class Worm extends Entity {
     const body = worm.body;
     const game = worm.game;
 
+    worm.updated = true;
     if (!worm.alive) return;
 
     worm.drop(body.length, 0, body);
     body.splice(0);
     worm.setMessage('Bad luck... Press [SPACE] to respawn!');
     worm.alive = false;
-    worm.updated = true;
     if (game.server) game.onDieCallback(worm);
   }
 
