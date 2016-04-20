@@ -34,7 +34,7 @@ module.exports = function DrillAbility ( player ) {
               enemy.die();
             } else {
               enemy.drop(rest, index, body);
-              body.splice(index, rest);
+              body.splice(index);
             }
 
             if (enemy.id !== player.id) player.addScore(rest * 10);

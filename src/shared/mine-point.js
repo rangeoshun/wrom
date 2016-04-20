@@ -91,9 +91,8 @@ module.exports = class MinePoint extends Point {
       player.die();
     } else {
       enemy.drop(rest, index, body);
-      body.splice(index, rest);
+      body.splice(index);
     }
-
   }
 
   isColliding () {

@@ -62,7 +62,7 @@ module.exports = function PortalAbility ( player ) {
             body.forEach(function ( part, index ) {
               const distance1 = game.getDistance(part, portal1.coords);
 
-              if (distance1 < 2
+              if (distance1 < 4
                 && (part[0] === portal1.coords[0]
                   || part[1] === portal1.coords[1])) {
 
@@ -73,7 +73,7 @@ module.exports = function PortalAbility ( player ) {
                   player.die();
                 } else {
                   enemy.drop(rest, index, body);
-                  body.splice(index, rest);
+                  body.splice(index);
                 }
 
                 if (scorer && player.id !== scorer.id) scorer.addScore(rest * 10);
