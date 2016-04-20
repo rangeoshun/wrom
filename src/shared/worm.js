@@ -276,8 +276,6 @@ module.exports = class Worm extends Entity {
 
       if (!worm.alive) {
         pixels.die = true;
-        pixels.splice(0);
-        return pixels;
       }
 
       const body = worm.body;
