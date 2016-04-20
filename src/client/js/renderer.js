@@ -1,6 +1,7 @@
 'use strict';
 module.exports = class Renderer {
   constructor ( client ) {
+    const tick = client.game.tick;
     const renderer = this;
     const globals = client.globals;
     const resolution = globals.resolution;
@@ -471,8 +472,10 @@ module.exports = class Renderer {
         }
       }
 */
-      requestAnimationFrame(render);
     }
-    requestAnimationFrame(render);
+
+    tick.afterCallbacks.push(function () {
+      requestAnimationFrame(render);
+    });
   }
 }

@@ -149,6 +149,23 @@ module.exports = class Connection {
         let message = {};
         if (direction) {
           message.dr = direction;
+
+          switch (direction) {
+            case 1:
+              direction = [0, -1];
+            break;
+            case 2:
+              direction = [1, 0];
+            break;
+            case 3:
+              direction = [0, 1];
+            break;
+            case 4:
+              direction = [-1, 0];
+            break;
+          }
+
+          globals.self.setDirection(direction);
         } else if (respawn) {
           message.rs = respawn;
         } else if (ability) {
@@ -171,11 +188,11 @@ module.exports = class Connection {
     connection.onmessage = handleIdentityupdate;
 
     function handleIdentityupdate ( message ) {
-  //      game.tick.step();
+//      game.tick.step();
       let update = JSON.parse(message.data);
       globals.selfID = update.id;
       connection.onmessage = handleStateupdate;
-      game.tick.step();
+//      game.tick.step();
     }
 
     let update;
@@ -246,6 +263,7 @@ module.exports = class Connection {
       for (let playerID in update.pa) {
         playerUpdate = update.pa[playerID];
         foundPlayer = game.getPlayerById(playerID);
+        let isSelf = (foundPlayer) ? foundPlayer.id === globals.selfID  : false;
 
         if (!foundPlayer) {
 
@@ -258,17 +276,18 @@ module.exports = class Connection {
             globals.self = foundPlayer;
             client.showScores = false;
             foundPlayer.client = true;
+            isSelf = true;
           }
         }
 
-        if (foundPlayer.id === globals.selfID) {
+        if (isSelf) {
           if (typeof playerUpdate.ms === 'string') client.message = playerUpdate.ms;
         }
 
         if (playerUpdate.de) {
   //          connection.send('{"rs":1}');
 
-          if (foundPlayer.id === globals.selfID) {
+          if (isSelf) {
             client.showScores = true;
           }
 
@@ -281,12 +300,23 @@ module.exports = class Connection {
           if (playerUpdate.nm) foundPlayer.setName(playerUpdate.nm);
           if (playerUpdate.cl) foundPlayer.setColor(playerUpdate.cl);
           if (playerUpdate.go !== undefined) foundPlayer.setGhost(!!playerUpdate.go);
-          if (playerUpdate.bd) foundPlayer.body = playerUpdate.bd;
-          if (playerUpdate.co) foundPlayer.coords = foundPlayer.body[0];
+          if (playerUpdate.di && !isSelf) foundPlayer.setDirection(playerUpdate.di);
+          if (playerUpdate.bd) {
+
+            foundPlayer.body.unshift(foundPlayer.body.pop());
+            foundPlayer.body[0][0] = playerUpdate.bd[0];
+            foundPlayer.body[0][1] = playerUpdate.bd[1];
+            foundPlayer.coords = foundPlayer.body[0];
+
+            let diff = playerUpdate.bdln - foundPlayer.body.length;
+            if (diff) foundPlayer.grow(diff);
+
+            return false;
+          }
         }
       }
 
-      game.tick.step();
+//      game.tick.step();
     }
   }
 }

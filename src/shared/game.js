@@ -59,7 +59,7 @@ module.exports = class Game {
       tick.afterCallbacks.push(correctPoints);
     }
 
-    tick.init(server);
+    tick.init(true);
   }
 
   togglePause () {
@@ -227,7 +227,8 @@ module.exports = class Game {
         }
 
         if (player.bodyUpdated || fullState) {
-          playerState.bd = player.body;
+          playerState.bd = player.body[0];
+          playerState.bdln = player.body.length;
           player.bodyUpdated = fullState;
         }
 
