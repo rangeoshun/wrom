@@ -72,7 +72,8 @@ module.exports = function PortalAbility ( player ) {
                 if (!index) {
                   player.die();
                 } else {
-                  player.drop(rest, index, body.splice(index, rest));
+                  enemy.drop(rest, index, body);
+                  body.splice(index, rest);
                 }
 
                 if (scorer && player.id !== scorer.id) scorer.addScore(rest * 10);
