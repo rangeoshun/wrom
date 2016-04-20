@@ -115,7 +115,7 @@ wss.on('request', function ( request ) {
           ping += pingRow[i];
         }
         pingRow.splice(0);
-        player.ping = ping / pingRowLength;
+        player.ping = Math.round(ping / pingRowLength);
       }
       return;
     }

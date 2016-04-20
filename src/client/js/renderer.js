@@ -102,10 +102,11 @@ module.exports = class Renderer {
     let dimensionX;
     let start;
     let end;
-    let backupHead;
+    let backupHead = [0,0];
+    let backupBody = [backupHead];
     let getBoundCoords = function getBoundCoords () {
       self = globals.self;
-      body = self.body;
+      body = self.body || backupBody;
       head = body[0] || backupHead;
       backupHead = head;
       scaleY = globals.screen[1] / 2;
