@@ -22,7 +22,7 @@ module.exports = function DrillAbility ( player ) {
         const length = body.length;
 
         body.forEach(function ( part, index ) {
-          if (!index && enemy.id === player.id || enemy.ghost) return;
+          if ((!index && enemy.id === player.id) || enemy.ghost) return;
 
           if (part[0] === head[0]
             && part[1] === head[1]) {
@@ -33,7 +33,8 @@ module.exports = function DrillAbility ( player ) {
             if (!index) {
               enemy.die();
             } else {
-              enemy.drop(rest, index, body.splice(index, rest));
+              enemy.drop(rest, index, body);
+              body.splice(index, rest);
             }
 
             if (enemy.id !== player.id) player.addScore(rest * 10);

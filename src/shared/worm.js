@@ -213,12 +213,23 @@ module.exports = class Worm extends Entity {
 
   grow ( by ) {
     const worm = this;
+    let body = worm.body;
+
     if (!worm.alive) return;
-    let tail = worm.body[worm.body.length - 1];
-    for (by; by > 0; by--) {
-      worm.size++;
-      worm.body.push([tail[0], tail[1]]);
-      worm.updated = worm.bodyUpdated = true;
+
+    let tail =body[body.length - 1];
+console.log(by)
+    if (by < 0) {
+
+      body.splice(body.length + by);
+
+    } else {
+
+      for (by; by > 0; by--) {
+        worm.size++;
+        body.push([tail[0], tail[1]]);
+        worm.updated = worm.bodyUpdated = true;
+      }
     }
   }
 
