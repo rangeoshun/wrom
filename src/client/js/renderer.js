@@ -440,24 +440,25 @@ module.exports = class Renderer {
         deleteCue = [];
       }
 
-      _buffer.clearRect(0,0,resolutionX*2,resolutionY*2);
-      _buffer.drawImage(_world_canvas, 0, 0);
-      _buffer.drawImage(_world_canvas, resolutionX, 0);
-      _buffer.drawImage(_world_canvas, 0, resolutionY);
-      _buffer.drawImage(_world_canvas, resolutionX, resolutionY);
+      //_buffer.clearRect(0,0,resolutionX*2,resolutionY*2);
 
+/*
       let screenOffset;
       if (segment0.touched) screenOffset = segment0[0];
       else if (segment1.touched) screenOffset = segment1[0];
       else if (segment3.touched) screenOffset = segment3[0];
       else screenOffset = segment4[0];
       _small_buffer.clearRect(0,0, screen[0], screen[1]);
-      _small_buffer.drawImage(_buffer_canvas, 0 - screenOffset[0], 0 - screenOffset[1]);
+      _small_buffer.drawImage(_world_canvas, 0 - screenOffset[0], 0 - screenOffset[1]);
+      _small_buffer.drawImage(_world_canvas, resolutionX - screenOffset[0], 0 - screenOffset[1]);
+      _small_buffer.drawImage(_world_canvas, 0 - screenOffset[0], resolutionY - screenOffset[1]);
+      _small_buffer.drawImage(_world_canvas, resolutionX - screenOffset[0], resolutionY - screenOffset[1]);
+//      _small_buffer.drawImage(_buffer_canvas, 0 - screenOffset[0], 0 - screenOffset[1]);
 
       _screen.clearRect(0,0, screen[0], screen[1]);
       _screen.drawImage(_small_buffer_canvas, 0, 0);
+      */
 
-/*
       for (let i = 0; i < normBoundsLength; i++) {
         let segment = normBounds[i];
         if (segment.touched) {
@@ -473,7 +474,6 @@ module.exports = class Renderer {
           );
         }
       }
-*/
     }
 
     tick.afterCallbacks.push(function () {
