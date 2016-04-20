@@ -29,7 +29,7 @@ module.exports = class InvisiblePoint extends Point {
     return function () {
       let pixels = [];
 
-      if (!point.game.getPointById(point.id) || !point.alive) {
+      if (!point.alive) {
         pixels.die = [];
         return pixels;
       }

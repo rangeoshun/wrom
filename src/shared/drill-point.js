@@ -31,7 +31,7 @@ module.exports = class DrillPoint extends Point {
 
     return function () {
 
-      if (!point.game.getPointById(point.id) || !point.alive) {
+      if (!point.alive) {
         pixels.die = [];
         return pixels;
       }

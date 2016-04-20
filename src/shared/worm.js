@@ -274,7 +274,7 @@ module.exports = class Worm extends Entity {
     let pixels = [];
     return function () {
 
-      if (!worm.game.getPlayerById(worm.id) || !worm.alive) {
+      if (!worm.alive) {
         pixels.die = true;
         pixels.splice(0);
         return pixels;

@@ -64,7 +64,7 @@ module.exports = class Entity {
     let killer = entity.game.getPlayerById(killerID);
 
     if (killer) new PickupBeamFX(killer, entity.coords, entity.color);
-
+    entity.setCoords([-1,-1]);
     entity.alive = false;
     entity.killerID = killerID;
     entity.updated = entity.aliveUpdated = true;
@@ -113,7 +113,7 @@ module.exports = class Entity {
     return function () {
       const sinTime = 1;//Math.sin(parseFloat('0.'+ (new Date().getTime() / 1000).toString().split('.')[1]) * Math.PI);
 
-      if (!entity.game.getPointById(entity.id) || !entity.alive) {
+      if (!entity.alive) {
         pixels.die = true;
         pixels.splice(0);
         return pixels;
