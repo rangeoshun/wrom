@@ -89,8 +89,12 @@ wss.on('request', function ( request ) {
   connection.send(JSON.stringify({id: player.id}));
   const startState = JSON.stringify(game.getState(true));
   connection.send(startState);
+  let ping;
+  let lastUpdateTime;
+  let pingRow = [];
 
   function syncPlayer ( state ) {
+    lastUpdateTime = state.t;
     connection.send(JSON.stringify(state));
     return !!player;
   }
@@ -101,6 +105,21 @@ wss.on('request', function ( request ) {
   connection.on('message', function ( message ) {
 
     const update = JSON.parse(message.utf8Data);
+
+    if (update.t) {
+      pingRow.push(new Date().getTime() - lastUpdateTime);
+      const pingRowLength = pingRow.length;
+      if (pingRowLength > 99) {
+        let ping = 0;
+        for (var i = 0; i < pingRowLength; i++) {
+          ping += pingRow[i];
+        }
+        pingRow.splice(0);
+        player.ping = ping / pingRowLength;
+      }
+      return;
+    }
+
     let direction = update.dr;
     const respawn = update.rs;
     const spawn = update.sa;

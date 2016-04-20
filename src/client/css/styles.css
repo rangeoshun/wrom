@@ -80,6 +80,11 @@ div[id=scores] {
   margin: 5px;
 }
 
+div[id=scores] tr td:last-child {
+  display: inline-block;
+  width: 20px;
+}
+
 div[id=scores], div[id=scores] * {
   background-color: transparent;
 }

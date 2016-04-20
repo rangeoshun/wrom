@@ -13,6 +13,7 @@ module.exports = class Scores {
                       <th>#</th>
                       <th>NAME</th>
                       <th>SCORE</th>
+                      <th>PING</th>
                     </tr>`;
 
     let boardInner = ``;
@@ -27,7 +28,8 @@ module.exports = class Scores {
           place: (score.da) ? index + 1 : 'X',
           score: score.so,
           name: score.nm,
-          color: colorPicker.setColor(score.cl).hex
+          color: colorPicker.setColor(score.cl).hex,
+          ping: score.pn
         };
       });
 
@@ -38,6 +40,7 @@ module.exports = class Scores {
                         <td>${score.place}</td>
                         <td style="color: ${score.color};">${score.name}</td>
                         <td>${score.score}</td>
+                        <td>${score.ping}ms</td>
                       </tr>`
       }
 

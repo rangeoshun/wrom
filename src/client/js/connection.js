@@ -205,6 +205,7 @@ module.exports = class Connection {
       game.ditchTheDead();
 
       update = JSON.parse(message.data);
+      connection.send(`{"t":${update.t}}`);
 
       client.emit('update', update.sc);
       if (update.ath) client.emit('allTimeUpdate', update.ath);
@@ -315,7 +316,6 @@ module.exports = class Connection {
           }
         }
       }
-
 //      game.tick.step();
     }
   }

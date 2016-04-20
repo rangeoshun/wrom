@@ -133,7 +133,7 @@ module.exports = class Game {
   getState ( fullState ) {
     const game = this;
     let state = {};
-
+    state.t = new Date().getTime();
     if (game.allTimeHigh && (game.allTimeHigh.updated || fullState)) {
       state.ath = game.allTimeHigh;
       game.allTimeHigh.updated = fullState;
@@ -146,7 +146,8 @@ module.exports = class Game {
         nm: player.name,
         so: player.score,
         cl: player.color,
-        da: player.entity.alive
+        da: player.entity.alive,
+        pn: player.ping || '-'
       });
     });
 
