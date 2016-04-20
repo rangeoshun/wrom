@@ -476,8 +476,10 @@ module.exports = class Renderer {
       }
     }
 
-    tick.afterCallbacks.push(function () {
+//    tick.afterCallbacks.push(function () {
       requestAnimationFrame(render);
-    });
+//    });
   }
+
+  render();
 }
