@@ -218,7 +218,7 @@ module.exports = class Worm extends Entity {
     if (!worm.alive) return;
 
     let tail =body[body.length - 1];
-console.log(by)
+
     if (by < 0) {
 
       body.splice(body.length + by);
