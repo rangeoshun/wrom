@@ -20,7 +20,7 @@ module.exports = function PickupBeamFX ( entity,  _coords, _color ) {
 
   game.globals.renderCallbacks.unshift(function ( world ) {
 
-    if (duration <= 0) {
+    if (duration <= 0 || !entity.alive) {
       pixels.die = true;
       return pixels;
     }
