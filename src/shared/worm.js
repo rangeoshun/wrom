@@ -79,7 +79,7 @@ module.exports = class Worm extends Entity {
     const game = worm.game;
     if (!game.server || !worm.alive) return;
 
-    console.log(`${worm.constructor.name} ${worm.id} is dropping:`)
+    console.log(`${worm.constructor.name} ${worm.player ? worm.player.name : worm.id} is dropping:`)
     for (let i = index; i < number; i++) {
       if (!Math.round(Math.random() * 2)) {
         const partCoord = body[i];
@@ -102,7 +102,7 @@ module.exports = class Worm extends Entity {
     body.splice(0);
     worm.setMessage('Bad luck... Press [SPACE] to respawn!');
     worm.alive = false;
-    if (game.server) game.onDieCallback(worm);
+    if (game.server && game.onDieCallback) game.onDieCallback(worm);
   }
 
   spawn () {
@@ -129,12 +129,12 @@ module.exports = class Worm extends Entity {
     worm.isColliding(function ( collision ) {
       if (collision) {
 
-        console.log(`${worm.constructor.name} ${worm.id} is dying to respawn`);
+        console.log(`${worm.constructor.name} ${worm.player ? worm.player.name : worm.id} is dying to respawn`);
         worm.spawn();
 
       } else {
 
-        console.log(`${worm.constructor.name} ${worm.id} is spawning`);
+        console.log(`${worm.constructor.name} ${worm.player ? worm.player.name : worm.id} is spawning`);
         worm.alive = true;
         worm.updated = true;
 
@@ -177,7 +177,7 @@ module.exports = class Worm extends Entity {
               const part = body[j];
 
               if (part && game.areColliding(worm.coords, part, true)) {
-                console.log(`${worm.constructor.name} ${worm.id} is colliding with ${worm.constructor.name} ${player.id}`);
+                console.log(`${worm.constructor.name} ${worm.player ? worm.player.name : worm.id} is colliding with ${worm.constructor.name} ${player.id}`);
 
                 worm.die();
 

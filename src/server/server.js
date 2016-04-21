@@ -81,7 +81,10 @@ wss.on('request', function ( request ) {
   console.log(`Connection from ${request.remoteAddress}`);
   let player = new Player();
   Globals.players.push(player);
-  player.manifest(game.addPlayer());
+  let worm = game.addPlayer();
+  player.manifest(worm);
+  worm.die();
+
   player.setConnection(connection);
 
   console.log(`PlayerID: ${player.id} by name ${player.name}`);

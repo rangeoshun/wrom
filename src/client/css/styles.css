@@ -92,6 +92,10 @@ div[id=setup] {
   transform: rotateY(180deg);
 }
 
+.setup .status {
+  backface-visibility: hidden;
+}
+
 div.welcome {
   padding-top: 15px;
   width: 190px;
