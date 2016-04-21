@@ -67,4 +67,4 @@ class Client extends EventEmitter {
   }
 }
 
-new Client();
+window.client = new Client();

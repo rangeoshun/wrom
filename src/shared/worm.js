@@ -283,7 +283,7 @@ module.exports = class Worm extends Entity {
   render () {
     const worm = this;
     let pixels = [];
-    return function () {
+    return function ( world, renderer ) {
 
       if (!worm.alive) {
         pixels.die = true;
@@ -291,9 +291,20 @@ module.exports = class Worm extends Entity {
 
       const body = worm.body;
       const bodyLength = worm.body.length;
-
+      const color = worm.color;
+      let prevPart = body[0];
       for (var i = 0; i < body.length; i++) {
+        let part = body[i];
+        let nextPart = body[i+1];
 
+        if (!nextPart
+          || prevPart[0] !== part[0]
+          || prevPart[1] !== part[1]) {
+
+          renderer.drawLine(prevPart, part, color, 1);
+          prevPart = nextPart;
+        }
+/*
         if (!pixels[i]) pixels.push(new Pixel());
 
         let r = worm.color[0];
@@ -312,9 +323,10 @@ module.exports = class Worm extends Entity {
         pixel[2] = g;
         pixel[3] = b;
         pixel[4] = body[i];
+*/
       }
 
-      if (pixels.length > bodyLength) pixels.splice(bodyLength - 1);
+//      if (pixels.length > bodyLength) pixels.splice(bodyLength - 1);
 
       return pixels;
     };

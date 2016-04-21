@@ -11,14 +11,14 @@ module.exports = function PickupBeamFX ( entity,  _coords, _color ) {
   const color = [_color[0], _color[1], _color[2]];
   const coords = [_coords[0], _coords[1]];
   const colorPicker = new Pixel();
-  const pixels = [];
 
   game.tick.onCallbacks.push(function () {
     duration -= new Date().getTime() - createTime;
     return duration >= 0;
   });
+  const pixels = [];
 
-  game.globals.renderCallbacks.unshift(function ( world ) {
+  game.globals.renderCallbacks.unshift(function ( world, renderer ) {
 
     if (duration <= 0 || !entity.alive) {
       pixels.die = true;
@@ -29,18 +29,14 @@ module.exports = function PickupBeamFX ( entity,  _coords, _color ) {
     const head = entity.body[0];
     const offset = 3;
 
-    world.beginPath();
-    world.lineWidth = 0.5;
-    world.strokeStyle = colorPicker.setColor(color, factor).hex;
-    world.moveTo(coords[0], coords[1]);
-    world.lineTo(head[0], head[1]);
-
-    world.moveTo(coords[0], coords[1] - offset);
-    world.lineTo(coords[0] + offset, coords[1]);
-    world.lineTo(coords[0], coords[1] + offset);
-    world.lineTo(coords[0] - offset, coords[1]);
-    world.lineTo(coords[0], coords[1] - offset);
-    world.stroke();
+    renderer.drawLine(coords, head, color, factor);
+/*
+    renderer.drawLine([coords[0], coords[1] - offset], [coords[0] + offset, coords[1]], color, factor);
+    renderer.drawLine([coords[0] + offset, coords[1]], [coords[0], coords[1] + offset], color, factor);
+    renderer.drawLine([coords[0], coords[1] + offset], [coords[0] - offset, coords[1]], color, factor);
+    renderer.drawLine([coords[0] - offset, coords[1]], [coords[0], coords[1] - offset], color, factor);
+*/
+//    console.log(pixels)
 
     return pixels;
   });

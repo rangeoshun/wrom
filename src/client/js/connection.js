@@ -66,6 +66,8 @@ module.exports = class Connection {
         client.state = 'screen';
         if (connection) return;
 
+        connection.send('{"rs":1}');
+
         addEventListener('keydown', function showScores ( ev ) {
           if (ev.keyCode === 9 && !client.showScores) {
 

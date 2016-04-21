@@ -1,8 +1,13 @@
 'use strict';
+const Pixel = require('./pixel.js');
+
 module.exports = class Renderer {
+
+
+
   constructor ( client ) {
-    const tick = client.game.tick;
     const renderer = this;
+    const tick = client.game.tick;
     const globals = client.globals;
     const resolution = globals.resolution;
     const screen = globals.screen;
@@ -85,10 +90,52 @@ module.exports = class Renderer {
     _buffer.webkitImageSmoothingEnabled = false;
     _buffer.msImageSmoothingEnabled = false;
     _buffer.imageSmoothingEnabled = false;
+
 /*
     document.body.appendChild(_world_canvas);
     document.body.appendChild(_buffer_canvas);
 */
+
+    let renderedPixel = _world.createImageData(1, 1);
+    let pixelData = renderedPixel.data;
+    let tempPixel = new Pixel();
+    renderer.drawLine = function ( v1, v2, color, alphaFactor ) {
+      alphaFactor = typeof alphaFactor === 'number' ? alphaFactor : 1;
+      const x1 = v1[0];
+      const y1 = v1[1];
+      const x2 = v2[0];
+      const y2 = v2[1];
+
+      const dx =  x1 - x2;
+      const adx = Math.abs(dx);
+      const dy = y1 - y2;
+      const ady = Math.abs(dy);
+      const dim =  adx > ady ? 1 : 0;
+      const length = dim ? adx : ady;
+      let x = x1;
+      let y = y1;
+
+      const stepX = dx/length;
+      const stepY = dy/length;
+      let coords = [];
+
+      for (let i = 1; i < length + 1; i++) {
+
+        coords[0] = Math.round(x -= stepX);
+        coords[1] = Math.round(y -= stepY);
+        currentBounds = isInNormalizedBounds(coords, normBounds);
+        if (currentBounds.touched) {
+          tempPixel.setColor(color).setCoords(coords);
+          pixelData[0] = tempPixel.r;
+          pixelData[1] = tempPixel.g;
+          pixelData[2] = tempPixel.b;
+          pixelData[3] = 255 * alphaFactor;
+          //console.log(currentBounds[2])
+          _world.putImageData(renderedPixel, x, y );
+        }
+      }
+    };
+
     let self;
     let body;
     let head;
@@ -121,9 +168,6 @@ module.exports = class Renderer {
       end = [endX, endY];
       return [start, end, dimensionX, dimensionY];
     }
-
-    let renderedPixel = _world.createImageData(1, 1);
-    let pixelData = renderedPixel.data;
 
     let deleteCue = [];
     let deleteCueLength;
@@ -406,7 +450,7 @@ module.exports = class Renderer {
         normalizeBounds(getBoundCoords());
         for (let i = 0; i < callbackLength; i++) {
           callback = _renderCallbacks[i];
-          pixels = callback(_world);
+          pixels = callback(_world, renderer);
           pixelsLength = pixels.length;
 
           for (let k = 0; k < pixelsLength; k++) {
