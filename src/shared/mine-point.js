@@ -90,7 +90,7 @@ module.exports = class MinePoint extends Point {
     if (!bodyIndex) {
       player.die();
     } else {
-      enemy.drop(rest, index, body);
+      player.drop(rest, index, body);
       body.splice(index);
     }
   }
