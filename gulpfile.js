@@ -129,6 +129,12 @@ gulp.task('build-client', function () {
     ])
     .pipe(gulp.dest('build/client/css/'));
 
+  gulp
+    .src([
+      'src/client/assets/**/*'
+    ])
+    .pipe(gulp.dest('build/client/assets/'));
+
   return gulp
     .src([
       'src/shared/*',

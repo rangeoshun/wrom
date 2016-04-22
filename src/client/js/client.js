@@ -6,7 +6,7 @@ const Renderer = require('./renderer.js');
 const Setup = require('./setup.js');
 const Scores = require('./scores.js');
 const AllTime = require('./all-time-high.js');
-const Sounds = require('./sounds.js');
+//const Sounds = require('./sounds.js');
 const EventEmitter = require('events');
 
 class Client extends EventEmitter {
@@ -21,7 +21,7 @@ class Client extends EventEmitter {
 
     client.globals = Globals;
     client.connection = new Connection(client);
-    client.setup = new Setup(client);
+//    client.setup = new Setup(client);
     client.renderer = new Renderer(client);
     client.scores = new Scores(client);
     client.allTime = new AllTime(client);
