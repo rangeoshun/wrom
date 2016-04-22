@@ -21,11 +21,11 @@ class Client extends EventEmitter {
 
     client.globals = Globals;
     client.connection = new Connection(client);
-//    client.setup = new Setup(client);
+    client.setup = new Setup(client);
     client.renderer = new Renderer(client);
     client.scores = new Scores(client);
     client.allTime = new AllTime(client);
-    client.sounds = new Sounds(client);
+//    client.sounds = new Sounds(client);
     client._state = 'setup';
     client._showScores = false;
     client._message = '';
