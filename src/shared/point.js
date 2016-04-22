@@ -40,6 +40,7 @@ module.exports = class Point extends Entity {
 
   isColliding () {
     let point = this;
+    const server = point.game.server;
 
     return function ( players ) {
       const game = point.game;
@@ -53,6 +54,7 @@ module.exports = class Point extends Entity {
           point.onCollision(player);
         }
       };
+
 
       return game.server &&point.alive;
     };

@@ -94,7 +94,6 @@ module.exports = class Worm extends Entity {
     const worm = this;
     const body = worm.body;
     const game = worm.game;
-
     worm.updated = true;
     if (!worm.alive) return;
 
@@ -193,7 +192,7 @@ module.exports = class Worm extends Entity {
         callback(collision);
       }
       worm.updated = true;
-      return game.server && worm.alive;
+      return (game) ? game.server : worm.alive;
     }
   }
 
@@ -284,27 +283,29 @@ module.exports = class Worm extends Entity {
     const worm = this;
     let pixels = [];
     return function ( world, renderer ) {
-
-      if (!worm.alive) {
+      if (!worm.game) {
         pixels.die = true;
       }
 
       const body = worm.body;
       const bodyLength = worm.body.length;
       const color = worm.color;
-      let prevPart = body[0];
-      for (var i = 0; i < body.length; i++) {
-        let part = body[i];
-        let nextPart = body[i+1];
+//      let prevPart = body[0];
+      for (var i = 0; i < bodyLength; i++) {
+        /*
+        const part = body[i];
+        const nextPart = body[i + 1];
+        const resolution = worm.game.globals.resolution;
+        const distance = worm.game.getDistance(prevPart, nextPart || part);
+        const gap =  !nextPart || Math.abs(part[0] - nextPart[0]) > 0 && Math.abs(part[1] - nextPart[1]) > 0;
+        const diagonal = !nextPart || prevPart[0] !== nextPart[0] && prevPart[1] !== nextPart[1];
 
-        if (!nextPart
-          || prevPart[0] !== part[0]
-          || prevPart[1] !== part[1]) {
+        if (part && prevPart && (gap || diagonal)) {
 
-          renderer.drawLine(prevPart, part, color, 1);
-          prevPart = nextPart;
+              renderer.drawLine(prevPart, part, color, 1);
+              prevPart = part;
         }
-/*
+*/
         if (!pixels[i]) pixels.push(new Pixel());
 
         let r = worm.color[0];
@@ -323,10 +324,10 @@ module.exports = class Worm extends Entity {
         pixel[2] = g;
         pixel[3] = b;
         pixel[4] = body[i];
-*/
+
       }
 
-//      if (pixels.length > bodyLength) pixels.splice(bodyLength - 1);
+      if (pixels.length > bodyLength) pixels.splice(bodyLength - 1);
 
       return pixels;
     };

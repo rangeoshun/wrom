@@ -44,12 +44,6 @@ module.exports = class Renderer {
 
     const backgroundImg = _background.getImageData(0, 0, resolutionX, resolutionY);
 
-    const _world_canvas = document.createElement('canvas');
-    _world_canvas.width = resolutionX;
-    _world_canvas.height = resolutionY;
-    const _world = _world_canvas.getContext("2d");
-    _world.translate(0.5, 0.5);
-
     const _screen_canvas = document.createElement('canvas');
     const _screen = _screen_canvas.getContext("2d");
     _screen_canvas.width = screen[0];
@@ -58,45 +52,20 @@ module.exports = class Renderer {
 
     const _buffer_canvas = document.createElement('canvas');
     const _buffer = _buffer_canvas.getContext("2d");
-    _buffer_canvas.width = resolution[0] * 2;
-    _buffer_canvas.height = resolution[1] * 2;
-
-    const _small_buffer_canvas = document.createElement('canvas');
-    const _small_buffer = _small_buffer_canvas.getContext("2d");
-    _small_buffer_canvas.width = screen[0];
-    _small_buffer_canvas.height = screen[0];
+    _buffer_canvas.width = screen[0];
+    _buffer_canvas.height = screen[0];
 
     const _renderCallbacks = globals.renderCallbacks;
     const setupNode = document.querySelector('[id=setup]');
     const screenNode = document.querySelector('[id=screen]');
     screenNode.appendChild(_screen_canvas);
 
-    _background.mozImageSmoothingEnabled = false;
-    _background.webkitImageSmoothingEnabled = false;
-    _background.msImageSmoothingEnabled = false;
-    _background.imageSmoothingEnabled = false;
-
-    _world.mozImageSmoothingEnabled = false;
-    _world.webkitImageSmoothingEnabled = false;
-    _world.msImageSmoothingEnabled = false;
-    _world.imageSmoothingEnabled = false;
-
-    _screen.mozImageSmoothingEnabled = false;
-    _screen.webkitImageSmoothingEnabled = false;
-    _screen.msImageSmoothingEnabled = false;
-    _screen.imageSmoothingEnabled = false;
-
-    _buffer.mozImageSmoothingEnabled = false;
-    _buffer.webkitImageSmoothingEnabled = false;
-    _buffer.msImageSmoothingEnabled = false;
-    _buffer.imageSmoothingEnabled = false;
-
 /*
     document.body.appendChild(_world_canvas);
     document.body.appendChild(_buffer_canvas);
 */
 
-    let renderedPixel = _world.createImageData(1, 1);
+    let renderedPixel = _buffer.createImageData(1, 1);
     let pixelData = renderedPixel.data;
     let tempPixel = new Pixel();
     renderer.drawLine = function ( v1, v2, color, alphaFactor ) {
@@ -119,20 +88,26 @@ module.exports = class Renderer {
       const stepY = dy/length;
       let coords = [];
 
-      for (let i = 1; i < length + 1; i++) {
+/*
+      _world.putImageData(renderedPixel, x1, y1);
+      _world.putImageData(renderedPixel, x2, y2);
+*/
 
-        coords[0] = Math.round(x -= stepX);
-        coords[1] = Math.round(y -= stepY);
-        currentBounds = isInNormalizedBounds(coords, normBounds);
-        if (currentBounds.touched) {
-          tempPixel.setColor(color).setCoords(coords);
-          pixelData[0] = tempPixel.r;
-          pixelData[1] = tempPixel.g;
-          pixelData[2] = tempPixel.b;
-          pixelData[3] = 255 * alphaFactor;
-          //console.log(currentBounds[2])
-          _world.putImageData(renderedPixel, x, y );
+      for (let i = 0; i < length; i++) {
+
+        x = x1 - Math.floor(stepX * i);
+        y = y1 - Math.floor(stepY * i);
+
+        let coords = [x,y];
+        let currentBounds = isInNormalizedBounds([x,y], normBounds);
+        if (currentBounds) {
+          tempPixel
+            .setColor(color)
+            .setCoords(coords)
+            .renderTo(_buffer, currentBounds, normBounds, alphaFactor, renderedPixel);
         }
+
+        //console.log(currentBounds[2])
       }
     };
 
@@ -414,8 +389,14 @@ module.exports = class Renderer {
 
     let isInNormalizedBounds = function isInNormalizedBounds ( pixelCoords ) {
 
-      const x = pixelCoords[0];
-      const y = pixelCoords[1];
+      let x = pixelCoords[0];
+      let y = pixelCoords[1];
+
+      if (x < 0) x += resolutionX;
+      else if (x > resolutionX) x -= resolutionX;
+      if (y < 0) y += resolutionY;
+      else if (y > resolutionX) y -= resolutionY;
+
       let verdict = false;
 
       for (let i = 0; i < normBoundsLength; i++) {
@@ -442,15 +423,16 @@ module.exports = class Renderer {
     function render () {
 
       if (client.state === 'screen') {
-        _world.clearRect(0,0,resolutionX,resolutionY);
-        _world.putImageData(backgroundImg, 0, 0);
+        _buffer.clearRect(0,0, globals.screen[0], globals.screen[1]);
+//        _world.putImageData(backgroundImg, 0, 0);
         //      console.log(bounds)
 
         const callbackLength = _renderCallbacks.length;
+        let coords = [];
         normalizeBounds(getBoundCoords());
         for (let i = 0; i < callbackLength; i++) {
           callback = _renderCallbacks[i];
-          pixels = callback(_world, renderer);
+          pixels = callback(_buffer, renderer);
           pixelsLength = pixels.length;
 
           for (let k = 0; k < pixelsLength; k++) {
@@ -461,14 +443,9 @@ module.exports = class Renderer {
               x = pixel[4][0];
               y = pixel[4][1];
 
-              currentBounds = isInNormalizedBounds(pixels[k][4], normBounds);
+              currentBounds = isInNormalizedBounds(pixel[4], normBounds);
               if (currentBounds.touched) {
-                pixelData[0] = pixel.r;
-                pixelData[1] = pixel.g;
-                pixelData[2] = pixel.b;
-                pixelData[3] = 255;
-                //console.log(currentBounds[2])
-                _world.putImageData(renderedPixel, x, y );
+                pixel.renderTo(_buffer, currentBounds, normBounds, 1, renderedPixel);
               }
             }
           }
@@ -485,40 +462,9 @@ module.exports = class Renderer {
         deleteCue = [];
       }
 
-      //_buffer.clearRect(0,0,resolutionX*2,resolutionY*2);
-
-/*
-      let screenOffset;
-      if (segment0.touched) screenOffset = segment0[0];
-      else if (segment1.touched) screenOffset = segment1[0];
-      else if (segment3.touched) screenOffset = segment3[0];
-      else screenOffset = segment4[0];
-      _small_buffer.clearRect(0,0, screen[0], screen[1]);
-      _small_buffer.drawImage(_world_canvas, 0 - screenOffset[0], 0 - screenOffset[1]);
-      _small_buffer.drawImage(_world_canvas, resolutionX - screenOffset[0], 0 - screenOffset[1]);
-      _small_buffer.drawImage(_world_canvas, 0 - screenOffset[0], resolutionY - screenOffset[1]);
-      _small_buffer.drawImage(_world_canvas, resolutionX - screenOffset[0], resolutionY - screenOffset[1]);
-//      _small_buffer.drawImage(_buffer_canvas, 0 - screenOffset[0], 0 - screenOffset[1]);
-
       _screen.clearRect(0,0, screen[0], screen[1]);
-      _screen.drawImage(_small_buffer_canvas, 0, 0);
-      */
+      _screen.drawImage(_buffer_canvas, 0, 0);
 
-      for (let i = 0; i < normBoundsLength; i++) {
-        let segment = normBounds[i];
-        if (segment.touched) {
-          _screen.putImageData(
-            _world.getImageData(
-              segment[0][0],
-              segment[0][1],
-              segment[1][0],
-              segment[1][1]
-            ),
-              segment[2][0],
-              segment[2][1]
-          );
-        }
-      }
       requestAnimationFrame(render);
     }
 

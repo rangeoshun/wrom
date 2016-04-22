@@ -6,7 +6,10 @@ const colors = require('./colors.js');
 const CreateFX = require('./create-fx.js');
 const PickUpFX = require('./pickup-fx.js');
 const PickupBeamFX = require('./pickup-beam.js');
-
+/*
+const Point = require('./point.js');
+const GoldenPoint = require('./golden-point.js');
+*/
 module.exports = class Entity {
   constructor ( game ) {
     let entity = this;

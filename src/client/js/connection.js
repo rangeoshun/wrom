@@ -26,6 +26,7 @@ module.exports = class Connection {
     client.score = 0;
 
     client.game = game;
+    game.client = client;
     client.state = 'setup';
 
     client.getState = function () {
@@ -66,7 +67,7 @@ module.exports = class Connection {
         client.state = 'screen';
         if (connection) return;
 
-        connection.send('{"rs":1}');
+//        connection.send('{"rs":1}');
 
         addEventListener('keydown', function showScores ( ev ) {
           if (ev.keyCode === 9 && !client.showScores) {
@@ -254,6 +255,10 @@ module.exports = class Connection {
 
         if (pointUpdate.de) {
           foundPoint.die(pointUpdate.de);
+/*
+          let randomSoundId = Math.round(Math.random() * 7);
+          client.sounds.play(randomSoundId);
+*/
         } else {
 
           if (pointUpdate.ce) foundPoint.setCreator(pointUpdate.ce);
@@ -295,6 +300,7 @@ module.exports = class Connection {
           }
 
           foundPlayer.die();
+          //client.sounds.play(8);
 
         } else {
 

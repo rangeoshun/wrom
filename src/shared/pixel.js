@@ -16,7 +16,17 @@ module.exports = class Pixel {
       pixel[3] =  b || 0;
       pixel[4] =  coords;
     }
+
+    let screenOffset;
+    pixel.renderTo = function ( context, bounds, normBounds, alphaFactor, imageData ) {
+      imageData.data[0] = pixel.r;
+      imageData.data[1] = pixel.g;
+      imageData.data[2] = pixel.b;
+      imageData.data[3] = 255 * alphaFactor;
+      context.putImageData(imageData, pixel[4][0] - bounds[0][0] + bounds[2][0], pixel[4][1] - bounds[0][1] + bounds[2][1]);
+    };
   }
+
 
   get r () {
     let component = this[1];
@@ -76,5 +86,4 @@ module.exports = class Pixel {
   isEmpty ( pixel ) {
     return !this[0];
   }
-
 };

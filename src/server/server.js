@@ -83,7 +83,7 @@ wss.on('request', function ( request ) {
   Globals.players.push(player);
   let worm = game.addPlayer();
   player.manifest(worm);
-  worm.die();
+//  worm.die();
 
   player.setConnection(connection);
 

@@ -20,10 +20,10 @@ module.exports = class GhostPoint extends Point {
     const body = player.body;
     const game = player.game;
 
-    point.die(player.id);
-    if (game.server) {
+    if (game && game.server) {
       player.setAbility(new GhostAbility(player));
     }
+    point.die(player.id);
   }
 
   render () {

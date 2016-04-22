@@ -16,10 +16,10 @@ module.exports = class PortalPoint extends Point {
     const point = this;
     const game = player.game;
 
-    point.die(player.id);
-    if (game.server) {
+    if (game && game.server) {
       player.setAbility(new PortalAbility(player));
     }
+    point.die(player.id);
   }
 
   render () {

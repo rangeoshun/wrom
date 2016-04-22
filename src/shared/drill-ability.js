@@ -7,7 +7,7 @@ module.exports = function DrillAbility ( player ) {
   player.setMessage(message);
 
   return function () {
-//    new InvisibleFX(player);
+
     player.setDrill(1);
 
     player.setAbility(null);
@@ -24,7 +24,7 @@ module.exports = function DrillAbility ( player ) {
         body.forEach(function ( part, index ) {
           if ((!index && enemy.id === player.id) || enemy.ghost) return;
 
-          if (part[0] === head[0]
+          if (player.body.length && part[0] === head[0]
             && part[1] === head[1]) {
 
             console.log(`${enemy.constructor.name} ${enemy.id} is thorn into half by ${player.constructor.name} ${player.id}`);

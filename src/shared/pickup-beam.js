@@ -4,7 +4,7 @@ const colors = require('./colors.js');
 
 module.exports = function PickupBeamFX ( entity,  _coords, _color ) {
   const game = entity.game;
-  if (game.server) return;
+  if (!game) return;
 
   const createTime = new Date().getTime();
   let duration = 1000;
@@ -30,12 +30,12 @@ module.exports = function PickupBeamFX ( entity,  _coords, _color ) {
     const offset = 3;
 
     renderer.drawLine(coords, head, color, factor);
-/*
+
     renderer.drawLine([coords[0], coords[1] - offset], [coords[0] + offset, coords[1]], color, factor);
     renderer.drawLine([coords[0] + offset, coords[1]], [coords[0], coords[1] + offset], color, factor);
     renderer.drawLine([coords[0], coords[1] + offset], [coords[0] - offset, coords[1]], color, factor);
     renderer.drawLine([coords[0] - offset, coords[1]], [coords[0], coords[1] - offset], color, factor);
-*/
+
 //    console.log(pixels)
 
     return pixels;
