@@ -275,8 +275,16 @@ module.exports = class Game {
     if (strict) {
       return (v1[0] === v2[0] && v1[1] === v2[1]);
     } else {
+      const resolution = game.globals.resolution;
+
       const distance = Math.max((player && player.body) ? Math.sqrt(player.body.length / 4) + 1 : 4, 4);
-      return this.getDistance(v1, v2) < distance;
+      const verdict = this.getDistance(v1, v2) < distance
+        || this.getDistance([v1[0] - resolution[0], v1[1]], v2) < distance
+        || this.getDistance([v1[0] + resolution[0], v1[1]], v2) < distance
+        || this.getDistance([v1[0], v1[1] - resolution[1]], v2) < distance
+        || this.getDistance([v1[0], v1[1] + resolution[1]], v2) < distance;
+
+      return verdict;
     }
   }
 

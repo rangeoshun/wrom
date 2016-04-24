@@ -104,7 +104,7 @@ module.exports = class Renderer {
           tempPixel
             .setColor(color)
             .setCoords(coords)
-            .renderTo(_buffer, currentBounds, normBounds, alphaFactor, renderedPixel);
+            .renderTo(_buffer, currentBounds, alphaFactor, renderedPixel);
         }
 
         //console.log(currentBounds[2])
@@ -395,22 +395,20 @@ module.exports = class Renderer {
       if (x < 0) x += resolutionX;
       else if (x > resolutionX) x -= resolutionX;
       if (y < 0) y += resolutionY;
-      else if (y > resolutionX) y -= resolutionY;
+      else if (y > resolutionY) y -= resolutionY;
 
       let verdict = false;
 
       for (let i = 0; i < normBoundsLength; i++) {
         let bounds = normBounds[i];
         if (bounds.touched) {
-/*
-        _world.strokeStyle = '#222';
-        _world.strokeRect(bounds[0][0],bounds[0][1],bounds[1][0] - bounds[0][0],bounds[1][1] - bounds[0][1]);
-*/
-        if (x >= bounds[0][0]
-          && x <= bounds[1][0]
-          && y >= bounds[0][1]
-          && y <= bounds[1][1]) {
 
+          if (x >= bounds[0][0]
+            && x <= bounds[1][0]
+            && y >= bounds[0][1]
+            && y <= bounds[1][1]) {
+
+            bounds[3] = [x, y];
             return bounds;
           }
         }
@@ -426,6 +424,12 @@ module.exports = class Renderer {
         _buffer.clearRect(0,0, globals.screen[0], globals.screen[1]);
 //        _world.putImageData(backgroundImg, 0, 0);
         //      console.log(bounds)
+        /*
+        renderer.drawLine([0,0],[resolutionX,0],[0.1,0.1,0.1]);
+        renderer.drawLine([resolutionX,0],[resolutionX,resolutionY],[0.1,0.1,0.1]);
+        renderer.drawLine([resolutionX,resolutionY],[0,resolutionY],[0.1,0.1,0.1]);
+        renderer.drawLine([0,resolutionY],[0,0],[0.1,0.1,0.1]);
+        */
 
         const callbackLength = _renderCallbacks.length;
         let coords = [];
@@ -445,7 +449,7 @@ module.exports = class Renderer {
 
               currentBounds = isInNormalizedBounds(pixel[4], normBounds);
               if (currentBounds.touched) {
-                pixel.renderTo(_buffer, currentBounds, normBounds, 1, renderedPixel);
+                pixel.renderTo(_buffer, currentBounds, 1, renderedPixel);
               }
             }
           }
