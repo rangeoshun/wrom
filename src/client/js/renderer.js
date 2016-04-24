@@ -2,9 +2,6 @@
 const Pixel = require('./pixel.js');
 
 module.exports = class Renderer {
-
-
-
   constructor ( client ) {
     const renderer = this;
     const tick = client.game.tick;
@@ -46,14 +43,14 @@ module.exports = class Renderer {
 
     const _screen_canvas = document.createElement('canvas');
     const _screen = _screen_canvas.getContext("2d");
-    _screen_canvas.width = screen[0];
-    _screen_canvas.height = screen[1];
+    _screen_canvas.width = globals.screen[0];
+    _screen_canvas.height = globals.screen[1];
     _screen_canvas.className = 'screen';
 
     const _buffer_canvas = document.createElement('canvas');
     const _buffer = _buffer_canvas.getContext("2d");
-    _buffer_canvas.width = screen[0];
-    _buffer_canvas.height = screen[0];
+    _buffer_canvas.width = globals.screen[0];
+    _buffer_canvas.height = globals.screen[0];
 
     const _renderCallbacks = globals.renderCallbacks;
     const setupNode = document.querySelector('[id=setup]');
@@ -386,6 +383,7 @@ module.exports = class Renderer {
         }
       }
     }
+    renderer.normalizeBounds = normalizeBounds;
 
     let isInNormalizedBounds = function isInNormalizedBounds ( pixelCoords ) {
 
@@ -416,6 +414,7 @@ module.exports = class Renderer {
 
       return false;
     }
+    renderer.isInNormalizedBounds = isInNormalizedBounds;
 
     let currentBounds;
     function render () {
@@ -434,39 +433,47 @@ module.exports = class Renderer {
         const callbackLength = _renderCallbacks.length;
         let coords = [];
         normalizeBounds(getBoundCoords());
-        for (let i = 0; i < callbackLength; i++) {
+        for (let i = 0; i < _renderCallbacks.length;) {
           callback = _renderCallbacks[i];
-          pixels = callback(_buffer, renderer);
-          pixelsLength = pixels.length;
 
-          for (let k = 0; k < pixelsLength; k++) {
+          if (typeof callback !== 'function') {
+            _renderCallbacks.splice(i, 1);
+          } else {
 
-            pixel = pixels[k];
-            if (pixel[4]) {
+            i++;
 
-              x = pixel[4][0];
-              y = pixel[4][1];
+            pixels = callback(_buffer, renderer);
+            pixelsLength = pixels.length;
 
-              currentBounds = isInNormalizedBounds(pixel[4], normBounds);
-              if (currentBounds.touched) {
-                pixel.renderTo(_buffer, currentBounds, 1, renderedPixel);
+            for (let k = 0; k < pixelsLength; k++) {
+
+              pixel = pixels[k];
+              if (pixel[4]) {
+
+                x = pixel[4][0];
+                y = pixel[4][1];
+
+                currentBounds = isInNormalizedBounds(pixel[4], normBounds);
+                if (currentBounds.touched) {
+                  pixel.renderTo(_buffer, currentBounds, 1, renderedPixel);
+                }
               }
             }
+            if (pixels.die) {
+              deleteCue.push(callback);
+            }
+            pixels = null;
           }
-          if (pixels.die) {
-            deleteCue.push(callback);
-          }
-          pixels = null;
-        }
 
-        deleteCueLength = deleteCue.length;
-        for (let d = 0; d < deleteCueLength; d++) {
-          _renderCallbacks.splice(_renderCallbacks.indexOf(deleteCue[d]), 1);
+          deleteCueLength = deleteCue.length;
+          for (let d = 0; d < deleteCueLength; d++) {
+            _renderCallbacks[_renderCallbacks.indexOf(deleteCue[d])] = null;
+          }
+          deleteCue.splice(0);
         }
-        deleteCue = [];
       }
 
-      _screen.clearRect(0,0, screen[0], screen[1]);
+      _screen.clearRect(0,0, globals.screen[0], globals.screen[1]);
       _screen.drawImage(_buffer_canvas, 0, 0);
 
       requestAnimationFrame(render);

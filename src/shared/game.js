@@ -277,7 +277,7 @@ module.exports = class Game {
     } else {
       const resolution = game.globals.resolution;
 
-      const distance = Math.max((player && player.body) ? Math.sqrt(player.body.length / 4) + 1 : 4, 4);
+      const distance = player ? player.getPickDistance() : 4;
       const verdict = this.getDistance(v1, v2) < distance
         || this.getDistance([v1[0] - resolution[0], v1[1]], v2) < distance
         || this.getDistance([v1[0] + resolution[0], v1[1]], v2) < distance

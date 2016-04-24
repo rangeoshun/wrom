@@ -210,6 +210,11 @@ module.exports = class Worm extends Entity {
     worm.directionCue.push(direction);
   }
 
+  getPickDistance () {
+    const player = this;
+    return Math.max((player && player.body.length) ? Math.sqrt(player.body.length / 4) + 1 : 4, 4);
+  }
+
   grow ( by ) {
     const worm = this;
     let body = worm.body;
@@ -283,7 +288,7 @@ module.exports = class Worm extends Entity {
     const worm = this;
     let pixels = [];
     return function ( world, renderer ) {
-      if (!worm.game) {
+      if (!worm.game || !worm.alive) {
         pixels.die = true;
       }
 
