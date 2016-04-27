@@ -61,6 +61,10 @@ module.exports = class Connection {
 
     WebSocket = WebSocket || MozWebSocket;
     connection = new WebSocket(`ws://${location.hostname}:${location.port}`);
+
+    onbeforeunload = function () {
+        connection.close();
+    };
     connection.onopen = function () {
 
       client.on('goPlay', function () {
@@ -205,10 +209,7 @@ module.exports = class Connection {
     let foundPlayer;
     function handleStateupdate (message) {
 
-      game.ditchTheDead();
-
       update = JSON.parse(message.data);
-      connection.send(`{"t":${update.t}}`);
 
       client.emit('update', update.sc);
       if (update.ath) client.emit('allTimeUpdate', update.ath);
@@ -319,12 +320,12 @@ module.exports = class Connection {
 
             let diff = playerUpdate.bdln - foundPlayer.body.length;
             if (diff) foundPlayer.grow(diff);
-
-            return false;
           }
+
         }
       }
-//      game.tick.step();
+      connection.send(`{"t":${update.t}}`);
+      game.ditchTheDead();
     }
   }
 }

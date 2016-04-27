@@ -98,7 +98,7 @@ module.exports = class Worm extends Entity {
     if (!worm.alive) return;
 
     worm.drop(body.length, 0, body);
-    body.splice(0);
+    body.splice(1);
     worm.setMessage('Bad luck... Press [SPACE] to respawn!');
     worm.alive = false;
     if (game.server && game.onDieCallback) game.onDieCallback(worm);
@@ -242,7 +242,7 @@ module.exports = class Worm extends Entity {
     let doubleTick = 1;
     return function () {
 
-      if (!worm.alive) return;
+      if (!worm.alive) return false;
       if (!doubleTick) {
         doubleTick++;
         return;
@@ -288,7 +288,7 @@ module.exports = class Worm extends Entity {
     const worm = this;
     let pixels = [];
     return function ( world, renderer ) {
-      if (!worm.game || !worm.alive) {
+      if (!worm.alive) {
         pixels.die = true;
       }
 

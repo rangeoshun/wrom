@@ -121,13 +121,10 @@ module.exports = class Renderer {
     let dimensionX;
     let start;
     let end;
-    let backupHead = [0,0];
-    let backupBody = [backupHead];
     let getBoundCoords = function getBoundCoords () {
       self = globals.self;
-      body = self.body || backupBody;
-      head = body[0] || backupHead;
-      backupHead = head;
+      body = self.body;
+      head = body[0];
       scaleY = globals.screen[1] / 2;
       scaleX = Math.round(scaleY * 1.6);
       startY = head[1] - scaleY;
