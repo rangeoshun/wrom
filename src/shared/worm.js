@@ -106,8 +106,8 @@ module.exports = class Worm extends Entity {
 
   spawn () {
     const worm = this;
-    const game = worm.game;
-    const globals = game.globals;
+    const game = worm.game || {};
+    const globals = game.globals || {};
 
     let dirX = Math.round(Math.random() * 2) - 1;
     let dirY = (dirX) ? 0 : (Math.round(Math.random())) ? -1 : 1;
@@ -126,7 +126,7 @@ module.exports = class Worm extends Entity {
     }
 
     worm.isColliding(function ( collision ) {
-      if (collision) {
+      if (collision || !worm.game) {
 
         console.log(`${worm.constructor.name} ${worm.player ? worm.player.name : worm.id} is dying to respawn`);
         worm.spawn();

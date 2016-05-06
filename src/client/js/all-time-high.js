@@ -27,8 +27,11 @@ module.exports = class AllTime {
       });
 
       let tempInner = header;
+      let scoresLength = scores.length;
+      let score;
 
-      for (let score of scores) {
+      for (var i = 0; i < scoresLength; i++) {
+        score =  scores[i];
         tempInner += `<tr>
                         <td>${score.place}</td>
                         <td class="color: ${score.color};">${score.name}</td>

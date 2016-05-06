@@ -59,8 +59,7 @@ module.exports = class Connection {
       });
     });
 
-    WebSocket = WebSocket || MozWebSocket;
-    connection = new WebSocket(`ws://${location.hostname}:${location.port}`);
+    connection = new WebSocket(`ws://${location.hostname}`);
 
     onbeforeunload = function () {
         connection.close();
