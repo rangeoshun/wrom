@@ -98,7 +98,36 @@ module.exports = class Connection {
         }, true);
       });
 
-      addEventListener('keydown', function ( ev ) {
+      const dpad = document.getElementById('dpad');
+      const start = document.getElementById('start');
+      const use = document.getElementById('use');
+
+      if (!client.mobile.isMobile) {
+        dpad.parentNode.removeChild(dpad);
+        start.parentNode.removeChild(start);
+        use.parentNode.removeChild(use);
+      }
+
+      dpad.addEventListener('touchstart', touchInput, true);
+      start.addEventListener('touchstart', touchInput, true);
+      use.addEventListener('touchstart', touchInput, true);
+
+      let direction;
+      addEventListener('keydown', sendInput);
+
+      function touchInput ( ev ) {
+        ev.preventDefault();
+        let currentDirection = parseInt(ev.target.dataset.key);
+        sendInput({
+          preventDefault: function () {},
+          keyCode: currentDirection
+        });
+      }
+
+      function sendInput ( ev ) {
+
+console.log(ev.keyCode)
+
         let code = ev.keyCode;
         let direction;
         let respawn = 0;
@@ -143,6 +172,9 @@ module.exports = class Connection {
           case 27:
           ev.preventDefault();
 
+            if (client.mobile.toggleFullScreen)
+              client.mobile.toggleFullScreen();
+
             client.state = client.state === 'screen' ? 'setup' : 'screen';
 
             if (client.state === 'setup') {
@@ -180,7 +212,7 @@ module.exports = class Connection {
         }
 
         if (direction || respawn || ability) connection.send(JSON.stringify(message));
-      });
+      }
 
       connection.send(JSON.stringify({
         nm: client.name,
@@ -256,10 +288,14 @@ module.exports = class Connection {
 
         if (pointUpdate.de) {
           foundPoint.die(pointUpdate.de);
-/*
-          let randomSoundId = Math.round(Math.random() * 7);
+
+          let randomSoundId = Math.round(Math.random() * 3);
+          if (foundPoint.type !== 'p') {
+            randomSoundId += 4;
+          }
+
           client.sounds.play(randomSoundId);
-*/
+
         } else {
 
           if (pointUpdate.ce) foundPoint.setCreator(pointUpdate.ce);
@@ -301,7 +337,7 @@ module.exports = class Connection {
           }
 
           foundPlayer.die();
-          //client.sounds.play(8);
+          client.sounds.play(8);
 
         } else {
 

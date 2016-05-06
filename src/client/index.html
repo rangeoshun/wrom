@@ -4,15 +4,12 @@
   <title>WROM</title>
   <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
   <meta content="utf-8" http-equiv="encoding" />
+  <meta name="viewport" content="width=240, initial-scale=1, user-scalable=no" />
   <link rel="stylesheet" type="text/css" href="css/fonts/c64fonts.css" />
   <link rel="stylesheet" type="text/css" href="css/styles.css" />
 </head>
 <body>
   <div id="main" class="setup">
-    <div class="status">
-      <span class="message"></span>
-      <span class="score"></span>
-    </div>
     <div id="setup">
       <div class="setup-content">
         <h1>WROM<sub>alpha</sub></h1>
@@ -33,12 +30,32 @@
         </div>
       </div>
     </div>
-    <div id="screen"></div>
-    <div id="scores">
-      HIGH SCORES
-      <table>
+    <div id="dpad">
+      <button id="up" data-key="38">
+      </button>
+      <button id="right" data-key="39">
+      </button>
+      <button id="left" data-key="37">
+      </button>
+      <button id="down" data-key="40">
+      </button>
+    </div>
+    <button id="start" data-key="27">
+    </button>
+    <button id="use" data-key="32">
+      USE
+    </button>
+    <div id="screen">
+      <div id="scores">
+        HIGH SCORES
+        <table>
 
-      </table>
+        </table>
+      </div>
+    </div>
+    <div class="status">
+      <span class="message"></span>
+      <span class="score"></span>
     </div>
   </div>
   <div class="welcome">

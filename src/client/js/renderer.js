@@ -50,7 +50,7 @@ module.exports = class Renderer {
     const _buffer_canvas = document.createElement('canvas');
     const _buffer = _buffer_canvas.getContext("2d");
     _buffer_canvas.width = globals.screen[0];
-    _buffer_canvas.height = globals.screen[0];
+    _buffer_canvas.height = globals.screen[1];
 
     const _renderCallbacks = globals.renderCallbacks;
     const setupNode = document.querySelector('[id=setup]');
@@ -125,8 +125,8 @@ module.exports = class Renderer {
       self = globals.self;
       body = self.body;
       head = body[0];
+      scaleX = globals.screen[0] / 2;
       scaleY = globals.screen[1] / 2;
-      scaleX = Math.round(scaleY * 1.6);
       startY = head[1] - scaleY;
       endY = head[1] + scaleY;
       dimensionY = endY - startY;

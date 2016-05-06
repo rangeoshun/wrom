@@ -2,9 +2,12 @@ body {
   width: 320px;
   margin: 0 auto;
   position: relative;
-  transform-origin: 50% 0;
-  -moz-transform: scale(3);
+  transform-origin: 50% 0%;
   transform: scale(3);
+}
+
+html {
+  background-color: #646464;
 }
 
 body, body div, body label, body input, body button {
@@ -33,27 +36,32 @@ label {
 div.screen, div.setup {
   margin-top: 5px;
   -webkit-transform-style: preserve-3d;
-  transform: rotateY(180deg);
   transform-style: preserve-3d;
-  transition: all 0.3s ease-out;
+  //transition: all 0.3s ease-out;
   position: relative;
   margin: 0 auto;
   width: 320px;
   height: 200px;
 }
 
-div.setup {
-  transform: rotateY(180deg);
+div[id=setup] {
+  display: none;
 }
 
-div.screen {
-  transform: rotateY(0deg);
+div[id=screen] {
+  display: none;
 }
 
 div.status {
+  display: none;
+  z-index: 9;
   padding-top: 5px;
   height: 9px;
   width: 100%;
+  position: absolute;
+  padding: 5px;
+  box-sizing: border-box;
+  background-color: transparent;
 }
 
 div.status > input {
@@ -67,17 +75,26 @@ div.status > .score {
   float: right;
 }
 
+div.setup div[id=setup] {
+  display: block;
+}
+
+div.screen div[id=screen] {
+  display: block;
+}
+
+
 div[id=setup], div[id=screen], div[id=scores] {
   backface-visibility: hidden;
   background-color: black;
   position: absolute;
   width: 320px;
   height: 200px;
-  transform: rotateY(0);
 }
 
 div[id=scores] {
-  margin: 5px;
+  display: none;
+  margin: 15px 5px 5px 5px;
 }
 
 div[id=scores] tr td {
@@ -86,14 +103,6 @@ div[id=scores] tr td {
 
 div[id=scores], div[id=scores] * {
   background-color: transparent;
-}
-
-div[id=setup] {
-  transform: rotateY(180deg);
-}
-
-.setup .status {
-  backface-visibility: hidden;
 }
 
 div.welcome {
@@ -166,4 +175,81 @@ input, #colors {
 
 .color-sample.selected {
   border: 1px solid black;
+}
+
+div#dpad {
+  background-color: transparent;
+  position: fixed;
+  width: 48px;
+  height: 48px;
+  left: 10px;
+  bottom: 10px;
+  z-index: 10;
+
+  transform-origin: 50% 50%;
+  transform: rotateZ(45deg);
+  overflow: hidden;
+  display: none;
+  margin: 0;
+  padding: 0;
+}
+
+div#dpad button {
+  border-radius: 50%;
+  width: 50%;
+  height: 50%;
+  box-sizing: border-box;
+  float: left;
+  background-color: transparent;
+  margin: 0;
+  padding: 0;
+}
+
+button#start, button#use  {
+  display: none;
+  background-color: transparent;
+  position: fixed;
+  width: 32px;
+  height: 32px;
+  box-sizing: border-box;
+  float: left;
+  margin: 0;
+  padding: 0;
+  z-index: 10;
+}
+
+button#start {
+  width: 7px;
+  height: 17px;
+  right: 50%;
+  bottom: 5px;
+  transform: rotateZ(45deg);
+}
+
+button#use {
+  border-radius: 50%;
+  right: 5px;
+  bottom: 5px;
+}
+
+body {
+  margin: 0 auto;
+}
+
+div[id=main],
+div[id=setup],
+div[id=screen],
+div[id=scores],
+canvas {
+  z-index: 5;
+  width: inherit;
+  height: inherit;
+}
+
+div.screen button#start,
+div.screen button#use,
+div.screen div#dpad,
+div.screen div.status,
+div.screen div#scores {
+  display: block;
 }

@@ -11,13 +11,13 @@ module.exports = class Sounds {
       'sin6',
       'sin7',
       'sin8',
-      'wormcrash'
+      'crash'
     ];
 
     const soundPool = soundNames.map(function ( sound, index ) {
       let audio = new Audio(`./assets/sounds/${sound}.mp3`);
       audio.volume = 0.2
-      return audio; 
+      return audio;
     });
 
     let currentSound;
@@ -25,7 +25,7 @@ module.exports = class Sounds {
       currentSound = soundPool[soundID];
       currentSound.pause();
       currentSound.currentTime = 0;
-      currentSound.play();
+      //currentSound.play();
     };
   }
 }

@@ -176,7 +176,7 @@ module.exports = class Worm extends Entity {
               const part = body[j];
 
               if (part && game.areColliding(worm.coords, part, true)) {
-                console.log(`${worm.constructor.name} ${worm.player ? worm.player.name : worm.id} is colliding with ${worm.constructor.name} ${player.id}`);
+                console.log(`${worm.constructor.name} ${worm.id} is colliding with ${worm.constructor.name} ${player.id}`);
 
                 worm.die();
 

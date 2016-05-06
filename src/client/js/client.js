@@ -1,12 +1,16 @@
 "use strict";
+
+
+
 const Globals = require('./globals.js');
 const Pixel = require('./pixel.js');
 const Connection = require('./connection.js');
 const Renderer = require('./renderer.js');
+const Mobile = require('./mobile.js');
 const Setup = require('./setup.js');
 const Scores = require('./scores.js');
 const AllTime = require('./all-time-high.js');
-//const Sounds = require('./sounds.js');
+const Sounds = require('./sounds.js');
 const EventEmitter = require('events');
 
 class Client extends EventEmitter {
@@ -20,12 +24,14 @@ class Client extends EventEmitter {
     client.messageHUD = document.querySelector('.status > .message');
 
     client.globals = Globals;
+//    client.globals.screen = document.body.screen;
     client.connection = new Connection(client);
     client.setup = new Setup(client);
     client.renderer = new Renderer(client);
+    client.mobile = new Mobile(client);
     client.scores = new Scores(client);
     client.allTime = new AllTime(client);
-//    client.sounds = new Sounds(client);
+    client.sounds = new Sounds(client);
     client._state = 'setup';
     client._showScores = false;
     client._message = '';
@@ -39,9 +45,9 @@ class Client extends EventEmitter {
   }
 
   set showScores ( state ) {
+    this._showScores = !!state;
     if (!state) this.scoreBoard.style.display = 'none';
     else this.scoreBoard.style.display = 'block';
-    this._showScores = !!state;
   }
 
   get state () {
