@@ -57,6 +57,13 @@ module.exports = class Renderer {
     const screenNode = document.querySelector('[id=screen]');
     screenNode.appendChild(_screen_canvas);
 
+    renderer.distroy = function distroy ()  {
+      document.removeChild(_background_canvas);
+      document.removeChild(_screen_canvas);
+      document.removeChild(_buffer_canvas);
+      renderer.destroyed = true;
+    };
+
 /*
     document.body.appendChild(_world_canvas);
     document.body.appendChild(_buffer_canvas);
@@ -473,7 +480,9 @@ module.exports = class Renderer {
       _screen.clearRect(0,0, globals.screen[0], globals.screen[1]);
       _screen.drawImage(_buffer_canvas, 0, 0);
 
-      requestAnimationFrame(render);
+      if (!renderer.destroyed) {
+        requestAnimationFrame(render);
+      }
     }
 
   requestAnimationFrame(render);

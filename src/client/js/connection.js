@@ -111,6 +111,14 @@ module.exports = class Connection {
       start.addEventListener('touchstart', touchInput, true);
       use.addEventListener('touchstart', touchInput, true);
 
+      dpad.addEventListener('MSPointerDown', touchInput, true);
+      start.addEventListener('MSPointerDown', touchInput, true);
+      use.addEventListener('MSPointerDown', touchInput, true);
+
+      dpad.addEventListener('pointerdown', touchInput, true);
+      start.addEventListener('pointerdown', touchInput, true);
+      use.addEventListener('pointerdown', touchInput, true);
+
       let direction;
       addEventListener('keydown', sendInput);
 
