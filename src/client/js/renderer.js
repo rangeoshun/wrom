@@ -57,10 +57,8 @@ module.exports = class Renderer {
     const screenNode = document.querySelector('[id=screen]');
     screenNode.appendChild(_screen_canvas);
 
-    renderer.distroy = function distroy ()  {
-      document.removeChild(_background_canvas);
-      document.removeChild(_screen_canvas);
-      document.removeChild(_buffer_canvas);
+    renderer.destroy = function destroy ()  {
+      screenNode.removeChild(_screen_canvas);
       renderer.destroyed = true;
     };
 

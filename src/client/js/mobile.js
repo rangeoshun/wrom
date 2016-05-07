@@ -31,6 +31,7 @@ module.exports = class Mobile {
 
         document.body.style.width = client.globals.screen[0] + 'px';
         document.body.style.height = client.globals.screen[1] + 'px';
+        client.renderer.destroy();
         delete client.renderer;
         screenContainer.removeChild(screenContainer.lastChild);
         document.body.style.transform = `scale(${big / 240})`;
