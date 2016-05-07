@@ -33,7 +33,7 @@ module.exports = class Mobile {
         document.body.style.height = client.globals.screen[1] + 'px';
         client.renderer.destroy();
         delete client.renderer;
-        screenContainer.removeChild(screenContainer.lastChild);
+//        screenContainer.removeChild(screenContainer.lastChild);
         document.body.style.transform = `scale(${big / 240})`;
         client.renderer = new Renderer(client);
       }
