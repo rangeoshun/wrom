@@ -33,7 +33,7 @@ module.exports = class Mobile {
         document.body.style.height = client.globals.screen[1] + 'px';
         client.renderer.destroy();
         delete client.renderer;
-//        screenContainer.removeChild(screenContainer.lastChild);
+
         document.body.style.transform = `scale(${big / 240})`;
         client.renderer = new Renderer(client);
       }
@@ -42,28 +42,27 @@ module.exports = class Mobile {
       addEventListener('resize', setWindowSize);
       addEventListener('scroll', preventIfOnScreen);
       addEventListener('touchmove', preventIfOnScreen);
-      addEventListener('MSPointDown', preventIfOnScreen);
+      addEventListener('MSPointerDown', preventIfOnScreen);
       addEventListener('pointerdown', preventIfOnScreen);
 
       function preventIfOnScreen ( ev ) {
         console.log(client.state);
         if (client.state == 'screen') {
-//          ev.preventDefault();
+          document.getElementById('main').style.position = 'fixed';
+          ev.preventDefault();
+        } else {
+          document.getElementById('main').style.position = 'relative';
         }
       }
 
       document.body.screen = [window.screen.availWidth/10, window.screen.availHeight/10];
-      window.scrollTo(0, 1);
-
-      document.body.addEventListener('touchmove', function ( event ) {
-        event.preventDefault();
-        window.scrollTo(0, 1);
-      }, true);
 
       var goPlay = document.getElementById("goPlay");
-      goPlay.addEventListener("click", function() {
+      goPlay.addEventListener("click", maximize, true);
+
+      function maximize () {
         toggleFullScreen(true);
-      }, false);
+      }
 
       this.toggleFullScreen = toggleFullScreen;
       function toggleFullScreen ( full ) {
@@ -73,11 +72,13 @@ module.exports = class Mobile {
         var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
         var cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
 
-        if(full) {
+        if (full) {
           requestFullScreen.call(docEl);
         } else {
           cancelFullScreen.call(doc);
         }
+
+        window.scrollTo(0, 1);
 
         setWindowSize();
       }

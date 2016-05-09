@@ -169,7 +169,7 @@ module.exports = class Connection {
           break;
           case 32:
             ev.preventDefault();
-            client.toggleFullScreen(false);
+//            client.toggleFullScreen(false);
             respawn = !globals.self.alive ? 1 : 0;
           break;
           case 9:
