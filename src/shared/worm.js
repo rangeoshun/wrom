@@ -79,12 +79,9 @@ module.exports = class Worm extends Entity {
     } else if (AbilityType === PickupMineAbility) {
       index = 4;
     }
-    console.log(AbilityType, ability, add, index)
-    console.log(worm.abilitiesMessage);
 
     worm.abilities[index] = add ? new AbilityType(worm) : false;
     worm.abilitiesMessage[index] = `[${add ? index + 1 : ' '}]`;
-
     worm.updated = worm.abilitiesUpdated = true;
   }
 

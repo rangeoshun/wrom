@@ -40,7 +40,17 @@ module.exports = class Mobile {
 
       addEventListener('orientationchange', setWindowSize);
       addEventListener('resize', setWindowSize);
-      addEventListener('scroll', function ( ev ) {ev.preventDefault();});
+      addEventListener('scroll', preventIfOnScreen);
+      addEventListener('touchmove', preventIfOnScreen);
+      addEventListener('MSPointDown', preventIfOnScreen);
+      addEventListener('pointerdown', preventIfOnScreen);
+
+      function preventIfOnScreen ( ev ) {
+        console.log(client.state);
+        if (client.state == 'screen') {
+//          ev.preventDefault();
+        }
+      }
 
       document.body.screen = [window.screen.availWidth/10, window.screen.availHeight/10];
       window.scrollTo(0, 1);
@@ -52,25 +62,24 @@ module.exports = class Mobile {
 
       var goPlay = document.getElementById("goPlay");
       goPlay.addEventListener("click", function() {
-        toggleFullScreen();
+        toggleFullScreen(true);
       }, false);
+
       this.toggleFullScreen = toggleFullScreen;
-      function toggleFullScreen() {
+      function toggleFullScreen ( full ) {
 
         var doc = window.document;
         var docEl = doc.documentElement;
-
-        setWindowSize();
-
         var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
         var cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
 
-        if(!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
+        if(full) {
           requestFullScreen.call(docEl);
-        }
-        else {
+        } else {
           cancelFullScreen.call(doc);
         }
+
+        setWindowSize();
       }
     }
   }

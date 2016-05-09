@@ -136,9 +136,6 @@ module.exports = class Connection {
       }
 
       function sendInput ( ev ) {
-
-console.log(ev.keyCode)
-
         let code = ev.keyCode;
         let direction;
         let respawn = 0;
@@ -172,6 +169,7 @@ console.log(ev.keyCode)
           break;
           case 32:
             ev.preventDefault();
+            client.toggleFullScreen(false);
             respawn = !globals.self.alive ? 1 : 0;
           break;
           case 9:
