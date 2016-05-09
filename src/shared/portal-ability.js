@@ -43,47 +43,47 @@ module.exports = function PortalAbility ( player ) {
 
     portal1.pair = portal0;
     portal1.setColor(colors.cyan);
-
     let countDown = setInterval(function () {
       duration--;
-      player.setMessage(`You'have portal open for ${duration} seconds..`);
+    },1000);
+
+    game.tick.onCallbacks.push(function ( players ) {
+      if (player && player.alive) {
+        player.setMessage(`You'have portal open for ${duration} seconds..`);
+      }
 
       if (!duration) {
         player.setMessage('');
         clearInterval(countDown);
 
-        game.tick.onCallbacks.push(function ( players ) {
+        players.forEach(function ( player ) {
+          const body = player.body;
+          const length = body.length;
 
-          players.forEach(function ( player ) {
-            const body = player.body;
-            const length = body.length;
+          body.forEach(function ( part, index ) {
+            const distance1 = game.getDistance(part, portal0.coords);
+            if (distance1 < 5) {
 
-            body.forEach(function ( part, index ) {
-              const distance1 = game.getDistance(part, portal0.coords);
-              if (distance1 < 5) {
+              console.log(`${player.constructor.name} ${player.id} is thorn into half by ${portal1.constructor.name} ${portal1.id}`);
+              const rest = length - index;
 
-                console.log(`${player.constructor.name} ${player.id} is thorn into half by ${portal1.constructor.name} ${portal1.id}`);
-                const rest = length - index;
-
-                if (!index) {
-                  player.die();
-                } else {
-                  player.drop(rest, index, body);
-                  body.splice(index);
-                }
-
-                if (scorer && player.id !== scorer.id) scorer.addScore(rest * 10);
+              if (!index) {
+                player.die();
+              } else {
+                player.drop(rest, index, body);
+                body.splice(index);
               }
-            });
 
-            portal0.die(1);
-            portal1.die(1);
+              if (scorer && player.id !== scorer.id) scorer.addScore(rest * 10);
+            }
           });
 
-          return false;
+          portal0.die(1);
+          portal1.die(1);
         });
-
       }
-    },1000);
+
+      return duration > 0 || player.alive;
+    });
   };
 };

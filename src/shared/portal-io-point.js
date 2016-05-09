@@ -40,7 +40,7 @@ module.exports = class PortalIOPoint extends Point {
         }
       });
 
-      return game.server &&point.alive;
+      return game.server && point.alive;
     };
   }
 };
