@@ -21,7 +21,7 @@ module.exports = class GhostPoint extends Point {
     const game = player.game;
 
     if (game && game.server) {
-      player.setAbility(new GhostAbility(player));
+      player.setAbility(GhostAbility, true);
     }
     point.die(player.id);
   }

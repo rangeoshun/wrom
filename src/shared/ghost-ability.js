@@ -1,13 +1,14 @@
 'use strict';
 
 module.exports = function GhostAbility ( player ) {
+  const ability = this;
   const game = player.game;
-  const message = 'Press [SPACE] to become a ghost for a while!';
+  const message = 'Picked up ghost!';
   let duration = 10;
   player.setMessage(message);
 
   return function () {
-    player.setAbility(null);
+    player.setAbility(GhostAbility, false);
     player.setGhost(true);
     player.setMessage(`You're a ghost for ${duration} seconds..`);
 

@@ -217,9 +217,9 @@ module.exports = class Game {
           player.invisibleUpdated = fullState;
         }
 
-        if (player.abilityUpdated || fullState) {
-          playerState.ai = 1;
-          player.abilityUpdated = fullState;
+        if (player.abilitiesUpdated || fullState) {
+          playerState.aim = player.abilitiesMessage;
+          player.abilitiesUpdated = fullState;
         }
 
         if (player.colorUpdated || fullState) {

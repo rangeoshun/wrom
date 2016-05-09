@@ -4,6 +4,11 @@ const Entity = require('./entity.js');
 const Pixel = require('./pixel.js');
 const InvisibleFX = require('./invisible-fx.js');
 const DrillFX = require('./drill-fx.js');
+const GhostAbility = require('./ghost-ability.js');
+const DrillAbility = require('./drill-ability.js');
+const InvisibleAbility = require('./invisible-ability.js');
+const PortalAbility = require('./portal-ability.js');
+const PickupMineAbility = require('./pickup-mine-ability.js');
 
 module.exports = class Worm extends Entity {
   constructor ( game ) {
@@ -13,6 +18,8 @@ module.exports = class Worm extends Entity {
     worm.direction = [];
     worm.directionCue = [];
 
+    worm.abilities = [false,false,false,false,false];
+    worm.abilitiesMessage = ['[ ]','[ ]','[ ]','[ ]','[ ]'];
     worm.invisible = 0;
     worm.ghost = 0;
     worm.drill = 0;
@@ -56,10 +63,29 @@ module.exports = class Worm extends Entity {
     worm.updated = worm.messageUpdated = true;
   }
 
-  setAbility ( ability ) {
+  setAbility ( AbilityType, add ) {
     const worm = this;
-    worm.ability = ability || null;
-    worm.updated = worm.abilityUpdated = true;
+    let ability;
+    let index;
+
+    if (AbilityType === GhostAbility) {
+      index = 0;
+    } else if (AbilityType === DrillAbility) {
+      index = 1;
+    } else if (AbilityType === InvisibleAbility) {
+      index = 2;
+    } else if (AbilityType === PortalAbility) {
+      index = 3;
+    } else if (AbilityType === PickupMineAbility) {
+      index = 4;
+    }
+    console.log(AbilityType, ability, add, index)
+    console.log(worm.abilitiesMessage);
+
+    worm.abilities[index] = add ? new AbilityType(worm) : false;
+    worm.abilitiesMessage[index] = `[${add ? index + 1 : ' '}]`;
+
+    worm.updated = worm.abilitiesUpdated = true;
   }
 
   setGhost ( to ) {

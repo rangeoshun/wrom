@@ -128,7 +128,7 @@ wss.on('request', function ( request ) {
     const spawn = update.sa;
     const color = update.cl;
     const name = update.nm;
-    const ability = update.ai;
+    const ability = update.ai - 1;
     const die = update.de;
 
     if (color) {
@@ -141,8 +141,10 @@ wss.on('request', function ( request ) {
 
     if (player.entity.alive) {
 
-      if (ability && player.entity.ability) {
-        player.entity.ability();
+      console.log(ability);
+      console.log(player.entity.abilities);
+      if (ability !== false && player.entity.abilities[ability]) {
+        player.entity.abilities[ability]();
       }
 
       if (die) {

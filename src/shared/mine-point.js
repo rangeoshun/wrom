@@ -125,7 +125,7 @@ module.exports = class MinePoint extends Point {
 
             if (!point.countDown) {
 
-              console.log(`${player.constructor.name} ${player.id} is blown to peaces by ${point.constructor.name} ${point.id}`);
+              player.setMessage(`${player.constructor.name} ${player.id} is blown to peaces by ${point.constructor.name} ${point.id}`);
               point.onCollision(player, index, scorerID);
             }
           }

@@ -109,15 +109,19 @@ module.exports = class Connection {
 
       dpad.addEventListener('touchstart', touchInput, true);
       start.addEventListener('touchstart', touchInput, true);
-      use.addEventListener('touchstart', touchInput, true);
 
       dpad.addEventListener('MSPointerDown', touchInput, true);
       start.addEventListener('MSPointerDown', touchInput, true);
-      use.addEventListener('MSPointerDown', touchInput, true);
 
       dpad.addEventListener('pointerdown', touchInput, true);
       start.addEventListener('pointerdown', touchInput, true);
-      use.addEventListener('pointerdown', touchInput, true);
+
+      for (var i = 0; i < use.childNodes.length; i++) {
+        var useAbility = use.childNodes[i];
+        useAbility.addEventListener('MSPointerDown', touchInput, true);
+        useAbility.addEventListener('touchstart', touchInput, true);
+        useAbility.addEventListener('pointerdown', touchInput, true);
+      }
 
       let direction;
       addEventListener('keydown', sendInput);
@@ -157,10 +161,18 @@ console.log(ev.keyCode)
           ev.preventDefault();
             direction = 4;
           break;
+          case 49:
+          case 50:
+          case 51:
+          case 52:
+          case 53:
+            ev.preventDefault();
+            ability = code - 48;
+            console.log(ability)
+          break;
           case 32:
             ev.preventDefault();
             respawn = !globals.self.alive ? 1 : 0;
-            ability = !respawn ? 1 : 0;
           break;
           case 9:
             ev.preventDefault();
@@ -214,7 +226,7 @@ console.log(ev.keyCode)
           globals.self.setDirection(direction);
         } else if (respawn) {
           message.rs = respawn;
-        } else if (ability) {
+        } else if (typeof ability === 'number') {
           message.ai = ability;
         }
 
@@ -354,6 +366,11 @@ console.log(ev.keyCode)
           if (playerUpdate.cl) foundPlayer.setColor(playerUpdate.cl);
           if (playerUpdate.go !== undefined) foundPlayer.setGhost(!!playerUpdate.go);
           if (playerUpdate.di && !isSelf) foundPlayer.setDirection(playerUpdate.di);
+
+          if (playerUpdate.aim) {
+            client.abilitiesMessage = playerUpdate.aim.join(' ');
+          }
+
           if (playerUpdate.bd) {
 
             foundPlayer.body.unshift(foundPlayer.body.pop());

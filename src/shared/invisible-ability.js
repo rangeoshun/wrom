@@ -1,8 +1,9 @@
 'use strict';
 
 module.exports = function InvisibleAbility ( player ) {
+  const ability = this;
   const game = player.game;
-  const message = 'Press [SPACE] to become a mostly invisible for a while!';
+  const message = 'Picked up invisibleity!';
   let duration = 10;
   player.setMessage(message);
 
@@ -10,7 +11,7 @@ module.exports = function InvisibleAbility ( player ) {
 //    new InvisibleFX(player);
     player.setInvisible(1);
 
-    player.setAbility(null);
+    player.setAbility(InvisibleAbility, false);
     player.setMessage(`You're a mostly invisible for ${duration} seconds..`);
 
     let countDown = setInterval(function () {

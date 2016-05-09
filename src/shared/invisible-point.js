@@ -20,7 +20,7 @@ module.exports = class InvisiblePoint extends Point {
 
     point.die(player.id);
     if (game.server) {
-      player.setAbility(new InvisibleAbility(player));
+      player.setAbility(InvisibleAbility, true);
     }
   }
 
