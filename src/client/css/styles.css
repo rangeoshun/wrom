@@ -226,11 +226,11 @@ button#start, div#use  {
 }
 
 button#start {
-  width: 10px;
+  width: 25px;
   height: 17px;
   right: 50%;
-  bottom: 5px;
-  transform: rotateZ(45deg);
+  bottom: 10px;
+  transform: rotateZ(-45deg);
 }
 
 div#use {
@@ -247,6 +247,15 @@ div#use button {
   background-color: transparent;
 }
 
+div#use button[data-key="32"] {
+  position: absolute;
+  height: 18px;
+  background-color: transparent;
+  bottom: -83px;
+  left: -46px;
+  width: 40px;
+  border-radius: 0;
+}
 
 body {
   margin: 0 auto;
