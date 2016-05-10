@@ -117,13 +117,26 @@ module.exports = class Worm extends Entity {
     const worm = this;
     const body = worm.body;
     const game = worm.game;
-    worm.updated = true;
+    const players = game.players;
+    if (!worm.alive) return;
     worm.drop(body.length, 0, body);
     worm.alive = false;
+    worm.body.splice(0);
+    worm.bodyUpdated = true;
+    worm.updated = true;
 
-    if (!worm.alive) return;
+    if (!game.server
+      && (!globals.spectatee
+        || globals.spectatee.id == worm.id)) {
+
+      const randomPlayerIndex = Math.floor(Math.random()*players.length);
+      globals.spectatee = players[randomPlayerIndex];
+
+    } else if (game.onDieCallback) {
+      game.onDieCallback(worm);
+    }
+
     worm.setMessage('Bad luck... Press [SPACE] to respawn!');
-    if (game.server && game.onDieCallback) game.onDieCallback(worm);
   }
 
   spawn () {
@@ -245,7 +258,7 @@ module.exports = class Worm extends Entity {
 
     if (!worm.alive) return;
 
-    let tail =body[body.length - 1];
+    let tail = body[body.length - 1];
 
     if (by < 0) {
 

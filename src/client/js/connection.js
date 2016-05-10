@@ -99,22 +99,27 @@ module.exports = class Connection {
 
       const dpad = document.getElementById('dpad');
       const start = document.getElementById('start');
+      const tab = document.getElementById('tab');
       const use = document.getElementById('use');
 
       if (!client.mobile.isMobile) {
         dpad.parentNode.removeChild(dpad);
         start.parentNode.removeChild(start);
+        tab.parentNode.removeChild(tab);
         use.parentNode.removeChild(use);
       }
 
       dpad.addEventListener('touchstart', touchInput, true);
       start.addEventListener('touchstart', touchInput, true);
+      tab.addEventListener('touchstart', touchInput, true);
 
       dpad.addEventListener('MSPointerDown', touchInput, true);
       start.addEventListener('MSPointerDown', touchInput, true);
+      tab.addEventListener('MSPointerDown', touchInput, true);
 
       dpad.addEventListener('pointerdown', touchInput, true);
       start.addEventListener('pointerdown', touchInput, true);
+      tab.addEventListener('pointerdown', touchInput, true);
 
       for (var i = 0; i < use.childNodes.length; i++) {
         var useAbility = use.childNodes[i];
@@ -129,7 +134,9 @@ module.exports = class Connection {
       function touchInput ( ev ) {
         ev.preventDefault();
         let currentDirection = parseInt(ev.target.dataset.key);
+        console.log(ev)
         sendInput({
+          type: ev.type,
           preventDefault: function () {},
           keyCode: currentDirection
         });
@@ -165,11 +172,9 @@ module.exports = class Connection {
           case 53:
             ev.preventDefault();
             ability = code - 48;
-            console.log(ability)
           break;
           case 32:
             ev.preventDefault();
-//            client.toggleFullScreen(false);
             respawn = !globals.self.alive ? 1 : 0;
           break;
           case 9:
@@ -178,10 +183,30 @@ module.exports = class Connection {
 
               client.showScores = true;
 
-              addEventListener('keyup', function hideScores ( ev ) {
-                if (ev.keyCode === 9) {
+              let upEventType;
+              switch (ev.type) {
+                case 'keydown':
+                  upEventType = 'keyup';
+                break;
+                case 'touchstart':
+                  upEventType = 'touchend';
+                break;
+                case 'MSPointerDown':
+                  upEventType = 'MSPointerUp';
+                break;
+                case 'pointerdown':
+                  upEventType = 'pointerup';
+                break;
+              }
+
+              addEventListener(upEventType, function hideScores ( ev ) {
+                console.log(ev.type, upEventType)
+                if (ev.keyCode === 9
+                  || (ev.target.dataset.key
+                    && ev.target.dataset.key == 9)) {
+
                   client.showScores = false;
-                  removeEventListener('keyup', hideScores);
+                  removeEventListener(upEventType, hideScores);
                 }
               });
             }

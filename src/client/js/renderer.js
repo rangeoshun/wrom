@@ -4,7 +4,9 @@ const Pixel = require('./pixel.js');
 module.exports = class Renderer {
   constructor ( client ) {
     const renderer = this;
-    const tick = client.game.tick;
+    const game = client.game;
+    const players = game.players;
+    const tick = game.tick;
     const globals = client.globals;
     const resolution = globals.resolution;
     const screen = globals.screen;
@@ -126,10 +128,29 @@ module.exports = class Renderer {
     let dimensionX;
     let start;
     let end;
+    let lastPosition;
+
     let getBoundCoords = function getBoundCoords () {
+
       self = globals.self;
-      body = self.body;
-      head = body[0];
+
+      if (!self.alive) {
+        const randomPlayerIndex = Math.floor(Math.random()*players.length);
+        globals.spectatee = players[randomPlayerIndex];
+        self = globals.spectatee;
+      }
+
+      if (self && self.alive) {
+        body = self.body;
+        head = body[0];
+      }
+
+      if (!head) {
+        head = lastPosition || [0,0];
+      } else {
+        lastPosition = head;
+      }
+
       scaleX = globals.screen[0] / 2;
       scaleY = globals.screen[1] / 2;
       startY = head[1] - scaleY;

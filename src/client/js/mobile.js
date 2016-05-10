@@ -55,7 +55,7 @@ module.exports = class Mobile {
         }
       }
 
-      document.body.screen = [window.screen.availWidth/10, window.screen.availHeight/10];
+      //document.body.screen = [window.screen.availWidth/10, window.screen.availHeight/10];
 
       var goPlay = document.getElementById("goPlay");
       goPlay.addEventListener("click", maximize, true);

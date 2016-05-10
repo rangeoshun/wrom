@@ -212,7 +212,7 @@ div#dpad button {
   padding: 0;
 }
 
-button#start, div#use  {
+button#start, div#use, button#tab  {
   display: none;
   background-color: transparent;
   position: fixed;
@@ -225,12 +225,16 @@ button#start, div#use  {
   z-index: 10;
 }
 
-button#start {
+button#start, button#tab {
   width: 25px;
-  height: 17px;
-  right: 50%;
+  height: 11px;
+  right: 40%;
   bottom: 10px;
   transform: rotateZ(-45deg);
+}
+
+button#tab {
+  right: 30%;
 }
 
 div#use {
@@ -257,6 +261,11 @@ div#use button[data-key="32"] {
   border-radius: 0;
 }
 
+button[data-key] {
+  border-width: 1px;
+  opacity: 0.5;
+}
+
 body {
   margin: 0 auto;
 }
@@ -272,6 +281,7 @@ canvas {
 }
 
 div.screen button#start,
+div.screen button#tab,
 div.screen div#use,
 div.screen div#dpad,
 div.screen div.status,

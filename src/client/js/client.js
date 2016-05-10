@@ -23,6 +23,7 @@ class Client extends EventEmitter {
     client.scoreHUD =  document.querySelector('.status > .score');
     client.messageHUD = document.querySelector('.status > .message');
     client.abilitiesHUD = document.querySelector('.status > .abilities');
+    client.dpad = document.querySelector('#dpad');
 
     client.globals = Globals;
 //    client.globals.screen = document.body.screen;
@@ -48,8 +49,14 @@ class Client extends EventEmitter {
 
   set showScores ( state ) {
     this._showScores = !!state;
-    if (!state) this.scoreBoard.style.display = 'none';
-    else this.scoreBoard.style.display = 'block';
+
+    if (!state) {
+      this.scoreBoard.style.display = 'none';
+      if (this.mobile.isMobile && this.state === 'screen') this.dpad.style.display = 'block'
+    } else {
+      this.dpad.style.display = 'none'
+      this.scoreBoard.style.display = 'block';
+    }
   }
 
   get state () {
