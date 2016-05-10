@@ -98,7 +98,7 @@ module.exports = class Worm extends Entity {
     worm.drop(body.length, 0, body);
     worm.alive = false;
 
-    if (!worm.alive) return;
+//    if (!worm.alive) return;
     worm.setMessage('Bad luck... Press [SPACE] to respawn!');
     if (game.server && game.onDieCallback) game.onDieCallback(worm);
   }
