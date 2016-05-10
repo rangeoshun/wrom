@@ -19,7 +19,7 @@ module.exports = class Worm extends Entity {
     worm.directionCue = [];
 
     worm.abilities = [false,false,false,false,false];
-    worm.abilitiesMessage = ['[ ]','[ ]','[ ]','[ ]','[ ]'];
+    worm.abilitiesMessage;
     worm.invisible = 0;
     worm.ghost = 0;
     worm.drill = 0;
@@ -137,7 +137,6 @@ module.exports = class Worm extends Entity {
     if (game.server) {
       worm.setGhost(true);
     }
-
     worm.direction[0] = dirX;
     worm.direction[1] = dirY;
     worm.body = [];
@@ -157,6 +156,9 @@ module.exports = class Worm extends Entity {
 
         console.log(`${worm.constructor.name} ${worm.player ? worm.player.name : worm.id} is spawning`);
         worm.alive = true;
+        worm.bodyUpdated = true;
+        worm.abilitiesMessage = ['[ ]','[ ]','[ ]','[ ]','[ ]'];
+        worm.abilitiesUpdated = true;
         worm.updated = true;
 
 
