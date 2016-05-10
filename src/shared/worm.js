@@ -216,7 +216,7 @@ module.exports = class Worm extends Entity {
               const part = body[j];
 
               if (part && game.areColliding(worm.body[0], part, true)) {
-                console.log(`${worm.constructor.name} ${worm.id} is colliding with ${worm.constructor.name} ${player.id}`);
+                console.log(`${worm.player.name || worm.id} is colliding with ${worm.constructor.name} ${player.id}`);
 
                 worm.die();
 
@@ -326,33 +326,21 @@ module.exports = class Worm extends Entity {
 
   render () {
     const worm = this;
-    return function ( world, renderer ) {
+    function renderWorm ( world, renderer ) {
       let pixels = [];
       if (!worm.alive) {
         pixels.die = true;
       }
 
       const body = worm.body;
-      const bodyLength = worm.body.length;
+      const bodyLength = body.length;
       const color = worm.color;
       console.log(bodyLength)
-//      let prevPart = body[0];
       for (var i = 0; i < bodyLength; i++) {
-/*
-        const part = body[i];
-        const nextPart = body[i + 1];
-        const resolution = worm.game.globals.resolution;
-        const distance = worm.game.getDistance(prevPart, nextPart || part);
-        const gap =  !nextPart || Math.abs(part[0] - nextPart[0]) > 0 && Math.abs(part[1] - nextPart[1]) > 0;
-        const diagonal = !nextPart || prevPart[0] !== nextPart[0] && prevPart[1] !== nextPart[1];
 
-        if (part && prevPart && (gap || diagonal)) {
-
-              renderer.drawLine(prevPart, part, color, 1);
-              prevPart = part;
+        if (!pixels[i]) {
+          pixels[i] = new Pixel();
         }
-*/
-        if (!pixels[i]) pixels[i] = new Pixel();
 
         let r = worm.color[0];
         let g = worm.color[1];
@@ -370,10 +358,17 @@ module.exports = class Worm extends Entity {
         pixel[2] = g;
         pixel[3] = b;
         pixel[4] = body[i];
+      }
+
+      if (pixels.length > bodyLength) {
+        pixels.splice(bodyLength - 1);
+      }
+
+      return pixels;
     }
 
-    if (pixels.length > bodyLength) pixels.splice(bodyLength - 1);
-      return pixels;
-    };
+    renderWorm.parent = worm;
+    renderWorm.born = new Date().getTime();
+    return renderWorm;
   }
 };

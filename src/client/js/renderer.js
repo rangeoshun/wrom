@@ -444,24 +444,23 @@ module.exports = class Renderer {
 
       if (client.state === 'screen') {
         _buffer.clearRect(0,0, globals.screen[0], globals.screen[1]);
-//        _world.putImageData(backgroundImg, 0, 0);
-        //      console.log(bounds)
-        /*
-        renderer.drawLine([0,0],[resolutionX,0],[0.1,0.1,0.1]);
-        renderer.drawLine([resolutionX,0],[resolutionX,resolutionY],[0.1,0.1,0.1]);
-        renderer.drawLine([resolutionX,resolutionY],[0,resolutionY],[0.1,0.1,0.1]);
-        renderer.drawLine([0,resolutionY],[0,0],[0.1,0.1,0.1]);
-        */
 
+        const renderTime = new Date().getTime();
         const callbackLength = _renderCallbacks.length;
         let coords = [];
         normalizeBounds(getBoundCoords());
         for (let i = 0; i < _renderCallbacks.length;) {
           callback = _renderCallbacks[i];
 
-          if (typeof callback !== 'function') {
+
+          if (typeof callback !== 'function' || callback.die) {
             _renderCallbacks.splice(i, 1);
           } else {
+
+            if (callback.born || callback.born < renderTime - 1000) {
+              callback = callback.parent.render();
+              _renderCallbacks[i] = callback;
+            }
 
             i++;
 

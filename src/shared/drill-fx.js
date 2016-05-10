@@ -18,7 +18,11 @@ module.exports = function DrillFX ( entity ) {
     const pixels = [];
     const body = entity.body;
     const length = entity.body.length;
-    pixels.die = !on;
+
+    if (!on) {
+      pixels.die = !on;
+      return pixels;
+    }
 
     let factor = Math.sin(new Date().getMilliseconds() / 100);
 

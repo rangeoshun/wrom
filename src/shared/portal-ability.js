@@ -65,7 +65,7 @@ module.exports = function PortalAbility ( player ) {
             const distance1 = game.getDistance(part, portal0.coords);
             if (distance1 < 5) {
 
-              player.setMessage(`${player.constructor.name} ${player.id} is thorn into half by ${portal1.constructor.name} ${portal1.id}`);
+              player.setMessage(`${player.name || player.id} is thorn into half by ${portal1.constructor.name} ${portal1.id}`);
               const rest = length - index;
 
               if (!index) {
