@@ -138,7 +138,6 @@ module.exports = class Game {
       state.ath = game.allTimeHigh;
       game.allTimeHigh.updated = fullState;
     }
-
     state.sc = [];
     game.globals.players.forEach(function ( player ) {
       state.sc.push({

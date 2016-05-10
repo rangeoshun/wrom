@@ -390,8 +390,10 @@ module.exports = class Connection {
           if (playerUpdate.go !== undefined) foundPlayer.setGhost(!!playerUpdate.go);
           if (playerUpdate.di && !isSelf) foundPlayer.setDirection(playerUpdate.di);
 
-          if (playerUpdate.aim) {
-            client.abilitiesMessage = playerUpdate.aim.join(' ');
+          if (isSelf) {
+            if (playerUpdate.aim) {
+              client.abilitiesMessage = playerUpdate.aim.join(' ');
+            }
           }
 
           if (playerUpdate.bd) {

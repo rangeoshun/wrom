@@ -34,7 +34,7 @@ module.exports = class Worm extends Entity {
 
   isImmune () {
     const worm = this;
-    return worm.ghost || worm.drill || false;
+    return !worm.alive || worm.ghost || worm.drill || false;
   }
 
   setDrill ( state ) {
@@ -118,27 +118,31 @@ module.exports = class Worm extends Entity {
     const body = worm.body;
     const game = worm.game;
     const players = game.players;
-    if (!worm.alive) return;
-    worm.drop(body.length, 0, body);
-    worm.alive = false;
-    worm.body.splice(0);
-    worm.bodyUpdated = true;
-    worm.updated = true;
 
-    if (!game.server
-      && (!globals.spectatee
-        || globals.spectatee.id == worm.id)) {
+    game.tick.afterCallbacks.push(() => {
+      if (!worm.alive) return;
+      worm.drop(body.length, 0, body);
+      worm.alive = false;
+      worm.body.splice(0);
+      worm.bodyUpdated = true;
+      worm.updated = true;
 
-      const randomPlayerIndex = Math.floor(Math.random()*players.length);
-      globals.spectatee = players[randomPlayerIndex];
+      if (!game.server
+        && (!globals.spectatee
+          || globals.spectatee.id == worm.id)) {
 
-    } else if (game.onDieCallback) {
-      game.onDieCallback(worm);
-    }
+          const randomPlayerIndex = Math.floor(Math.random()*players.length);
+          globals.spectatee = players[randomPlayerIndex];
+
+        } else if (game.onDieCallback) {
+          game.onDieCallback(worm);
+        }
+    });
 
     worm.setMessage('Bad luck... Press [SPACE] to respawn!');
-  }
 
+
+  }
   spawn () {
     const worm = this;
     const game = worm.game || {};
@@ -174,7 +178,6 @@ module.exports = class Worm extends Entity {
         worm.abilitiesUpdated = true;
         worm.updated = true;
 
-
         if (!game.server) {
 
           globals.renderCallbacks.push(worm.render());
@@ -205,14 +208,14 @@ module.exports = class Worm extends Entity {
         const body = player.body;
         const bodyLength = body.length;
 
-        if (!worm.isImmune() && !player.ghost) {
+        if (!worm.isImmune()) {
 
           for (var j = 0; j < bodyLength; j++) {
 
             if (player.id !== worm.id || j) {
               const part = body[j];
 
-              if (part && game.areColliding(worm.coords, part, true)) {
+              if (part && game.areColliding(worm.body[0], part, true)) {
                 console.log(`${worm.constructor.name} ${worm.id} is colliding with ${worm.constructor.name} ${player.id}`);
 
                 worm.die();
@@ -323,8 +326,8 @@ module.exports = class Worm extends Entity {
 
   render () {
     const worm = this;
-    let pixels = [];
     return function ( world, renderer ) {
+      let pixels = [];
       if (!worm.alive) {
         pixels.die = true;
       }
@@ -332,9 +335,10 @@ module.exports = class Worm extends Entity {
       const body = worm.body;
       const bodyLength = worm.body.length;
       const color = worm.color;
+      console.log(bodyLength)
 //      let prevPart = body[0];
       for (var i = 0; i < bodyLength; i++) {
-        /*
+/*
         const part = body[i];
         const nextPart = body[i + 1];
         const resolution = worm.game.globals.resolution;
@@ -348,7 +352,7 @@ module.exports = class Worm extends Entity {
               prevPart = part;
         }
 */
-        if (!pixels[i]) pixels.push(new Pixel());
+        if (!pixels[i]) pixels[i] = new Pixel();
 
         let r = worm.color[0];
         let g = worm.color[1];
@@ -366,11 +370,9 @@ module.exports = class Worm extends Entity {
         pixel[2] = g;
         pixel[3] = b;
         pixel[4] = body[i];
+    }
 
-      }
-
-      if (pixels.length > bodyLength) pixels.splice(bodyLength - 1);
-
+    if (pixels.length > bodyLength) pixels.splice(bodyLength - 1);
       return pixels;
     };
   }
