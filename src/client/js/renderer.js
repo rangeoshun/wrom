@@ -136,7 +136,7 @@ module.exports = class Renderer {
 
       if (!self.alive) {
         const randomPlayerIndex = Math.floor(Math.random()*players.length);
-        globals.spectatee = players[randomPlayerIndex];
+        globals.spectatee = globals.spectatee || players[randomPlayerIndex];
         self = globals.spectatee;
       }
 
