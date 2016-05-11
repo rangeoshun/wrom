@@ -14,14 +14,17 @@ module.exports = class Sounds {
       'crash'
     ];
 
+    /*
     const soundPool = soundNames.map(function ( sound, index ) {
       let audio = new Audio(`./assets/sounds/${sound}.mp3`);
       audio.volume = 0.2
       return audio;
     });
 
+    */
     let currentSound;
     sounds.play = function ( soundID ) {
+      return;
       currentSound = soundPool[soundID];
       currentSound.pause();
       currentSound.currentTime = 0;

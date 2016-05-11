@@ -59,7 +59,7 @@ module.exports = class Connection {
       });
     });
 
-    connection = new WebSocket(`ws://${location.hostname}`);
+    connection = new WebSocket(`ws://${location.hostname}:8000`);
 
     onbeforeunload = function () {
         connection.close();

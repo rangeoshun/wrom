@@ -73,7 +73,8 @@ const httpServer = http.createServer(function ( request, response ) {
 }).listen(parseInt(httpPort, 10));
 console.log(`HTTP server listening on port: ${httpPort}`);
 // Websocket server
-let wss = new WebSocketServer({httpServer: httpServer});
+let wss = new WebSocketServer({httpServer: socketServer});
+socketServer.listen(8000);
 
 wss.on('request', function ( request ) {
   let connection = request.accept(null, request.origin);
