@@ -20,7 +20,7 @@ module.exports = class DrillPoint extends Point {
     const game = player.game;
 
     if (game && game.server) {
-      player.setAbility(new DrillAbility(player));
+      player.setAbility(DrillAbility, true);
     }
     point.die(player.id);
   }

@@ -4,6 +4,11 @@ const Entity = require('./entity.js');
 const Pixel = require('./pixel.js');
 const InvisibleFX = require('./invisible-fx.js');
 const DrillFX = require('./drill-fx.js');
+const GhostAbility = require('./ghost-ability.js');
+const DrillAbility = require('./drill-ability.js');
+const InvisibleAbility = require('./invisible-ability.js');
+const PortalAbility = require('./portal-ability.js');
+const PickupMineAbility = require('./pickup-mine-ability.js');
 
 module.exports = class Worm extends Entity {
   constructor ( game ) {
@@ -13,6 +18,8 @@ module.exports = class Worm extends Entity {
     worm.direction = [];
     worm.directionCue = [];
 
+    worm.abilities = [false,false,false,false,false];
+    worm.abilitiesMessage;
     worm.invisible = 0;
     worm.ghost = 0;
     worm.drill = 0;
@@ -27,7 +34,7 @@ module.exports = class Worm extends Entity {
 
   isImmune () {
     const worm = this;
-    return worm.ghost || worm.drill || false;
+    return !worm.alive || worm.ghost || worm.drill || false;
   }
 
   setDrill ( state ) {
@@ -56,10 +63,26 @@ module.exports = class Worm extends Entity {
     worm.updated = worm.messageUpdated = true;
   }
 
-  setAbility ( ability ) {
+  setAbility ( AbilityType, add ) {
     const worm = this;
-    worm.ability = ability || null;
-    worm.updated = worm.abilityUpdated = true;
+    let ability;
+    let index;
+
+    if (AbilityType === GhostAbility) {
+      index = 0;
+    } else if (AbilityType === DrillAbility) {
+      index = 1;
+    } else if (AbilityType === InvisibleAbility) {
+      index = 2;
+    } else if (AbilityType === PortalAbility) {
+      index = 3;
+    } else if (AbilityType === PickupMineAbility) {
+      index = 4;
+    }
+
+    worm.abilities[index] = add ? new AbilityType(worm) : false;
+    worm.abilitiesMessage[index] = `[${add ? index + 1 : ' '}]`;
+    worm.updated = worm.abilitiesUpdated = true;
   }
 
   setGhost ( to ) {
@@ -94,13 +117,29 @@ module.exports = class Worm extends Entity {
     const worm = this;
     const body = worm.body;
     const game = worm.game;
-    worm.updated = true;
-    worm.drop(body.length, 0, body);
-    worm.alive = false;
+    const players = game.players;
 
-//    if (!worm.alive) return;
+    game.tick.afterCallbacks.push(() => {
+      if (!worm.alive) return;
+      worm.drop(body.length, 0, body);
+      worm.alive = false;
+      worm.body.splice(0);
+      worm.bodyUpdated = true;
+      worm.updated = true;
+
+      if (!game.server
+        && (!globals.spectatee
+          || globals.spectatee.id == worm.id)) {
+
+          const randomPlayerIndex = Math.floor(Math.random()*players.length);
+          globals.spectatee = players[randomPlayerIndex];
+
+        } else if (game.onDieCallback) {
+          game.onDieCallback(worm);
+        }
+    });
+
     worm.setMessage('Bad luck... Press [SPACE] to respawn!');
-    if (game.server && game.onDieCallback) game.onDieCallback(worm);
   }
 
   spawn () {
@@ -114,7 +153,6 @@ module.exports = class Worm extends Entity {
     if (game.server) {
       worm.setGhost(true);
     }
-
     worm.direction[0] = dirX;
     worm.direction[1] = dirY;
     worm.body = [];
@@ -134,8 +172,10 @@ module.exports = class Worm extends Entity {
 
         console.log(`${worm.constructor.name} ${worm.player ? worm.player.name : worm.id} is spawning`);
         worm.alive = true;
+        worm.bodyUpdated = true;
+        worm.abilitiesMessage = ['[ ]','[ ]','[ ]','[ ]','[ ]'];
+        worm.abilitiesUpdated = true;
         worm.updated = true;
-
 
         if (!game.server) {
 
@@ -167,15 +207,15 @@ module.exports = class Worm extends Entity {
         const body = player.body;
         const bodyLength = body.length;
 
-        if (!worm.isImmune() && !player.ghost) {
+        if (!worm.isImmune()) {
 
           for (var j = 0; j < bodyLength; j++) {
 
             if (player.id !== worm.id || j) {
               const part = body[j];
 
-              if (part && game.areColliding(worm.coords, part, true)) {
-                console.log(`${worm.constructor.name} ${worm.id} is colliding with ${worm.constructor.name} ${player.id}`);
+              if (part && game.areColliding(worm.body[0], part, true)) {
+                console.log(`${worm.player.name || worm.id} is colliding with ${worm.constructor.name} ${player.id}`);
 
                 worm.die();
 
@@ -220,7 +260,7 @@ module.exports = class Worm extends Entity {
 
     if (!worm.alive) return;
 
-    let tail =body[body.length - 1];
+    let tail = body[body.length - 1];
 
     if (by < 0) {
 
@@ -285,32 +325,21 @@ module.exports = class Worm extends Entity {
 
   render () {
     const worm = this;
-    let pixels = [];
-    return function ( world, renderer ) {
+    function renderWorm ( world, renderer ) {
+      let pixels = [];
       if (!worm.alive) {
         pixels.die = true;
       }
 
       const body = worm.body;
-      const bodyLength = worm.body.length;
+      const bodyLength = body.length;
       const color = worm.color;
-//      let prevPart = body[0];
+      console.log(bodyLength)
       for (var i = 0; i < bodyLength; i++) {
-        /*
-        const part = body[i];
-        const nextPart = body[i + 1];
-        const resolution = worm.game.globals.resolution;
-        const distance = worm.game.getDistance(prevPart, nextPart || part);
-        const gap =  !nextPart || Math.abs(part[0] - nextPart[0]) > 0 && Math.abs(part[1] - nextPart[1]) > 0;
-        const diagonal = !nextPart || prevPart[0] !== nextPart[0] && prevPart[1] !== nextPart[1];
 
-        if (part && prevPart && (gap || diagonal)) {
-
-              renderer.drawLine(prevPart, part, color, 1);
-              prevPart = part;
+        if (!pixels[i]) {
+          pixels[i] = new Pixel();
         }
-*/
-        if (!pixels[i]) pixels.push(new Pixel());
 
         let r = worm.color[0];
         let g = worm.color[1];
@@ -328,12 +357,17 @@ module.exports = class Worm extends Entity {
         pixel[2] = g;
         pixel[3] = b;
         pixel[4] = body[i];
-
       }
 
-      if (pixels.length > bodyLength) pixels.splice(bodyLength - 1);
+      if (pixels.length > bodyLength) {
+        pixels.splice(bodyLength - 1);
+      }
 
       return pixels;
-    };
+    }
+
+    renderWorm.parent = worm;
+    renderWorm.born = new Date().getTime();
+    return renderWorm;
   }
 };

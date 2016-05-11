@@ -99,25 +99,34 @@ module.exports = class Connection {
 
       const dpad = document.getElementById('dpad');
       const start = document.getElementById('start');
+      const tab = document.getElementById('tab');
       const use = document.getElementById('use');
 
       if (!client.mobile.isMobile) {
         dpad.parentNode.removeChild(dpad);
         start.parentNode.removeChild(start);
+        tab.parentNode.removeChild(tab);
         use.parentNode.removeChild(use);
       }
 
       dpad.addEventListener('touchstart', touchInput, true);
       start.addEventListener('touchstart', touchInput, true);
-      use.addEventListener('touchstart', touchInput, true);
+      tab.addEventListener('touchstart', touchInput, true);
 
       dpad.addEventListener('MSPointerDown', touchInput, true);
       start.addEventListener('MSPointerDown', touchInput, true);
-      use.addEventListener('MSPointerDown', touchInput, true);
+      tab.addEventListener('MSPointerDown', touchInput, true);
 
       dpad.addEventListener('pointerdown', touchInput, true);
       start.addEventListener('pointerdown', touchInput, true);
-      use.addEventListener('pointerdown', touchInput, true);
+      tab.addEventListener('pointerdown', touchInput, true);
+
+      for (var i = 0; i < use.childNodes.length; i++) {
+        var useAbility = use.childNodes[i];
+        useAbility.addEventListener('MSPointerDown', touchInput, true);
+        useAbility.addEventListener('touchstart', touchInput, true);
+        useAbility.addEventListener('pointerdown', touchInput, true);
+      }
 
       let direction;
       addEventListener('keydown', sendInput);
@@ -125,16 +134,15 @@ module.exports = class Connection {
       function touchInput ( ev ) {
         ev.preventDefault();
         let currentDirection = parseInt(ev.target.dataset.key);
+        console.log(ev)
         sendInput({
+          type: ev.type,
           preventDefault: function () {},
           keyCode: currentDirection
         });
       }
 
       function sendInput ( ev ) {
-
-console.log(ev.keyCode)
-
         let code = ev.keyCode;
         let direction;
         let respawn = 0;
@@ -157,10 +165,17 @@ console.log(ev.keyCode)
           ev.preventDefault();
             direction = 4;
           break;
+          case 49:
+          case 50:
+          case 51:
+          case 52:
+          case 53:
+            ev.preventDefault();
+            ability = code - 48;
+          break;
           case 32:
             ev.preventDefault();
             respawn = !globals.self.alive ? 1 : 0;
-            ability = !respawn ? 1 : 0;
           break;
           case 9:
             ev.preventDefault();
@@ -168,10 +183,30 @@ console.log(ev.keyCode)
 
               client.showScores = true;
 
-              addEventListener('keyup', function hideScores ( ev ) {
-                if (ev.keyCode === 9) {
+              let upEventType;
+              switch (ev.type) {
+                case 'keydown':
+                  upEventType = 'keyup';
+                break;
+                case 'touchstart':
+                  upEventType = 'touchend';
+                break;
+                case 'MSPointerDown':
+                  upEventType = 'MSPointerUp';
+                break;
+                case 'pointerdown':
+                  upEventType = 'pointerup';
+                break;
+              }
+
+              addEventListener(upEventType, function hideScores ( ev ) {
+                console.log(ev.type, upEventType)
+                if (ev.keyCode === 9
+                  || (ev.target.dataset.key
+                    && ev.target.dataset.key == 9)) {
+
                   client.showScores = false;
-                  removeEventListener('keyup', hideScores);
+                  removeEventListener(upEventType, hideScores);
                 }
               });
             }
@@ -214,7 +249,7 @@ console.log(ev.keyCode)
           globals.self.setDirection(direction);
         } else if (respawn) {
           message.rs = respawn;
-        } else if (ability) {
+        } else if (typeof ability === 'number') {
           message.ai = ability;
         }
 
@@ -354,6 +389,13 @@ console.log(ev.keyCode)
           if (playerUpdate.cl) foundPlayer.setColor(playerUpdate.cl);
           if (playerUpdate.go !== undefined) foundPlayer.setGhost(!!playerUpdate.go);
           if (playerUpdate.di && !isSelf) foundPlayer.setDirection(playerUpdate.di);
+
+          if (isSelf) {
+            if (playerUpdate.aim) {
+              client.abilitiesMessage = playerUpdate.aim.join(' ');
+            }
+          }
+
           if (playerUpdate.bd) {
 
             foundPlayer.body.unshift(foundPlayer.body.pop());

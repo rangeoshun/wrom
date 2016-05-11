@@ -104,6 +104,7 @@ gulp.task('build-server', function () {
       'src/server/*'
     ])
     .pipe(replace(/{{www}}/g, config.dev.www))
+    .pipe(stripDebug())
     .pipe(license(info.license, {
       year: 2016,
       organization: info.repository.url

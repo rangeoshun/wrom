@@ -3,15 +3,16 @@ const colors = require('./colors.js');
 const PortalIOPoint = require('./portal-io-point.js');
 
 module.exports = function PortalAbility ( player ) {
+  const ability = this;
   const game = player.game;
-  const message = 'Press [SPACE] to open portal!';
+  const message = 'Picked up portal!';
   let init = 0;
   let duration = 7;
 
   player.setMessage(message);
 
   return function () {
-    player.setAbility(null);
+    player.setAbility(PortalAbility, false);
 
     player.setMessage(`You'have portal open for ${duration} seconds..`);
     const head = player.body[0];
@@ -52,7 +53,7 @@ module.exports = function PortalAbility ( player ) {
         player.setMessage(`You'have portal open for ${duration} seconds..`);
       }
 
-      if (!duration) {
+      if (duration < 1 && portal0.alive) {
         player.setMessage('');
         clearInterval(countDown);
 
@@ -64,7 +65,7 @@ module.exports = function PortalAbility ( player ) {
             const distance1 = game.getDistance(part, portal0.coords);
             if (distance1 < 5) {
 
-              console.log(`${player.constructor.name} ${player.id} is thorn into half by ${portal1.constructor.name} ${portal1.id}`);
+              player.setMessage(`${player.name || player.id} is thorn into half by ${portal1.constructor.name} ${portal1.id}`);
               const rest = length - index;
 
               if (!index) {
@@ -77,13 +78,12 @@ module.exports = function PortalAbility ( player ) {
               if (scorer && player.id !== scorer.id) scorer.addScore(rest * 10);
             }
           });
-
-          portal0.die(1);
-          portal1.die(1);
         });
-      }
 
-      return duration > 0 || player.alive;
+        portal0.die(1);
+        portal1.die(1);
+        return false;
+      }
     });
   };
 };

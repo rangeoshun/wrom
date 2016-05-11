@@ -1,8 +1,9 @@
 'use strict';
 
 module.exports = function DrillAbility ( player ) {
+  const ability = this;
   const game = player.game;
-  const message = 'Press [SPACE] to activate drill head!';
+  const message = 'Picked up drill head!';
   let duration = 10;
   player.setMessage(message);
 
@@ -10,7 +11,7 @@ module.exports = function DrillAbility ( player ) {
 
     player.setDrill(1);
 
-    player.setAbility(null);
+    player.setAbility(DrillAbility, false);
     player.setMessage(`Drill head active for ${duration} seconds..`);
 
     game.tick.onCallbacks.push(function ( players ) {
@@ -27,7 +28,7 @@ module.exports = function DrillAbility ( player ) {
           if (player.body.length && part[0] === head[0]
             && part[1] === head[1]) {
 
-            console.log(`${enemy.constructor.name} ${enemy.id} is thorn into half by ${player.constructor.name} ${player.id}`);
+            player.setMessage(`${enemy.constructor.name} ${enemy.id} is thorn into half by ${player.constructor.name} ${player.id}`);
             const rest = length - index;
 
             if (!index) {

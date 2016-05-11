@@ -18,7 +18,7 @@ module.exports = class PickupMinePoint extends Point {
     const game = player.game;
 
     if (game && game.server) {
-      player.setAbility(new PickupMineAbility(player));
+      player.setAbility(PickupMineAbility, true);
     }
     point.die(player.id);
   }

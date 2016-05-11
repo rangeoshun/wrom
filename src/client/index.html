@@ -6,7 +6,7 @@
   <meta content="utf-8" http-equiv="encoding" />
   <meta name="apple-mobil-web-app-capable" content="WROM" />
   <meta name="apple-mobil-web-app-status-bar-style" content="black-translucent" />
-  <meta name="viewport" content="width=240, initial-scale=1, user-scalable=no, shrink-to-fit=no, minimal-ui" />
+  <meta name="viewport" content="width=240, initial-scale=scale-to-fit, user-scalable=no, minimal-ui" />
   <link rel="stylesheet" type="text/css" href="css/fonts/c64fonts.css" />
   <link rel="stylesheet" type="text/css" href="css/styles.css" />
 </head>
@@ -42,11 +42,32 @@
       <button id="down" data-key="40">
       </button>
     </div>
+    <button id="tab" data-key="9">
+      tab
+    </button>
     <button id="start" data-key="27">
+      esc
     </button>
-    <button id="use" data-key="32">
-      USE
-    </button>
+    <div id="use">
+      <button data-key="32">
+        SPACE
+      </button>
+      <button data-key="49">
+        1
+      </button>
+      <button data-key="50">
+        2
+      </button>
+      <button data-key="51">
+        3
+      </button>
+      <button data-key="52">
+        4
+      </button>
+      <button data-key="53">
+        5
+      </button>
+    </div>
     <div id="screen">
       <div id="scores">
         HIGH SCORES
@@ -56,8 +77,9 @@
       </div>
     </div>
     <div class="status">
+      <span class="abilities"></span>
+      <span class="score"></span><br />
       <span class="message"></span>
-      <span class="score"></span>
     </div>
   </div>
   <div class="welcome">

@@ -39,10 +39,10 @@ module.exports = class Game {
         game.ditchTheDead();
       }
 
-      let syncPlayers = function ( player ) {
+      let syncPlayers = ( player ) => {
         //  console.time(`Sync takes`);
         let state = game.getState();
-        game.syncCallbacks.forEach(function ( callback, index ) {
+        game.syncCallbacks.forEach(( callback, index ) => {
           if (callback.del) {
             game.syncCallbacks.splice(index, 1);
             return;
@@ -110,7 +110,7 @@ module.exports = class Game {
     const game = this;
     let foundPoint = null;
 
-    game.points.forEach(function ( point ) {
+    game.points.forEach(( point ) => {
       if (id !== point.id) return;
       foundPoint = point;
     });
@@ -122,7 +122,7 @@ module.exports = class Game {
     const game = this;
     let foundPlayer = null;
 
-    game.players.forEach(function ( player ) {
+    game.players.forEach(( player ) => {
       if (id !== player.id) return;
       foundPlayer = player;
     });
@@ -138,7 +138,6 @@ module.exports = class Game {
       state.ath = game.allTimeHigh;
       game.allTimeHigh.updated = fullState;
     }
-
     state.sc = [];
     game.globals.players.forEach(function ( player ) {
       state.sc.push({
@@ -217,9 +216,9 @@ module.exports = class Game {
           player.invisibleUpdated = fullState;
         }
 
-        if (player.abilityUpdated || fullState) {
-          playerState.ai = 1;
-          player.abilityUpdated = fullState;
+        if (player.abilitiesUpdated || fullState) {
+          playerState.aim = player.abilitiesMessage;
+          player.abilitiesUpdated = fullState;
         }
 
         if (player.colorUpdated || fullState) {

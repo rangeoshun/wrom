@@ -22,6 +22,8 @@ class Client extends EventEmitter {
     client.scoreBoard =  document.getElementById('scores');
     client.scoreHUD =  document.querySelector('.status > .score');
     client.messageHUD = document.querySelector('.status > .message');
+    client.abilitiesHUD = document.querySelector('.status > .abilities');
+    client.dpad = document.querySelector('#dpad');
 
     client.globals = Globals;
 //    client.globals.screen = document.body.screen;
@@ -35,6 +37,7 @@ class Client extends EventEmitter {
     client._state = 'setup';
     client._showScores = false;
     client._message = '';
+    client._abilitiesMessage = '';
     client._score = 0;
 
     console.log(client)
@@ -46,8 +49,14 @@ class Client extends EventEmitter {
 
   set showScores ( state ) {
     this._showScores = !!state;
-    if (!state) this.scoreBoard.style.display = 'none';
-    else this.scoreBoard.style.display = 'block';
+
+    if (!state) {
+      this.scoreBoard.style.display = 'none';
+      if (this.mobile.isMobile && this.state === 'screen') this.dpad.style.display = 'block'
+    } else {
+      this.dpad.style.display = 'none'
+      this.scoreBoard.style.display = 'block';
+    }
   }
 
   get state () {
@@ -56,6 +65,15 @@ class Client extends EventEmitter {
 
   set state ( state ) {
     this._state = this.mainView.className = state;
+  }
+
+  get abilitiesMessage () {
+    return this._abilitiesMessage;
+  }
+
+  set abilitiesMessage ( message ) {
+    console.log(message)
+    this._abilitiesMessage = this.abilitiesHUD.innerText = message;
   }
 
   get message () {
