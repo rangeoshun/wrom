@@ -60,7 +60,10 @@ const httpServer = http.createServer(function ( request, response ) {
         return;
       }
       const mimeType = MimeTypes['.'+ filename.split('.')[1]] || 'text/plain';
-      response.writeHead(200, {"Content-Type": mimeType});
+      response.writeHead(200, {
+        "Cache-Control": "public, max-age=7200",
+        "Content-Type": mimeType
+      });
       response.write(file, "binary");
       response.end();
     });
