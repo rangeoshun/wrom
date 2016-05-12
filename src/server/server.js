@@ -105,7 +105,7 @@ wss.on('request', function ( request ) {
     connection.send(JSON.stringify(state));
     return !!player;
   }
-
+  player.syncCallback = syncPlayer;
   game.syncCallbacks.push(syncPlayer);
   console.log('Remaining players: ',game.players.length);
 
@@ -193,6 +193,7 @@ wss.on('request', function ( request ) {
     console.log('Connection closed from '+ request.origin);
     console.log('Remaining players: ', game.players.length);
     player.entity.die();
+    game.syncCallbacks.splice(game.syncCallbacks.indexOf(player.syncCallback), 1);
     Globals.players.splice(Globals.players.indexOf(player), 1);
   });
 
