@@ -366,6 +366,6 @@ module.exports = class Worm extends Entity {
 
     renderWorm.parent = worm;
     renderWorm.born = new Date().getTime();
-    return renderWorm;
+    return renderWorm.bind(this);
   }
 };
