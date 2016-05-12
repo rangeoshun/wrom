@@ -446,25 +446,26 @@ module.exports = class Renderer {
         _buffer.clearRect(0,0, globals.screen[0], globals.screen[1]);
 
         const renderTime = new Date().getTime();
-        const callbackLength = _renderCallbacks.length;
-        let coords = [];
+
         normalizeBounds(getBoundCoords());
-        for (let i = 0; i < _renderCallbacks.length;) {
+        for (let i = 0; i < globals.renderCallbacks.length;) {
           callback = _renderCallbacks[i];
 
+          pixels = callback(_buffer, renderer);
+          if (!pixels || pixels.die) {
 
-          if (typeof callback !== 'function' || callback.die) {
-            _renderCallbacks.splice(i, 1);
+            console.log('deleted', callback)
+            globals.renderCallbacks.splice(i, 1);
+
           } else {
 
             if (callback.born || callback.born < renderTime - 1000) {
               callback = callback.parent.render();
+              pixels = callback(_buffer, renderer);
               _renderCallbacks[i] = callback;
             }
 
             i++;
-
-            pixels = callback(_buffer, renderer);
             pixelsLength = pixels.length;
 
             for (let k = 0; k < pixelsLength; k++) {
@@ -481,17 +482,7 @@ module.exports = class Renderer {
                 }
               }
             }
-            if (pixels.die) {
-              deleteCue.push(callback);
-            }
-            pixels = null;
           }
-
-          deleteCueLength = deleteCue.length;
-          for (let d = 0; d < deleteCueLength; d++) {
-            _renderCallbacks[_renderCallbacks.indexOf(deleteCue[d])] = null;
-          }
-          deleteCue.splice(0);
         }
       }
 

@@ -79,7 +79,8 @@ gulp.task('dist', ['clean-dist'], function () {
       .src(['build/**/*.js'])
       .pipe(replace(devPort, ':'+ config.live.socket))
       .pipe(replace(devWWW, config.live.www))
-      .pipe(stripDebug())/*
+      //.pipe(stripDebug())
+      /*
       .pipe(closure({
         language: 'ECMASCRIPT6_STRICT',
         compilation_level: 'SIMPLE_OPTIMIZATIONS'

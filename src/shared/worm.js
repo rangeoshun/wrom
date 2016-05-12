@@ -281,12 +281,12 @@ module.exports = class Worm extends Entity {
     let doubleTick = 1;
     return function () {
 
-      if (!worm.alive) return false;
+      if (!worm.alive) return false;/*
       if (!doubleTick) {
         doubleTick++;
         return;
       }
-      doubleTick--;
+      doubleTick--;*/
 
       const coords = worm.coords;
       let body = worm.body;
@@ -323,15 +323,18 @@ module.exports = class Worm extends Entity {
     };
   }
 
-  render () {
-    const worm = this;
+  render ( world, renderer ) {
+    let worm = this;
     function renderWorm ( world, renderer ) {
+
       let pixels = [];
-      if (!worm.alive) {
-        pixels.die = true;
-      }
 
       const body = worm.body;
+
+      if (!body.length) {
+        return pixels;
+      }
+
       const bodyLength = body.length;
       const color = worm.color;
       console.log(bodyLength)
@@ -358,11 +361,6 @@ module.exports = class Worm extends Entity {
         pixel[3] = b;
         pixel[4] = body[i];
       }
-
-      if (pixels.length > bodyLength) {
-        pixels.splice(bodyLength - 1);
-      }
-
       return pixels;
     }
 

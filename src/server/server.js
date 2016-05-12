@@ -109,6 +109,9 @@ wss.on('request', function ( request ) {
   game.syncCallbacks.push(syncPlayer);
   console.log('Remaining players: ',game.players.length);
 
+  connection.on('error', function ( message ) {
+    connection.close();
+  });
   connection.on('message', function ( message ) {
 
     const update = JSON.parse(message.utf8Data);
