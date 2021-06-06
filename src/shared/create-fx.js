@@ -1,37 +1,49 @@
 "use strict";
-const Pixel = require('./pixel.js');
-const colors = require('./colors.js');
+const Pixel = require("./pixel.js");
 
-module.exports = function CreateFX ( entity, color) {
-  const game = entity.game;
-  const createTime = new Date().getTime();
-  let duration = 1000;
-  const pixels = [];
+module.exports = CreateFX;
 
-  color = color || entity.color;
-  pixels.push(new Pixel());
-  pixels.push(new Pixel());
-  pixels.push(new Pixel());
-  pixels.push(new Pixel());
+const defaultPixels = [];
 
-  game.tick.onCallbacks.push(function () {
-    duration -= new Date().getTime() - createTime;
-    return duration >= 0;
-  });
-
-  game.globals.renderCallbacks.push(function ( screen ) {
-    let coords = entity.coords;
-
-    if (duration <= 0) {
-      pixels.die = true;
-    }
-
-    const factor = duration / 1000 + 0.001;
-    pixels[0].setCoords([coords[0] + 1, coords[1]]).setColor(color, factor);
-    pixels[1].setCoords([coords[0] - 1, coords[1]]).setColor(color, factor);
-    pixels[2].setCoords([coords[0], coords[1] + 1]).setColor(color, factor);
-    pixels[3].setCoords([coords[0], coords[1] - 1]).setColor(color, factor);
-
-    return pixels;
-  });
-};
+function CreateFX(
+  entity,
+  color,
+  _game,
+  _createTime = new Date().getTime(),
+  _duration = 1000,
+  _pixels = defaultPixels.splice()
+) {
+  return (
+    (_game = entity.game),
+    (color = color || entity.color),
+    _pixels.push(new Pixel()),
+    _pixels.push(new Pixel()),
+    _pixels.push(new Pixel()),
+    _pixels.push(new Pixel()),
+    _game.tick.onCallbacks.push(
+      (_currentTime = new Date().getTime()) => (
+        (_duration -= _currentTime - _createTime), _duration >= 0
+      )
+    ),
+    _game.globals.renderCallbacks.push(
+      (_, _coords, _factor) => (
+        (_coords = entity.coords),
+        (_duration <= 0 && (_pixels.die = true)) ||
+          ((_factor = _duration / 1000 + 0.001),
+          _pixels[0]
+            .setCoords([_coords[0] + 1, _coords[1]])
+            .setColor(color, _factor),
+          _pixels[1]
+            .setCoords([_coords[0] - 1, _coords[1]])
+            .setColor(color, _factor),
+          _pixels[2]
+            .setCoords([_coords[0], _coords[1] + 1])
+            .setColor(color, _factor),
+          _pixels[3]
+            .setCoords([_coords[0], _coords[1] - 1])
+            .setColor(color, _factor)),
+        _pixels
+      )
+    )
+  );
+}
